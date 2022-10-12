@@ -49,7 +49,7 @@ public class AutoTestResultController {
         if (count > 0){
             json.put("code",200) ;
         }else {
-            json.put("code", 500) ;
+            json.put("code",500) ;
         }
         return json ;
     }

@@ -1,0 +1,25 @@
+#dev environment
+spring:
+  profiles: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    url: jdbc:mysql://106.2.90.25:3306/nim_perfdev?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+#    url: jdbc:mysql://10.170.159.28:3306/nim_perftest?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: perf
+    password: perftest
+  redis:
+    host: 10.170.159.28
+    port: 6380
+    timeout: 60000ms
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+    servlet:
+      multipart:
+        max-file-size: 500MB
+        max-request-size: 500MB
