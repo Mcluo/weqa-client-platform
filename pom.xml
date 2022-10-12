@@ -7,7 +7,7 @@
     <groupId>com.netease.vcloud.qa</groupId>
     <artifactId>weqa-client-platform</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>weqa-client-platform-web</module>
         <module>weqa-client-platform-common</module>
@@ -20,8 +20,8 @@
         <maven.compiler.target>8</maven.compiler.target>
         <java.version>1.8</java.version>
         <spring.boot.version>2.0.4.RELEASE</spring.boot.version>
-        <parent.version>1.0-SNAPSHOT</parent.version>
-        <module.version>1.0-SNAPSHOT</module.version>
+        <parent.version>1.0.0-SNAPSHOT</parent.version>
+        <module.version>1.0.0-SNAPSHOT</module.version>
     </properties>
 
 
@@ -121,33 +121,39 @@
     </dependencyManagement>
     <repositories>
         <repository>
-            <id>repo</id>
-            <name>repo</name>
-            <url>http://mvn.hz.netease.com/artifactory/repo</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>netease-release</id>
+            <name>netease-releases</name>
+            <url>https://mvn.hz.netease.com/artifactory/libs-releases</url>
         </repository>
         <repository>
-            <id>netease_release</id>
-            <name>netease_release</name>
-            <url>http://mvn.hz.netease.com/artifactory/libs-releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <name>snapshots</name>
-            <url>http://mvn.hz.netease.com/artifactory/libs-snapshots</url>
             <snapshots>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
+            <id>snapshot</id>
+            <name>netease-snapshot</name>
+            <url>https://mvn.hz.netease.com/artifactory/libs-snapshots</url>
+        </repository>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>spring</id>
+            <url>https://maven.springframework.org/release</url>
+        </repository>
+        <repository>
+            <id>atlassian</id>
+            <url>https://repo.spring.io/plugins-release/</url>
         </repository>
     </repositories>
     <distributionManagement>
         <repository>
-            <id>repo</id>
+            <id>releases</id>
             <name>Netease Maven Repository</name>
             <url>http://mvn.hz.netease.com/artifactory/libs-releases</url>
         </repository>
@@ -158,5 +164,14 @@
             <url>http://mvn.hz.netease.com/artifactory/libs-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.0.4.RELEASE</version>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
