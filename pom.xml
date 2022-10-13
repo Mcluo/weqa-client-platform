@@ -174,5 +174,27 @@
             </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>local</id><!-- 本地开发环境 -->
+            <properties>
+                <profiles.active>local</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>dev</id><!-- 测试/开发环境 -->
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id><!-- 生产环境 -->
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 </project>
