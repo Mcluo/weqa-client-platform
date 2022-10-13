@@ -56,9 +56,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.0.4.RELEASE</version>
-                <configuration>
-                    <mainClass>${start-class}</mainClass>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <mainClass>${start-class}</mainClass>-->
+<!--                </configuration>-->
                 <executions>
                     <execution>
                         <goals>
