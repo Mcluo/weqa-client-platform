@@ -8,6 +8,7 @@
     <artifactId>weqa-client-platform</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
+    <name>weqa-client-platform</name>
     <modules>
         <module>weqa-client-platform-web</module>
         <module>weqa-client-platform-common</module>
