@@ -1,4 +1,7 @@
 #dev environment
+server:
+  port: 8087
+
 spring:
   profiles: dev
   jackson:
@@ -19,7 +22,7 @@ spring:
         max-wait: -1ms
         max-idle: 8
         min-idle: 0
-    servlet:
-      multipart:
-        max-file-size: 500MB
-        max-request-size: 500MB
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB

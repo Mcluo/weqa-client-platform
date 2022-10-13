@@ -1,4 +1,7 @@
 #local environment
+server:
+  port: 8087
+
 spring:
   profiles: local
   datasource:

@@ -1,14 +1,17 @@
-
 #production environment
+
+server:
+  port: 8087
+
 spring:
   profiles: prod
   datasource:
     url: jdbc:mysql://106.2.90.25:3306/nim_perftest?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
     username: perf
     password: perftest
-    servlet:
-      multipart:
-        max-file-size: 500MB
-        max-request-size: 500MB
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
 
 
