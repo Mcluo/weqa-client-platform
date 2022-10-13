@@ -1,9 +1,9 @@
 #local environment
-server:
-  port: 8087
+#server:
+#  port: 8788
 
 spring:
-  profiles: local
+#  profiles: local
   datasource:
 #    url: jdbc:mysql://127.0.0.1:3306/nim_perftest?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
 #    username: root

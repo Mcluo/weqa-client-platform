@@ -17,9 +17,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(value = "com.netease.vcloud.qa")
 @EnableAsync
 @EnableScheduling
-public class WeqaClientApplication  extends SpringBootServletInitializer {
+public class WeqaClientApplication {
     public static void main(String[] args) {
-        SpringApplication application = new SpringApplication(WeqaClientApplication.class);
-        application.run(args);
+//        SpringApplication application = new SpringApplication(WeqaClientApplication.class);
+//        application.run(args);
+        try {
+            SpringApplication.run(WeqaClientApplication.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

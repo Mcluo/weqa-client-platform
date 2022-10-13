@@ -1,15 +1,27 @@
 server:
-  port: 8087
+  port: 8788
 
-#local environment
 spring:
-  profiles: local
-  datasource:
-    url: jdbc:mysql://106.2.90.25:3306/nim_perfdev?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: perf
-    password: perftest
-  servlet:
-    multipart:
-      max-file-size: 500MB
-      max-request-size: 500MB
-
+  profiles:
+    active: dev
+#  servlet:
+#    multipart:
+#      max-file-size: 500MB
+#      max-request-size: 500MB
+#  datasource:
+#    driver-class-name: com.mysql.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    minIdle: 5
+#    initialSize: 5
+#    maxActive: 20
+#    maxWait: 60000
+#    timeBetweenEvictionRunsMillis: 60000
+#    minEvictableIdleTimeMillis: 300000
+#    validationQuery: SELECT 1 FROM DUAL
+#    testWhileIdle: true
+#    testOnBorrow: false
+#    testOnReturn: false
+#    poolPreparedStatements: true
+#    maxPoolPreparedStatementPerConnectionSize: 20
+#    filters: stat
+#    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
