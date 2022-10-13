@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<javaMethod>
+    <pattern classNamePattern="com.netease.vcloud.qa.autotest.*" />
+    <pattern classNamePattern="com.netease.vcloud.qa.test.*" />
+</javaMethod>
