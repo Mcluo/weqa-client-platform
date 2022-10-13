@@ -8,6 +8,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <name>weqa-client-platform-web</name>
 
     <artifactId>weqa-client-platform-web</artifactId>
     <groupId>com.netease.vcloud.qa</groupId>
