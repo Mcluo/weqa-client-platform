@@ -18,7 +18,7 @@
     </sql>
 
 
-    <insert id="insertIntoAutoTestResult" parameterType="com.netease.vcloud.qa.model.AutoTestResultDO">
+    <insert id="patchInsertIntoTestCaseInfo" parameterType="com.netease.vcloud.qa.model.AutoTestResultDO">
         insert into vcloud_client_test_case_info (gmt_create,gmt_update,project_id,case_id,case_name,execution_steps,expected_result)
         values
         <foreach collection="list" item="info" separator=",">

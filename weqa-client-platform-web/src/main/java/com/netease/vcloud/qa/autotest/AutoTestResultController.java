@@ -18,7 +18,7 @@ public class AutoTestResultController {
     private AutoTestResultDAO autoTestResultDAO ;
 
     /**
-     *http://127.0.0.1:8080/auto/test/result/add?info=test_01_0zz
+     *http://127.0.0.1:8080/client/auto/test/result/add?info=test_01_0zz
      * @param runInfo
      * @param caseName
      * @param caseDetail

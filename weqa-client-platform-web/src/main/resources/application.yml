@@ -1,5 +1,7 @@
 server:
   port: 8788
+  servlet:
+    context-path: "/g2-client"
 
 spring:
   profiles:

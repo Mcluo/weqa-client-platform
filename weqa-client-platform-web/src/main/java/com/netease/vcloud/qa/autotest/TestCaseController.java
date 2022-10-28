@@ -18,12 +18,18 @@ public class TestCaseController {
     @Autowired
     private ClientTcAsyncService clientTcAsyncService ;
 
+    /**
+     * http://127.0.0.1:8080/client/testCase/tc/async
+     * @param start
+     * @param finish
+     * @return
+     */
     @RequestMapping("/tc/async")
     @ResponseBody
     public JSONObject syncTestCaseFromTc(@RequestParam(name = "start",required = false) Long start ,
                                          @RequestParam(name = "finish",required = false)Long finish) {
         JSONObject json = new JSONObject() ;
-        boolean flag = clientTcAsyncService.AsyncProjectTestCase(start, finish) ;
+        boolean flag = clientTcAsyncService.asyncProjectTestCase(start, finish) ;
         if (flag){
             json.put("code",200) ;
         }else {

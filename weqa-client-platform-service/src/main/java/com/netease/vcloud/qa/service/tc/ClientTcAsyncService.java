@@ -30,7 +30,7 @@ public class ClientTcAsyncService {
 
     private final static long[] PROJECT_ID_ARRAY = {885L};
 
-    public boolean AsyncProjectTestCase(Long start , Long finish){
+    public boolean asyncProjectTestCase(Long start , Long finish){
         List<ClientTcData> clientTcDataList = this.getProjectTestCase(start,finish) ;
         //批量入库
         if (CollectionUtils.isEmpty(clientTcDataList)){
@@ -46,12 +46,14 @@ public class ClientTcAsyncService {
         }
         if (CollectionUtils.isEmpty(clientTestCaseInfoDOList)){
             //数据转换为空异常
-            return flag ;
+            TC_LOGGER.error("[ClientTcAsyncService.asyncProjectTestCase]clientTestCaseInfoDOList is null");
+            return false ;
         }else {
             int count = clientTestCaseInfoDAO.patchInsertIntoTestCaseInfo(clientTestCaseInfoDOList);
             if (count >= clientTestCaseInfoDOList.size()){
                 flag = true ;
             }else {
+                TC_LOGGER.error("[ClientTcAsyncService.asyncProjectTestCase] async patch save tc exception");
                 flag = false ;
             }
         }

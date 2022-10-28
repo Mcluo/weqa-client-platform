@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class TestController {
 
+    /**
+     * http://127.0.0.1:8788/client/test/test
+     * @return
+     */
     @RequestMapping("/test")
     public JSONObject test(){
         JSONObject jsonObject = new JSONObject() ;

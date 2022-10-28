@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,14 +54,17 @@ public class TCManagerService {
         }
         List<ClientTcData> clientTcDataList = new ArrayList<ClientTcData>() ;
         //限制7天为一个查询周期
-        while (true){
-            long tempStartTime = finish - MAX_QUERY_TIME  ;
+        long tempStartTime = finish ;
+        while (start < tempStartTime){
+            tempStartTime = finish - MAX_QUERY_TIME  ;
             JSONObject jsonObject = this.requestProjectTcData(projectId, start<tempStartTime ? tempStartTime : start, finish );
-            if (jsonObject == null) {
+            if (jsonObject == null ) {
+                finish = tempStartTime ;
                 continue;
             }
-            int code = jsonObject.getInteger("code");
-            if (code != 200) {
+            Integer code = jsonObject.getInteger("code");
+            if (code == null || code != 200) {
+                finish = tempStartTime ;
                 continue;
             }
             JSONArray jsonArray = jsonObject.getJSONArray("result");
@@ -69,12 +75,12 @@ public class TCManagerService {
                     clientTcData.setProjectId(projectId);
                     clientTcData.setCaseId(tcJSON.getLong("id"));
                     clientTcData.setCaseName(tcJSON.getString("title"));
-                    clientTcDataList.addAll(clientTcDataList);
+                    clientTcDataList.add(clientTcData);
                 }
             }
-            if (start > tempStartTime){
-                break;
-            }
+//            if (start > tempStartTime){
+//                break;
+//            }
             finish = tempStartTime ;
         }
         return clientTcDataList ;
@@ -83,9 +89,16 @@ public class TCManagerService {
     public JSONObject requestProjectTcData(long projectId ,long start, long finish){
         StringBuilder baseUrlStr = new StringBuilder(TC_URL) ;
         baseUrlStr.append("?").append(PROJECT_ARGS).append("=").append(projectId) ;
-        baseUrlStr.append("&").append(START_ARGS).append("=").append(simpleDateFormat.format(new Date(start))) ;
-        baseUrlStr.append("&").append(END_ARGS).append("=").append(simpleDateFormat.format(new Date(finish))) ;
+        String startTime = simpleDateFormat.format(new Date(start)) ;
+        String finishTime = simpleDateFormat.format(new Date(finish)) ;
+        try {
+            baseUrlStr.append("&").append(START_ARGS).append("=").append(URLEncoder.encode(startTime, "UTF-8"));
+            baseUrlStr.append("&").append(END_ARGS).append("=").append(URLEncoder.encode(finishTime, "UTF-8"));
+        }catch (UnsupportedEncodingException e){
+            TC_LOGGER.error("[TCManagerService.requestProjectTcData] baseUrlStr encode exception" ,e);
+        }
         Map<String,String> headerMap = new HashMap<String, String>() ;
+        headerMap.put(TOKEN_ARGS,TC_TOKEN) ;
         JSONObject result = HttpUtils.getInstance().get(baseUrlStr.toString(),headerMap) ;
         if (result == null){
             TC_LOGGER.error("[TCManagerService.requestProjectTcData] project tc data result is null");
