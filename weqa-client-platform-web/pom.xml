@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>com.netease.vcloud.qa</groupId>
-            <artifactId>weqa-client-platform-common</artifactId>
+            <artifactId>weqa-client-platform-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.netease.vcloud.qa</groupId>

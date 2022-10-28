@@ -18,13 +18,8 @@
         select id,gmt_create,gmt_update,run_info,case_name,case_detail,success_number,fail_number,run_result
     </sql>
 
-    <select id="getAutoTestResultById" resultMap="BaseResultMap">
-        <include refid="baseSql"/>
-        FROM vcloud_auto_test_result_info
-        WHERE id = #{id}
-    </select>
 
-    <insert id="insertIntoAutoTestResult" parameterType="com.netease.vcloud.qa.model.AutoTestResultDO">
+    <insert id="patchInsertIntoTestCaseInfo" parameterType="com.netease.vcloud.qa.model.ClientTestCaseInfoDO">
         insert into vcloud_auto_test_result_info (gmt_create,gmt_update,run_info,case_name,case_detail,success_number,fail_number,run_result)
         value(now(),now(),#{result.runInfo},#{result.caseName},#{result.caseDetail},#{result.successNumber},#{result.failNumber},#{result.runResult}) ;
     </insert>

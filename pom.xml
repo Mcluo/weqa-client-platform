@@ -14,6 +14,7 @@
         <module>weqa-client-platform-common</module>
         <module>weqa-client-platform-model</module>
         <module>weqa-client-platform-dao</module>
+        <module>weqa-client-platform-service</module>
     </modules>
 
     <properties>
@@ -46,6 +47,11 @@
             <dependency>
                 <groupId>com.netease.vcloud.qa</groupId>
                 <artifactId>weqa-client-platform-dao</artifactId>
+                <version>${module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netease.vcloud.qa</groupId>
+                <artifactId>weqa-client-platform-service</artifactId>
                 <version>${module.version}</version>
             </dependency>
         <dependency>
@@ -117,7 +123,11 @@
                 <artifactId>druid</artifactId>
                 <version>1.2.9</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.9</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <repositories>
