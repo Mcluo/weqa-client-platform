@@ -32,7 +32,7 @@
 
     <update id="updateTestCaseCoveredStatus">
         update nim_perfdev.vcloud_client_test_case_info
-        set is_auto_covered = #{isCovered}
+        set is_auto_covered = #{isCovered},gmt_update=now()
         where case_id = #{tcId}
     </update>
 </mapper>
