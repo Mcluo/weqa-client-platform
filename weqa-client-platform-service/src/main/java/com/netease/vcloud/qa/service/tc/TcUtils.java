@@ -9,6 +9,14 @@ import com.netease.vcloud.qa.service.tc.data.ClientTcData;
  */
 public class TcUtils {
 
+    /**
+     * 已自动化覆盖
+     */
+    public static final byte IS_AUTO_COVERED = 1 ;
+    /**
+     * 自动化尚未覆盖
+     */
+    public static final byte IS_NOT_AUTO_COVERED = 0 ;
 
     public static ClientTestCaseInfoDO buildTestCaseDOByData(ClientTcData clientTcData){
         if (clientTcData == null){
@@ -26,6 +34,8 @@ public class TcUtils {
         clientTestCaseInfoDO.setProjectId(projectId);
         clientTestCaseInfoDO.setExecutionSteps(clientTcData.getExecutionSteps());
         clientTestCaseInfoDO.setExpectedResult(clientTcData.getExpectedResult());
+        //默认不覆盖
+        clientTestCaseInfoDO.setIsAutoCovered(IS_NOT_AUTO_COVERED);
         return clientTestCaseInfoDO ;
     }
 }

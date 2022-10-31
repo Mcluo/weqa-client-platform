@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
-import com.netease.vcloud.qa.service.tc.AutoTestService;
+import com.netease.vcloud.qa.service.auto.AutoTestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

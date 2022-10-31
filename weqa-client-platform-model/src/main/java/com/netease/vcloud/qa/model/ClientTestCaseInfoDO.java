@@ -40,6 +40,10 @@ public class ClientTestCaseInfoDO {
      * TC期望结果
      */
     private String expectedResult ;
+    /**
+     * 是否已经自动化覆盖
+     */
+    private byte isAutoCovered ;
 
     public long getId() {
         return id;
@@ -103,5 +107,13 @@ public class ClientTestCaseInfoDO {
 
     public void setExpectedResult(String expectedResult) {
         this.expectedResult = expectedResult;
+    }
+
+    public byte getIsAutoCovered() {
+        return isAutoCovered;
+    }
+
+    public void setIsAutoCovered(byte isAutoCovered) {
+        this.isAutoCovered = isAutoCovered;
     }
 }

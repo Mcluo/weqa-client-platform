@@ -1,9 +1,11 @@
-package com.netease.vcloud.qa.service.tc;
+package com.netease.vcloud.qa.service.auto;
 
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.dao.AutoTestResultDAO;
 import com.netease.vcloud.qa.model.AutoTestResultDO;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AutoTestService {
+
+    private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
+
     private static final String RESULT_ERROR_MESSAGE_ARGS = "errorMessage" ;
 
     @Autowired
     private AutoTestResultDAO autoTestResultDAO ;
+
+    @Autowired
+    private AutoCoveredService autoCoveredService ;
 
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
         AutoTestResultDO autoTestResultDO = new AutoTestResultDO();
@@ -34,6 +42,13 @@ public class AutoTestService {
         autoTestResultDO.setTcId(tcId);
         int count = autoTestResultDAO.insertIntoAutoTestResult(autoTestResultDO);
         if (count > 0 ){
+            if (tcId!=null) {
+                boolean flag = autoCoveredService.checkAndMarkTestCase(tcId);
+                if (!flag){
+                    //更新覆盖情况失败，可能为tcid不存在
+                    TC_LOGGER.warn("[AutoTestService.saveAutoTestResult] check testCase markStatus false");
+                }
+            }
             return true ;
         }else {
             return false ;
