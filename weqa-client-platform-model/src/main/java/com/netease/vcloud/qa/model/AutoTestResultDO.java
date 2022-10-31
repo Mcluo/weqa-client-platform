@@ -41,9 +41,17 @@ public class AutoTestResultDO {
     private int failNumber ;
     /**
      * 其它运行情况，以JSON形式保存（不建议太长，DB会存不下）
-     * 预留字段，暂时不存
      * */
     private String runResult ;
+
+    /**
+     * 错误信息，用于简单聚合
+     */
+    private String errorInfo ;
+    /**
+     * 测试用例ID，用于运行和关联
+     */
+    private Long tcId ;
 
     public long getId() {
         return id;
@@ -115,5 +123,21 @@ public class AutoTestResultDO {
 
     public void setRunResult(String runResult) {
         this.runResult = runResult;
+    }
+
+    public String getErrorInfo() {
+        return errorInfo;
+    }
+
+    public void setErrorInfo(String errorInfo) {
+        this.errorInfo = errorInfo;
+    }
+
+    public Long getTcId() {
+        return tcId;
+    }
+
+    public void setTcId(Long tcId) {
+        this.tcId = tcId;
     }
 }
