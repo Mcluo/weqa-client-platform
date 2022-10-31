@@ -15,12 +15,14 @@ import java.util.List;
 
 /**
  * TC用例同步服务
+ * 包括用例同步以及执行情况同步
  * Created by luqiuwei@corp.netease.com
  * on 2022/10/26 17:01
  */
 @Service
 public class ClientTcAsyncService {
     private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
+
 
     @Autowired
     private ClientTestCaseInfoDAO clientTestCaseInfoDAO ;
@@ -78,5 +80,23 @@ public class ClientTcAsyncService {
             }
         }
         return clientTcData ;
+    }
+
+    /**
+     * 同步覆盖信息
+     * @return
+     */
+    public boolean asyncAutoCoverInfo(Long testCaseId , boolean isCovered){
+        if (testCaseId == null){
+            return false ;
+        }
+        byte isCoveredCode = isCovered ? (byte) 1 : (byte) 0 ;
+        int count = clientTestCaseInfoDAO.updateTestCaseCoveredStatus(testCaseId,isCoveredCode) ;
+        if (count > 0 ){
+            return true ;
+        }else {
+            TC_LOGGER.warn("[ClientTcAsyncService.asyncAutoCoverInfo]update fail");
+            return false;
+        }
     }
 }

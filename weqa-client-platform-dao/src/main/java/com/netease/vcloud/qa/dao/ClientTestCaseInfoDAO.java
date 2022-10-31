@@ -19,4 +19,6 @@ public interface ClientTestCaseInfoDAO {
      */
     int patchInsertIntoTestCaseInfo(@Param("list")List<ClientTestCaseInfoDO> clientTestCaseInfoDOList) ;
 
+    int updateTestCaseCoveredStatus(@Param("tcId") long testCaseId , @Param("isCovered") byte isCovered) ;
+
 }
