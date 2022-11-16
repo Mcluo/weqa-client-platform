@@ -37,7 +37,7 @@
         WHERE task_status = #{status}
     </select>
 
-    <insert id="insertNewClientAutoTask" parameterType="com.netease.vcloud.qa.model.ClientAutoTaskInfoDO">
+    <insert id="insertNewClientAutoTask" parameterType="com.netease.vcloud.qa.model.ClientAutoTaskInfoDO" keyProperty="taskInfo.id" useGeneratedKeys="true">
         insert into vcloud_client_auto_task_info (gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_info,git_info,git_branch,task_status)
         value(now(),now(),#{taskInfo.taskType},#{taskInfo.taskName},#{taskInfo.testSuitId},#{taskInfo.operator},#{taskInfo.deviceInfo},#{taskInfo.gitInfo},#{taskInfo.gitBranch},#{taskInfo.taskStatus})
     </insert>

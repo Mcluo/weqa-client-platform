@@ -21,7 +21,7 @@ public class TestCaseController {
     private ClientTcAsyncService clientTcAsyncService ;
 
     /**
-     * http://127.0.0.1:8080/client/testCase/tc/async
+     * http://127.0.0.1:8080/g2-client/testCase/tc/async
      * @param start
      * @param finish
      * @return

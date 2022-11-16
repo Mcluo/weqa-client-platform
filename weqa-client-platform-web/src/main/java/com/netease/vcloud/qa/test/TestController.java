@@ -9,7 +9,10 @@ import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -23,7 +26,7 @@ public class TestController {
     private AutoTestManagerService autoTestManagerService ;
 
     /**
-     * http://127.0.0.1:8788/client/test/test
+     * http://127.0.0.1:8788/g2-client/test/test
      * @return
      */
     @RequestMapping("/test")
@@ -36,10 +39,27 @@ public class TestController {
     }
 
 
+    /**
+     * http://127.0.0.1:8788/g2-client/test/product?taskName=测试任务&gitBranch=feature_500&ids=10,11,12&operator=luqiuwei
+     * 测任务生成逻辑
+     * @param
+     * @return
+     */
     @RequestMapping("product")
-    public ResultVO startProductScript(@RequestBody AutoTestTaskInfoDTO autoTestTaskInfoDTO){
+    public ResultVO startProductScript(@RequestParam("taskName") String taskName,
+                                       @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
+                                       @RequestParam("gitBranch") String gitBranch,
+                                       @RequestParam("operator") String operator,
+                                       @RequestParam("ids") List<Long> idSet){
         ResultVO resultVO = null ;
         boolean flag = false ;
+        AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
+        autoTestTaskInfoDTO.setTaskName(taskName);
+        autoTestTaskInfoDTO.setTaskType("python");
+        autoTestTaskInfoDTO.setGitInfo(gitInfo);
+        autoTestTaskInfoDTO.setGitBranch(gitBranch);
+        autoTestTaskInfoDTO.setOperator(operator);
+        autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
             flag = autoTestManagerService.addNewTaskInfoInfo(autoTestTaskInfoDTO);
         }catch (AutoTestRunException e){

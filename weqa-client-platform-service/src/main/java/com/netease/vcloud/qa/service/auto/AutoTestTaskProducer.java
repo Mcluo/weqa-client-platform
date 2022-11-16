@@ -78,6 +78,7 @@ public class AutoTestTaskProducer {
             AUTO_LOGGER.error("[AutoTestTaskProducer.addNewAutoTestTaskProduce] insert new AutoTask fail");
             return false ;
         }else {
+            autoTestTaskInfoBO.setId(clientAutoTaskInfoDO.getId());
             return true ;
         }
     }
