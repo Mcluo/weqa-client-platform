@@ -23,7 +23,6 @@ import java.util.List;
 public class ClientTcAsyncService {
     private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
 
-
     @Autowired
     private ClientTestCaseInfoDAO clientTestCaseInfoDAO ;
 

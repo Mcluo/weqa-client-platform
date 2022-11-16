@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientScriptTcInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientScriptTcInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="script_name" jdbcType="VARCHAR" property="scriptName"/>
+        <result column="script_detail" jdbcType="VARCHAR" property="scriptDetail"/>
+        <result column="exec_class" jdbcType="VARCHAR" property="execClass"/>
+        <result column="exec_method" jdbcType="VARCHAR" property="execMethod"/>
+        <result column="exec_param" jdbcType="VARCHAR" property="execParam"/>
+        <result column="tc_id" jdbcType="BIGINT" property="tcId"/>
+        <result column="script_owner" jdbcType="VARCHAR" property="scriptOwner"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,script_name,script_detail,exec_class,exec_method,exec_param,tc_id,script_owner
+    </sql>
+    
+    <select id="getClientScriptSet" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_script_tc_info
+        WHERE tc_id IN
+        <foreach collection="idSet" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="patchInsertClientScript" parameterType="com.netease.vcloud.qa.model.ClientScriptTcInfoDO">
+        insert into vcloud_client_script_tc_info (gmt_create,gmt_update,script_name,script_detail,exec_class,exec_method,exec_param,tc_id,script_owner)
+        values
+        <foreach collection="list" item="script" separator=",">
+            (now(),now(),#{script.scriptName},#{script.scriptDetail},#{script.execClass},#{script.execMethod},#{script.execParam},#{script.tcId},#{script.scriptOwner})
+        </foreach>
+    </insert>
+
+</mapper>

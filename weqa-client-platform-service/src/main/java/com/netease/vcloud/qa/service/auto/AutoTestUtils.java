@@ -3,9 +3,10 @@ package com.netease.vcloud.qa.service.auto;
 import com.netease.vcloud.qa.auto.ScriptRunStatus;
 import com.netease.vcloud.qa.auto.ScriptType;
 import com.netease.vcloud.qa.auto.TaskRunStatus;
-import com.netease.vcloud.qa.model.AutoTestResultDO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
+import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
 import org.apache.commons.lang3.StringUtils;
@@ -79,4 +80,34 @@ public class AutoTestUtils {
         }
         return clientAutoScriptRunInfoDO ;
     }
+
+    public static TaskScriptRunInfoBO buildTaskScriptBOByScriptTCDO(ClientScriptTcInfoDO clientScriptTcInfoDO){
+        if (clientScriptTcInfoDO == null){
+            return null ;
+        }
+        TaskScriptRunInfoBO taskScriptRunInfoBO = new TaskScriptRunInfoBO() ;
+        taskScriptRunInfoBO.setScriptId(clientScriptTcInfoDO.getId());
+        taskScriptRunInfoBO.setScriptName(clientScriptTcInfoDO.getScriptName());
+        taskScriptRunInfoBO.setScriptDetail(clientScriptTcInfoDO.getScriptDetail());
+        taskScriptRunInfoBO.setExecClass(clientScriptTcInfoDO.getExecClass());
+        taskScriptRunInfoBO.setExecMethod(clientScriptTcInfoDO.getExecMethod());
+        taskScriptRunInfoBO.setExecParam(clientScriptTcInfoDO.getExecParam());
+        return taskScriptRunInfoBO ;
+    }
+
+    public static ClientScriptTcInfoDO buildClientScriptTcInfoDOByScriptTcDTO(AutoTCScriptInfoDTO autoTCScriptInfoDTO){
+        if (autoTCScriptInfoDTO == null){
+            return null ;
+        }
+        ClientScriptTcInfoDO clientScriptTcInfoDO = new ClientScriptTcInfoDO() ;
+        clientScriptTcInfoDO.setScriptName(autoTCScriptInfoDTO.getScriptName());
+        clientScriptTcInfoDO.setScriptDetail(autoTCScriptInfoDTO.getScriptDetail());
+        clientScriptTcInfoDO.setExecClass(autoTCScriptInfoDTO.getExecClass());
+        clientScriptTcInfoDO.setExecMethod(autoTCScriptInfoDTO.getExecMethod());
+        clientScriptTcInfoDO.setExecParam(autoTCScriptInfoDTO.getExecParam());
+        clientScriptTcInfoDO.setScriptOwner(autoTCScriptInfoDTO.getOwner());
+        clientScriptTcInfoDO.setTcId(autoTCScriptInfoDTO.getTcId());
+        return clientScriptTcInfoDO ;
+    }
+
 }

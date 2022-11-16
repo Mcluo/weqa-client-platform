@@ -25,6 +25,9 @@ public class AutoTestManagerService {
     @Autowired
     private AutoTestTaskProducer autoTestTaskProducer ;
 
+    @Autowired
+    private AutoTcScriptService autoTcScriptService ;
+
     public boolean addNewTaskInfoInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
             AUTO_LOGGER.error("[AutoTestManagerService.addNewTaskInfoInfo] autoTestInfoDTO is null");
@@ -62,20 +65,23 @@ public class AutoTestManagerService {
     }
 
 
-    private List<TaskScriptRunInfoBO> buildAutoTestTaskScriptBOInfo(Long testSuitId ,List<Long> testScriptList){
-        List<TaskScriptRunInfoBO> taskScriptRunInfoBOList = new ArrayList<TaskScriptRunInfoBO>() ;
-        //todo 暂时先添加测试数据
-        for (Long scriptId : testScriptList) {
-            TaskScriptRunInfoBO taskScriptRunInfoBO = new TaskScriptRunInfoBO();
-            taskScriptRunInfoBO.setTaskId(scriptId);
-            taskScriptRunInfoBO.setDevicesInfo("{}");
-            taskScriptRunInfoBO.setScriptName("摄像头采集");
-            taskScriptRunInfoBO.setScriptDetail("1080*1920p 7fps");
-            taskScriptRunInfoBO.setExecClass("Client_Video_Beauty");
-            taskScriptRunInfoBO.setExecMethod("test_start_beauty_with_different_profile_rate_config");
-            taskScriptRunInfoBO.setExecParam("4, 7");
-            taskScriptRunInfoBOList.add(taskScriptRunInfoBO) ;
+    private List<TaskScriptRunInfoBO> buildAutoTestTaskScriptBOInfo(Long testSuitId ,List<Long> testScriptList) throws AutoTestRunException{
+        if (testSuitId == null && CollectionUtils.isEmpty(testScriptList)){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SCRIPT_ID_EMPTY) ;
         }
+        List<TaskScriptRunInfoBO> taskScriptRunInfoBOList =  autoTcScriptService.getScriptByIdSet(testScriptList);
+//        //测试数据
+//        for (Long scriptId : testScriptList) {
+//            TaskScriptRunInfoBO taskScriptRunInfoBO = new TaskScriptRunInfoBO();
+//            taskScriptRunInfoBO.setTaskId(scriptId);
+//            taskScriptRunInfoBO.setDevicesInfo("{}");
+//            taskScriptRunInfoBO.setScriptName("摄像头采集");
+//            taskScriptRunInfoBO.setScriptDetail("1080*1920p 7fps");
+//            taskScriptRunInfoBO.setExecClass("Client_Video_Beauty");
+//            taskScriptRunInfoBO.setExecMethod("test_start_beauty_with_different_profile_rate_config");
+//            taskScriptRunInfoBO.setExecParam("4, 7");
+//            taskScriptRunInfoBOList.add(taskScriptRunInfoBO) ;
+//        }
         return taskScriptRunInfoBOList ;
     }
 

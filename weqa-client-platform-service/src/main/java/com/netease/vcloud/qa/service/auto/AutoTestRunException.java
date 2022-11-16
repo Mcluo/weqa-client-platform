@@ -12,6 +12,8 @@ public class AutoTestRunException extends Exception{
 
     public static String AUTO_TEST_SCRIPT_IS_NULL = "自动化脚本为空" ;
 
+    public static String AUTO_TEST_SCRIPT_ID_EMPTY = "自动化脚本信息为空" ;
+
     private String exceptionInfo ;
 
     public AutoTestRunException() {
