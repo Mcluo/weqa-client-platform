@@ -42,12 +42,12 @@ public class TestController {
 
 
     /**
-     * http://127.0.0.1:8788/g2-client/test/product?taskName=测试任务&gitBranch=feature_500&ids=1&operator=luqiuwei
+     * http://127.0.0.1:8788/g2-client/test/task/create?taskName=测试任务&gitBranch=feature_500&ids=1&operator=luqiuwei
      * 测任务生成逻辑
      * @param
      * @return
      */
-    @RequestMapping("/tc/create")
+    @RequestMapping("/task/create")
     public ResultVO createTcScript(@RequestParam("taskName") String taskName,
                                        @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
                                        @RequestParam("gitBranch") String gitBranch,
