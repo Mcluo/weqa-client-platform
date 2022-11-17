@@ -21,7 +21,7 @@
     <select id="getClientScriptSet" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_script_tc_info
-        WHERE tc_id IN
+        WHERE id IN
         <foreach collection="idSet" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>

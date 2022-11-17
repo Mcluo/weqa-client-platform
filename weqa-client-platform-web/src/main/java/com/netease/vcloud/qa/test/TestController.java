@@ -1,10 +1,12 @@
 package com.netease.vcloud.qa.test;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.AutoTestManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
+import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,13 +42,13 @@ public class TestController {
 
 
     /**
-     * http://127.0.0.1:8788/g2-client/test/product?taskName=测试任务&gitBranch=feature_500&ids=10,11,12&operator=luqiuwei
+     * http://127.0.0.1:8788/g2-client/test/product?taskName=测试任务&gitBranch=feature_500&ids=1&operator=luqiuwei
      * 测任务生成逻辑
      * @param
      * @return
      */
-    @RequestMapping("product")
-    public ResultVO startProductScript(@RequestParam("taskName") String taskName,
+    @RequestMapping("/tc/create")
+    public ResultVO createTcScript(@RequestParam("taskName") String taskName,
                                        @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
                                        @RequestParam("gitBranch") String gitBranch,
                                        @RequestParam("operator") String operator,
@@ -73,5 +75,7 @@ public class TestController {
         }
         return resultVO ;
     }
+
+
 
 }
