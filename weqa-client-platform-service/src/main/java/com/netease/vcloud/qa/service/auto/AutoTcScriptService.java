@@ -4,6 +4,8 @@ import com.netease.vcloud.qa.dao.ClientScriptTcInfoDAO;
 import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
 import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
+import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
+import com.netease.vcloud.qa.service.auto.view.AutoScriptListVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,7 @@ public class AutoTcScriptService {
      * @param autoTCScriptInfoDTOList
      * @return
      */
-    public boolean setScriptInfo(List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList){
+    public boolean addScriptInfo(List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList){
         if (CollectionUtils.isEmpty(autoTCScriptInfoDTOList)){
             return false ;
         }
@@ -73,6 +75,42 @@ public class AutoTcScriptService {
         }else {
             return true ;
         }
+    }
+
+    public AutoScriptListVO getAllScript(Integer pageNo , Integer pageSize) throws AutoTestRunException{
+        AutoScriptListVO autoScriptListVO = new AutoScriptListVO() ;
+        int start = pageNo == null ? 0 : (pageNo - 1) * pageSize ;
+        List<ClientScriptTcInfoDO> clientScriptTcInfoDOList = clientScriptTcInfoDAO.getClientScript(start,pageSize) ;
+        int total = clientScriptTcInfoDAO.getClientScriptCount() ;
+        autoScriptListVO.setCurrent(pageNo);
+        autoScriptListVO.setSize(pageSize);
+        autoScriptListVO.setTotal(total);
+        if (!CollectionUtils.isEmpty(clientScriptTcInfoDOList)){
+            List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<AutoScriptInfoVO>() ;
+            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
+                AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO);
+                if (autoScriptInfoVO!=null){
+                    autoScriptInfoVOList.add(autoScriptInfoVO) ;
+                }
+            }
+            autoScriptListVO.setAutoScriptInfoVOList(autoScriptInfoVOList);
+        }
+        return autoScriptListVO ;
+    }
+
+    private AutoScriptInfoVO buildScriptListVOByDO(ClientScriptTcInfoDO clientScriptTcInfoDO){
+        if (clientScriptTcInfoDO == null){
+            return null ;
+        }
+        AutoScriptInfoVO autoScriptInfoVO = new AutoScriptInfoVO() ;
+        autoScriptInfoVO.setId(clientScriptTcInfoDO.getId());
+        autoScriptInfoVO.setName(clientScriptTcInfoDO.getScriptName());
+        autoScriptInfoVO.setDetail(clientScriptTcInfoDO.getScriptDetail());
+        autoScriptInfoVO.setExecClass(clientScriptTcInfoDO.getExecClass());
+        autoScriptInfoVO.setExecMethod(clientScriptTcInfoDO.getExecMethod());
+        autoScriptInfoVO.setExecParam(clientScriptTcInfoDO.getExecParam());
+        //user info 暂时不加
+        return autoScriptInfoVO ;
     }
 
 }

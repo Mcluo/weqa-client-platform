@@ -40,4 +40,16 @@ public enum TaskRunStatus {
     public void setCode(byte code) {
         this.code = code;
     }
+
+    public static TaskRunStatus getTaskRunStatusByCode(Byte code){
+        if (code == null){
+            return null ;
+        }
+        for (TaskRunStatus taskRunStatus : values()){
+            if (taskRunStatus.code == code){
+                return taskRunStatus ;
+            }
+        }
+        return null ;
+    }
 }

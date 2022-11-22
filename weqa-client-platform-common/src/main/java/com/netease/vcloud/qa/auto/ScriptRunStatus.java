@@ -45,4 +45,17 @@ public enum ScriptRunStatus {
         }
         return null ;
     }
+
+    public static ScriptRunStatus getStatusByCode(Byte code){
+        if (code == null){
+            return null ;
+        }
+        for (ScriptRunStatus scriptRunStatus : ScriptRunStatus.values()){
+            if (code == scriptRunStatus.code){
+                return scriptRunStatus ;
+            }
+        }
+        return null ;
+    }
+
 }

@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.AutoTcScriptService;
+import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
+import com.netease.vcloud.qa.service.auto.view.AutoScriptListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +21,14 @@ import java.util.List;
  * on 2022/11/16 21:59
  */
 @RestController
-@RequestMapping("/auto/exec")
-public class AutoTestExecuteController {
+@RequestMapping("/auto/script")
+public class AutoTestScriptController {
 
     @Autowired
     private AutoTcScriptService autoTcScriptService ;
 
     /**
-     *http://127.0.0.1:8080/g2-client/auto/exec/script/add
+     *http://127.0.0.1:8080/g2-client/auto/script/add
      * @param scriptName
      * @param scriptDetail
      * @param execClass
@@ -36,7 +38,7 @@ public class AutoTestExecuteController {
      * @param owner
      * @return
      */
-    @RequestMapping("/script/add")
+    @RequestMapping("/add")
     public ResultVO addOneNewTCScript( @RequestParam("name") String scriptName,
                                        @RequestParam("detail") String scriptDetail,
                                        @RequestParam("class") String execClass ,
@@ -54,24 +56,48 @@ public class AutoTestExecuteController {
         autoTCScriptInfoDTO.setTcId(tcId);
         List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList = new ArrayList<AutoTCScriptInfoDTO>() ;
         autoTCScriptInfoDTOList.add(autoTCScriptInfoDTO) ;
-        boolean flag = autoTcScriptService.setScriptInfo(autoTCScriptInfoDTOList) ;
+        boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
         ResultVO resultVO = ResultUtils.build(flag) ;
         return resultVO ;
     }
 
+
     /**
-     * http://127.0.0.1:8788/g2-client/auto/exec/script/init
+     * http://127.0.0.1:8788/g2-client/auto/script/query
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/query")
+    public ResultVO queryTCScript(@RequestParam(name = "page",required = false ,defaultValue = "1") Integer pageNo,
+                                  @RequestParam(name = "size",required = false , defaultValue = "20") Integer pageSize){
+        ResultVO resultVO = null ;
+        try {
+            AutoScriptListVO autoScriptListVO = autoTcScriptService.getAllScript(pageNo, pageSize);
+            if (autoScriptListVO != null){
+                resultVO = ResultUtils.buildSuccess(autoScriptListVO) ;
+            }else {
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (AutoTestRunException autoTestRunException){
+            resultVO = ResultUtils.buildFail(autoTestRunException.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/script/init
      * @param tcScriptArray
      * @return
      */
-    @RequestMapping("/script/init")
+    @RequestMapping("/init")
     public ResultVO initAutoScript(@RequestBody String tcScriptArray){
 //        for (Object tcScriptObj:tcScriptArray){
 //            AutoTestTaskInfoDTO autoTestTaskInfoDTO = (AutoTestTaskInfoDTO) JSONObject.toJSON(tcScriptObj) ;
 //        }
         List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList= JSONArray.parseArray(tcScriptArray ,AutoTCScriptInfoDTO.class) ;
 //        System.out.println(tcScriptArray);
-        boolean flag = autoTcScriptService.setScriptInfo(autoTCScriptInfoDTOList) ;
+        boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
 
         return ResultUtils.build(flag) ;
     }

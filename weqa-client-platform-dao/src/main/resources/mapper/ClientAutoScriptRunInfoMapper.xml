@@ -17,17 +17,6 @@
     <sql id="baseSql">
         select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status
     </sql>
-    
-    <select id="getClientAutoScriptRunInfoByTaskIdAndStatus" resultMap="BaseResultMap">
-        <include refid="baseSql"/>
-        FROM vcloud_client_auto_script_run_info
-        WHERE task_id = #{taskId}
-        AND exec_status IN
-        <foreach collection="statusSet" item="status" index="index" open="(" close=")" separator=",">
-            #{status}
-        </foreach>
-        ORDER BY id
-    </select>
 
     <update id="updateStatus">
         UPDATE vcloud_client_auto_script_run_info
@@ -43,4 +32,10 @@
         </foreach>
     </insert>
 
+
+    <select id="getClientAutoScriptRunInfoByTaskId" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_script_run_info
+        WHERE task_id = #{taskId}
+    </select>
 </mapper>

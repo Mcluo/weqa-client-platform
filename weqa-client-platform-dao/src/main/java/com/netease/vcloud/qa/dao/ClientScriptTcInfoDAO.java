@@ -17,4 +17,8 @@ public interface ClientScriptTcInfoDAO {
 
     List<ClientScriptTcInfoDO> getClientScriptSet(@Param("idSet") List<Long> scriptIdSet) ;
 
+    List<ClientScriptTcInfoDO> getClientScript(@Param("start") Integer start, @Param("size") Integer size) ;
+
+    int getClientScriptCount() ;
+
 }

@@ -1,15 +1,12 @@
 package com.netease.vcloud.qa.test;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
-import com.netease.vcloud.qa.service.auto.AutoTestManagerService;
+import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
-import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +22,7 @@ import java.util.List;
 public class TestController {
 
     @Autowired
-    private AutoTestManagerService autoTestManagerService ;
+    private AutoTestTaskManagerService autoTestTaskManagerService;
 
     /**
      * http://127.0.0.1:8788/g2-client/test/test
@@ -63,7 +60,7 @@ public class TestController {
         autoTestTaskInfoDTO.setOperator(operator);
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
-            flag = autoTestManagerService.addNewTaskInfoInfo(autoTestTaskInfoDTO);
+            flag = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.build(false,e.getExceptionInfo()) ;
             return resultVO ;

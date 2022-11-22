@@ -15,14 +15,6 @@ import java.util.Set;
 public interface ClientAutoScriptRunInfoDAO {
 
     /**
-     * 根据ID自动化脚本信息
-     * @param taskId
-     * @param statusSet
-     * @return
-     */
-    List<ClientAutoScriptRunInfoDO> getClientAutoScriptRunInfoByTaskIdAndStatus(@Param("taskId") long taskId, @Param("statusSet") Set<Byte> statusSet) ;
-
-    /**
      * 根据脚本ID 更新脚本状态
      * @param scriptId
      * @param statusCode
@@ -38,5 +30,12 @@ public interface ClientAutoScriptRunInfoDAO {
      * @return
      */
     int patchInsertAutoScript(@Param("scriptList") List<ClientAutoScriptRunInfoDO> clientAutoScriptRunInfoDOList) ;
+
+    /**
+     * 根据ID自动化脚本信息
+     * @param taskId
+     * @return
+     */
+    List<ClientAutoScriptRunInfoDO> getClientAutoScriptRunInfoByTaskId(@Param("taskId") long taskId) ;
 
 }

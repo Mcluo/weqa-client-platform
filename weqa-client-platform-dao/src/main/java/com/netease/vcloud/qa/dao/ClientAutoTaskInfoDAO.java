@@ -36,6 +36,7 @@ public interface ClientAutoTaskInfoDAO {
     List<ClientAutoTaskInfoDO> queryClientAutoTaskInfoByStatus(@Param("status") byte statusCode) ;
 
 
+
     /*****************以下生产者使用*****************/
 
     /**
@@ -44,5 +45,18 @@ public interface ClientAutoTaskInfoDAO {
      * @return
      */
     int insertNewClientAutoTask(@Param("taskInfo") ClientAutoTaskInfoDO clientAutoTaskInfoDO) ;
+
+    /**
+     * @param start
+     * @param size
+     * @return
+     */
+    List<ClientAutoTaskInfoDO> queryAutoTaskInfo(@Param("start") int start , @Param("size") int size) ;
+
+    /**
+     *
+     * @return
+     */
+    int queryAutoTaskInfoCount() ;
 
 }

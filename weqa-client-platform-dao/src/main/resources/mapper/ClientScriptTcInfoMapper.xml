@@ -35,4 +35,17 @@
         </foreach>
     </insert>
 
+    <select id="getClientScript" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_script_tc_info
+        WHERE 1=1
+        LIMIT #{start}, #{size}
+    </select>
+
+    <select id="getClientScriptCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM vcloud_client_script_tc_info
+        WHERE 1=1
+    </select>
+
 </mapper>

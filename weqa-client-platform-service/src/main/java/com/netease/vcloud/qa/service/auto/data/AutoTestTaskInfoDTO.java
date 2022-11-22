@@ -14,7 +14,7 @@ public class AutoTestTaskInfoDTO {
 
     private String operator ;
 
-    private String deviceInfo ;
+    private String deviceList;
 
     private String gitInfo ;
 
@@ -53,12 +53,12 @@ public class AutoTestTaskInfoDTO {
         this.operator = operator;
     }
 
-    public String getDeviceInfo() {
-        return deviceInfo;
+    public String getDeviceList() {
+        return deviceList;
     }
 
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
+    public void setDeviceList(String deviceList) {
+        this.deviceList = deviceList;
     }
 
     public String getGitInfo() {
