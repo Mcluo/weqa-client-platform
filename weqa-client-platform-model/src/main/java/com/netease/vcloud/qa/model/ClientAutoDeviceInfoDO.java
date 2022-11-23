@@ -18,7 +18,7 @@ public class ClientAutoDeviceInfoDO {
 
     private Integer devicePort ;
 
-    private String platform ;
+    private Byte platform ;
 
     private String userId ;
 
@@ -64,11 +64,11 @@ public class ClientAutoDeviceInfoDO {
         this.devicePort = devicePort;
     }
 
-    public String getPlatform() {
+    public Byte getPlatform() {
         return platform;
     }
 
-    public void setPlatform(String platform) {
+    public void setPlatform(Byte platform) {
         this.platform = platform;
     }
 

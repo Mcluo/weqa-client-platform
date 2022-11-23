@@ -6,15 +6,25 @@ package com.netease.vcloud.qa.result.view;
  */
 public class DeviceInfoVO {
 
+    private Long id ;
     private String ip ;
 
-    private String port ;
+    private Integer port ;
 
     private String platform ;
 
     private String userId ;
 
     private String cpu ;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getIp() {
         return ip;
@@ -24,11 +34,11 @@ public class DeviceInfoVO {
         this.ip = ip;
     }
 
-    public String getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 

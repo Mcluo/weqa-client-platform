@@ -14,6 +14,10 @@ public class AutoTestRunException extends Exception{
 
     public static String AUTO_TEST_SCRIPT_ID_EMPTY = "自动化脚本信息为空" ;
 
+    public static String DEVICE_PARAM_EXCEPTION = "设备参数信息错误" ;
+
+    public static String DEVICE_IS_OFFLINE = "全部设备下线" ;
+
     private String exceptionInfo ;
 
     public AutoTestRunException() {
