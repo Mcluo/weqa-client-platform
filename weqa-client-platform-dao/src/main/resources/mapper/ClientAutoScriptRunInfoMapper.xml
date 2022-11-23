@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="script_name" jdbcType="VARCHAR" property="scriptName"/>
+        <result column="script_detail" jdbcType="VARCHAR" property="scriptDetail"/>
+        <result column="exec_class" jdbcType="VARCHAR" property="execClass"/>
+        <result column="exec_method" jdbcType="VARCHAR" property="execMethod"/>
+        <result column="exec_param" jdbcType="VARCHAR" property="execParam"/>
+        <result column="exec_status" jdbcType="TINYINT" property="execStatus"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status
+    </sql>
+
+    <update id="updateStatus">
+        UPDATE vcloud_client_auto_script_run_info
+        SET gmt_update=now(),exec_status=#{result}
+        WHERE id=#{scriptId}
+    </update>
+
+    <insert id="patchInsertAutoScript" parameterType="com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO">
+        insert into vcloud_client_auto_script_run_info (gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status)
+        values
+        <foreach collection="scriptList" item="script" separator=",">
+            (now(),now(),#{script.taskId},#{script.scriptName},#{script.scriptDetail},#{script.execClass},#{script.execMethod},#{script.execParam},#{script.execStatus})
+        </foreach>
+    </insert>
+
+
+    <select id="getClientAutoScriptRunInfoByTaskId" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_script_run_info
+        WHERE task_id = #{taskId}
+    </select>
+</mapper>
