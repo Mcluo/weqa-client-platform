@@ -43,7 +43,7 @@ public class AutoTestTaskController {
                                   @RequestParam("device") String deviceList,
                                   @RequestParam("ids") List<Long> idSet){
         ResultVO resultVO = null ;
-        boolean flag = false ;
+        Long id = null ;
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
         autoTestTaskInfoDTO.setTaskName(taskName);
         autoTestTaskInfoDTO.setTaskType("python");
@@ -53,13 +53,13 @@ public class AutoTestTaskController {
         autoTestTaskInfoDTO.setDeviceList(deviceList);
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
-            flag = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
+            id = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
             return resultVO ;
         }
-        if (flag){
-            resultVO = ResultUtils.buildSuccess() ;
+        if (id!=null){
+            resultVO = ResultUtils.buildSuccess(id) ;
         }else {
             resultVO = ResultUtils.buildFail() ;
         }

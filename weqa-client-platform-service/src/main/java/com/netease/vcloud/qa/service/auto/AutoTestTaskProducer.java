@@ -32,16 +32,16 @@ public class AutoTestTaskProducer {
     @Autowired
     private ClientAutoScriptRunInfoDAO clientAutoScriptRunInfoDAO ;
 
-    public boolean productNewAutoTestTask(AutoTestTaskInfoBO autoTestTaskInfoBO){
+    public Long productNewAutoTestTask(AutoTestTaskInfoBO autoTestTaskInfoBO){
         if (autoTestTaskInfoBO == null || CollectionUtils.isEmpty(autoTestTaskInfoBO.getScriptList())) {
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] some param is null");
-            return false ;
+            return null ;
         }
         //创建任务
         boolean addTaskResult = this.addNewAutoTestTaskProduce(autoTestTaskInfoBO) ;
         if (!addTaskResult || autoTestTaskInfoBO.getId() == null){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add a new autotest task fail");
-            return false ;
+            return null ;
         }
         //创建任务下面的脚本
         List<TaskScriptRunInfoBO> taskScriptRunInfoBOList = autoTestTaskInfoBO.getScriptList() ;
@@ -51,15 +51,15 @@ public class AutoTestTaskProducer {
         boolean addTaskScriptFlag = this.addTaskScript(taskScriptRunInfoBOList) ;
         if (!addTaskScriptFlag){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add task script list fail");
-            return false ;
+            return null ;
         }
         //任务状态修改为ready
         int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus( autoTestTaskInfoBO.getId(), TaskRunStatus.READY.getCode()) ;
         if (count<1){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] update task status exception");
-            return false ;
+            return null ;
         }
-        return true ;
+        return autoTestTaskInfoBO.getId();
     }
 
 

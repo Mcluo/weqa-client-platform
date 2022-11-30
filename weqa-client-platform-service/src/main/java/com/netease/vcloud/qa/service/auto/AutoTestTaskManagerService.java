@@ -45,7 +45,7 @@ public class AutoTestTaskManagerService {
     private ClientAutoScriptRunInfoDAO clientAutoScriptRunInfoDAO ;
 
 
-    public boolean addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
+    public Long addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
             AUTO_LOGGER.error("[AutoTestManagerService.addNewTaskInfoInfo] autoTestInfoDTO is null");
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
@@ -57,8 +57,7 @@ public class AutoTestTaskManagerService {
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SCRIPT_IS_NULL) ;
         }
         autoTestTaskInfoBO.setScriptList(taskScriptRunInfoBOList);
-        boolean flag = autoTestTaskProducer.productNewAutoTestTask(autoTestTaskInfoBO) ;
-        return flag ;
+        return autoTestTaskProducer.productNewAutoTestTask(autoTestTaskInfoBO) ;
     }
 
     /**
