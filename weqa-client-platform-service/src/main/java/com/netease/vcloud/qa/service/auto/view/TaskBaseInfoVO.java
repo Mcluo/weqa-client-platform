@@ -16,13 +16,15 @@ public class TaskBaseInfoVO {
 
     private String testSuit ;
 
-    private UserInfoVO userInfoVO ;
+    private UserInfoVO userInfo ;
 
     private String gitInfo ;
 
     private String branch ;
 
     private String status ;
+
+    private Long startTime ;
 
     public Long getId() {
         return id;
@@ -56,13 +58,6 @@ public class TaskBaseInfoVO {
         this.testSuit = testSuit;
     }
 
-    public UserInfoVO getUserInfoVO() {
-        return userInfoVO;
-    }
-
-    public void setUserInfoVO(UserInfoVO userInfoVO) {
-        this.userInfoVO = userInfoVO;
-    }
 
     public String getGitInfo() {
         return gitInfo;
@@ -86,5 +81,21 @@ public class TaskBaseInfoVO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public UserInfoVO getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfoVO userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
     }
 }
