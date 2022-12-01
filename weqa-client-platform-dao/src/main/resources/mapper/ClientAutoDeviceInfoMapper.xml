@@ -28,4 +28,13 @@
         FROM vcloud_client_auto_device_info
     </select>
 
+    <select id="getClientAutoDeviceByIds" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_device_info
+        WHERE id in
+        <foreach collection="list" item="device" index="index" open="(" close=")" separator=",">
+            #{device}
+        </foreach>
+    </select>
+
 </mapper>

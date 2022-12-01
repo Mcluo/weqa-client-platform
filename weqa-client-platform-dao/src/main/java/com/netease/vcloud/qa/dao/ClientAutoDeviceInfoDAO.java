@@ -18,4 +18,6 @@ public interface ClientAutoDeviceInfoDAO {
 
     List<ClientAutoDeviceInfoDO> getAllClientAutoDevice() ;
 
+    List<ClientAutoDeviceInfoDO> getClientAutoDeviceByIds(@Param("list")List<Long> deviceIdList) ;
+
 }

@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.auto;
 
+import com.alibaba.fastjson.JSONArray;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
@@ -10,6 +11,7 @@ import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
@@ -50,6 +52,8 @@ public class AutoTestTaskManagerService {
     @Autowired
     private UserInfoService userInfoService ;
 
+    @Autowired
+    private AutoTestDeviceService  autoTestDeviceService ;
 
     public Long addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
@@ -83,6 +87,10 @@ public class AutoTestTaskManagerService {
         autoTestTaskInfoBO.setGitInfo(autoTestTaskInfoDTO.getGitInfo());
         autoTestTaskInfoBO.setGitBranch(autoTestTaskInfoDTO.getGitBranch());
         autoTestTaskInfoBO.setOperator(autoTestTaskInfoDTO.getOperator());
+        List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(autoTestTaskInfoDTO.getDeviceList()) ;
+        if (deviceInfoVOList!=null) {
+            autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(deviceInfoVOList));
+        }
         return autoTestTaskInfoBO ;
     }
 
@@ -151,6 +159,16 @@ public class AutoTestTaskManagerService {
         TaskRunStatus taskRunStatus = TaskRunStatus.getTaskRunStatusByCode(clientAutoTaskInfoDO.getTaskStatus()) ;
         if (taskRunStatus!=null) {
             taskBaseInfoVO.setStatus(taskRunStatus.getStatus());
+        }
+        if (StringUtils.isNotBlank(clientAutoTaskInfoDO.getDeviceInfo())){
+            try{
+                List<DeviceInfoVO> deviceInfoVOList = JSONArray.parseArray(clientAutoTaskInfoDO.getDeviceInfo(),DeviceInfoVO.class) ;
+                if (deviceInfoVOList!=null){
+                    taskBaseInfoVO.setDeviceList(deviceInfoVOList);
+                }
+            }catch (Exception e){
+                AUTO_LOGGER.error("[AutoTestTaskManagerService.buildTaskBaseInfoVOByDO] parse device object exception",e);
+            }
         }
         return taskBaseInfoVO ;
     }

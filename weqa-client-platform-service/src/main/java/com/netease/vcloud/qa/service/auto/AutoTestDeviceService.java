@@ -34,17 +34,20 @@ public class AutoTestDeviceService {
 //            return deviceInfoVOList ;
         }
         for (ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList){
-            DeviceInfoVO deviceInfoVO = new DeviceInfoVO() ;
-            deviceInfoVO.setIp(clientAutoDeviceInfoDO.getDeviceIp());
-            deviceInfoVO.setPort(clientAutoDeviceInfoDO.getDevicePort());
-            deviceInfoVO.setUserId(clientAutoDeviceInfoDO.getUserId());
-            deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
-            deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
-            DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform()) ;
-            if (devicePlatform!=null) {
-                deviceInfoVO.setPlatform(devicePlatform.getPlatform());
+            DeviceInfoVO deviceInfoVO = this.buildDeviceInfoVOByDO(clientAutoDeviceInfoDO) ;
+//            DeviceInfoVO deviceInfoVO = new DeviceInfoVO() ;
+//            deviceInfoVO.setIp(clientAutoDeviceInfoDO.getDeviceIp());
+//            deviceInfoVO.setPort(clientAutoDeviceInfoDO.getDevicePort());
+//            deviceInfoVO.setUserId(clientAutoDeviceInfoDO.getUserId());
+//            deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
+//            deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
+//            DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform()) ;
+//            if (devicePlatform!=null) {
+//                deviceInfoVO.setPlatform(devicePlatform.getPlatform());
+//            }
+            if (deviceInfoVO!=null) {
+                deviceInfoVOList.add(deviceInfoVO);
             }
-            deviceInfoVOList.add(deviceInfoVO) ;
         }
         return deviceInfoVOList ;
     }
@@ -69,4 +72,38 @@ public class AutoTestDeviceService {
         }
     }
 
+    public List<DeviceInfoVO> getDeviceInfoList(List<Long> deviceIdList){
+        List<DeviceInfoVO> deviceInfoVOList = new ArrayList<>() ;
+        if (CollectionUtils.isEmpty(deviceIdList)){
+            return deviceInfoVOList ;
+        }
+        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(deviceIdList) ;
+        if (clientAutoDeviceInfoDOList != null) {
+            for (ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList) {
+                DeviceInfoVO deviceInfoVO = this.buildDeviceInfoVOByDO(clientAutoDeviceInfoDO) ;
+                if (deviceInfoVO != null){
+                    deviceInfoVOList.add(deviceInfoVO) ;
+                }
+            }
+        }
+        return deviceInfoVOList ;
+    }
+
+
+    private DeviceInfoVO buildDeviceInfoVOByDO(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO){
+        if (clientAutoDeviceInfoDO == null){
+            return null ;
+        }
+        DeviceInfoVO deviceInfoVO = new DeviceInfoVO() ;
+        deviceInfoVO.setIp(clientAutoDeviceInfoDO.getDeviceIp());
+        deviceInfoVO.setPort(clientAutoDeviceInfoDO.getDevicePort());
+        deviceInfoVO.setUserId(clientAutoDeviceInfoDO.getUserId());
+        deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
+        deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
+        DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform()) ;
+        if (devicePlatform!=null) {
+            deviceInfoVO.setPlatform(devicePlatform.getPlatform());
+        }
+        return deviceInfoVO ;
+    }
 }

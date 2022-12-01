@@ -1,6 +1,9 @@
 package com.netease.vcloud.qa.service.auto.view;
 
+import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+
+import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -25,6 +28,8 @@ public class TaskBaseInfoVO {
     private String status ;
 
     private Long startTime ;
+
+    private List<DeviceInfoVO> deviceList ;
 
     public Long getId() {
         return id;
@@ -97,5 +102,13 @@ public class TaskBaseInfoVO {
 
     public void setStartTime(Long startTime) {
         this.startTime = startTime;
+    }
+
+    public List<DeviceInfoVO> getDeviceList() {
+        return deviceList;
+    }
+
+    public void setDeviceList(List<DeviceInfoVO> deviceList) {
+        this.deviceList = deviceList;
     }
 }
