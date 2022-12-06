@@ -8,10 +8,7 @@ import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptListVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +36,7 @@ public class AutoTestScriptController {
      * @return
      */
     @RequestMapping("/add")
+    @ResponseBody
     public ResultVO addOneNewTCScript( @RequestParam("name") String scriptName,
                                        @RequestParam("detail") String scriptDetail,
                                        @RequestParam("class") String execClass ,
@@ -46,6 +44,8 @@ public class AutoTestScriptController {
                                        @RequestParam(name="param",required = false) String execParam ,
                                        @RequestParam(name="tcId",required = false) Long tcId ,
                                        @RequestParam("owner") String owner){
+
+        ResultVO resultVO = null ;
         AutoTCScriptInfoDTO autoTCScriptInfoDTO = new AutoTCScriptInfoDTO() ;
         autoTCScriptInfoDTO.setScriptName(scriptName);
         autoTCScriptInfoDTO.setScriptDetail(scriptDetail);
@@ -56,11 +56,70 @@ public class AutoTestScriptController {
         autoTCScriptInfoDTO.setTcId(tcId);
         List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList = new ArrayList<AutoTCScriptInfoDTO>() ;
         autoTCScriptInfoDTOList.add(autoTCScriptInfoDTO) ;
-        boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
-        ResultVO resultVO = ResultUtils.build(flag) ;
+        try {
+            boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList);
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
         return resultVO ;
     }
 
+    /**
+     *
+     * @param id
+     * @param scriptName
+     * @param scriptDetail
+     * @param execClass
+     * @param execMethod
+     * @param execParam
+     * @param tcId
+     * @return
+     */
+    @RequestMapping("/update")
+    @ResponseBody
+    public ResultVO updateOneNewTCScript(@RequestParam("id")Long id ,
+                                        @RequestParam("name") String scriptName,
+                                       @RequestParam("detail") String scriptDetail,
+                                       @RequestParam("class") String execClass ,
+                                       @RequestParam("method") String execMethod ,
+                                       @RequestParam(name="param",required = false) String execParam ,
+                                       @RequestParam(name="tcId",required = false) Long tcId ){
+        ResultVO resultVO = null ;
+        AutoTCScriptInfoDTO autoTCScriptInfoDTO = new AutoTCScriptInfoDTO() ;
+        autoTCScriptInfoDTO.setScriptName(scriptName);
+        autoTCScriptInfoDTO.setScriptDetail(scriptDetail);
+        autoTCScriptInfoDTO.setExecClass(execClass);
+        autoTCScriptInfoDTO.setExecMethod(execMethod);
+        autoTCScriptInfoDTO.setExecParam(execParam);
+//        autoTCScriptInfoDTO.setOwner(owner);
+        autoTCScriptInfoDTO.setTcId(tcId);
+        try {
+            boolean flag = autoTcScriptService.updateScriptInfo(id, autoTCScriptInfoDTO);
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8080/g2-client/auto/script/delete?id=1
+     * @param id
+     * @return
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResultVO deleteTCScript(@RequestParam("id")Long id){
+        ResultVO resultVO = null ;
+        try {
+            boolean flag = autoTcScriptService.deleteScript(id);
+            resultVO = ResultUtils.build(flag) ;
+        }catch (Exception e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
 
     /**
      * http://127.0.0.1:8788/g2-client/auto/script/query
@@ -85,6 +144,8 @@ public class AutoTestScriptController {
         return resultVO ;
     }
 
+
+
     /**
      * http://127.0.0.1:8788/g2-client/auto/script/init
      * @param tcScriptArray
@@ -97,8 +158,13 @@ public class AutoTestScriptController {
 //        }
         List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList= JSONArray.parseArray(tcScriptArray ,AutoTCScriptInfoDTO.class) ;
 //        System.out.println(tcScriptArray);
-        boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
-
-        return ResultUtils.build(flag) ;
+        ResultVO resultVO = null ;
+        try {
+            boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
     }
 }

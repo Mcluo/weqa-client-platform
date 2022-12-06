@@ -106,4 +106,26 @@ public class AutoTestDeviceService {
         }
         return deviceInfoVO ;
     }
+
+    public boolean updateDeviceInfo(Long id , String ip , Integer port , String platform , String userId , String cpu) throws AutoTestRunException{
+        DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(platform) ;
+
+        if (id == null ||StringUtils.isBlank(ip) || port == null || devicePlatform == null){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        ClientAutoDeviceInfoDO clientAutoDeviceInfoDO = new ClientAutoDeviceInfoDO() ;
+        clientAutoDeviceInfoDO.setId(id);
+        clientAutoDeviceInfoDO.setDeviceIp(ip);
+        clientAutoDeviceInfoDO.setDevicePort(port);
+        clientAutoDeviceInfoDO.setCpuInfo(cpu);
+        clientAutoDeviceInfoDO.setUserId(userId);
+        clientAutoDeviceInfoDO.setPlatform(devicePlatform.getCode());
+        clientAutoDeviceInfoDO.setCpuInfo(cpu);
+        int count = clientAutoDeviceInfoDAO.updateDeviceInfo(clientAutoDeviceInfoDO) ;
+        if (count > 0){
+            return true ;
+        }else {
+            return false ;
+        }
+    }
 }

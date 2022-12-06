@@ -57,9 +57,10 @@ public class AutoTcScriptService {
      * @param autoTCScriptInfoDTOList
      * @return
      */
-    public boolean addScriptInfo(List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList){
+    public boolean addScriptInfo(List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList) throws AutoTestRunException{
         if (CollectionUtils.isEmpty(autoTCScriptInfoDTOList)){
-            return false ;
+//            return false ;
+            throw  new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
         }
         List<ClientScriptTcInfoDO> clientScriptTcInfoDOList = new ArrayList<ClientScriptTcInfoDO>() ;
         for (AutoTCScriptInfoDTO autoTCScriptInfoDTO : autoTCScriptInfoDTOList){
@@ -71,11 +72,47 @@ public class AutoTcScriptService {
         int count = clientScriptTcInfoDAO.patchInsertClientScript(clientScriptTcInfoDOList) ;
         if (count < clientScriptTcInfoDOList.size()){
             AUTO_LOGGER.error("[AutoTcScriptService.setScriptInfo] add data fail");
-            return false ;
+//            return false ;
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
         }else {
             return true ;
         }
     }
+
+    public boolean updateScriptInfo(Long id, AutoTCScriptInfoDTO autoTCScriptInfoDTO) throws AutoTestRunException{
+        if (id == null || autoTCScriptInfoDTO == null){
+            throw  new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        ClientScriptTcInfoDO clientScriptTcInfoDO = AutoTestUtils.buildClientScriptTcInfoDOByScriptTcDTO(autoTCScriptInfoDTO) ;
+        if (clientScriptTcInfoDO == null){
+            AUTO_LOGGER.error("[AutoTcScriptService.updateScriptInfo] build clientScriptTcInfoDO fail");
+            return false ;
+        }
+        clientScriptTcInfoDO.setId(id);
+        int count = clientScriptTcInfoDAO.updateClientScript(clientScriptTcInfoDO) ;
+        if (count < 1){
+            AUTO_LOGGER.error("[AutoTcScriptService.updateScriptInfo] update data fail");
+//            return false ;
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
+        }else {
+            return true ;
+        }
+    }
+
+    public boolean deleteScript(Long id ) throws AutoTestRunException{
+        if (id == null){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        int count = clientScriptTcInfoDAO.deleteClientScript(id) ;
+        if (count < 1){
+            AUTO_LOGGER.error("[AutoTcScriptService.deleteScript] delete data fail");
+//            return false ;
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
+        }else {
+            return true ;
+        }
+    }
+
 
     public AutoScriptListVO getAllScript(Integer pageNo , Integer pageSize) throws AutoTestRunException{
         AutoScriptListVO autoScriptListVO = new AutoScriptListVO() ;

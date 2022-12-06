@@ -10,6 +10,8 @@ public class AutoTestRunException extends Exception{
 
     public static String AUTO_TEST_PARAM_EXCEPTION = "自动化触发参数异常" ;
 
+    public static String AUTO_TEST_DB_EXCEPTION = "操作数据库异常" ;
+
     public static String AUTO_TEST_SCRIPT_IS_NULL = "自动化脚本为空" ;
 
     public static String AUTO_TEST_SCRIPT_ID_EMPTY = "自动化脚本信息为空" ;

@@ -38,14 +38,26 @@
     <select id="getClientScript" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_script_tc_info
-        WHERE 1=1
+        WHERE id_delete=0
         LIMIT #{start}, #{size}
     </select>
 
     <select id="getClientScriptCount" resultType="java.lang.Integer">
         SELECT count(1)
         FROM vcloud_client_script_tc_info
-        WHERE 1=1
+        WHERE id_delete=0
     </select>
+
+    <update id="updateClientScript">
+        update vcloud_client_script_tc_info
+        set gmt_update=now(),script_name=#{script.scriptName},script_detail=#{script.scriptDetail},exec_class=#{script.execClass},exec_method=#{script.execMethod},exec_param=#{script.execParam},tc_id=#{script.tcId}
+        where id = #{script.id}
+    </update>
+
+    <update id="deleteClientScript">
+        update vcloud_client_script_tc_info
+        set gmt_update=now(),id_delete=1
+        where id=#{id}
+    </update>
 
 </mapper>
