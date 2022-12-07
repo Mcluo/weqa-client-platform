@@ -22,7 +22,7 @@ public class AutoScriptInfoVO {
 
     private Long tcId ;
 
-    private UserInfoVO userInfoVO ;
+    private UserInfoVO userInfo;
 
     public Long getId() {
         return id;
@@ -80,11 +80,11 @@ public class AutoScriptInfoVO {
         this.tcId = tcId;
     }
 
-    public UserInfoVO getUserInfoVO() {
-        return userInfoVO;
+    public UserInfoVO getUserInfo() {
+        return userInfo;
     }
 
-    public void setUserInfoVO(UserInfoVO userInfoVO) {
-        this.userInfoVO = userInfoVO;
+    public void setUserInfo(UserInfoVO userInfo) {
+        this.userInfo = userInfo;
     }
 }

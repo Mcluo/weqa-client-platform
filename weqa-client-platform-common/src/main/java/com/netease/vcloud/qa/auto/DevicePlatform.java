@@ -8,15 +8,17 @@ import org.apache.commons.lang3.StringUtils;
  * on 2022/11/23 11:53
  */
 public enum DevicePlatform {
-    ANDROID("Android",(byte)1),
+    ANDROID("android",(byte)1),
 
-    IOS("iOS",(byte)2),
+    IOS("ios",(byte)2),
 
-    PC("PC",(byte)3),
+    PC("windows",(byte)3),
 
-    MAC("MAC",(byte)4),
+    MAC("mac",(byte)4),
 
-    LINUX("linux",(byte)5)
+    LINUX("linux",(byte)5),
+
+    ELECTRON("electron",(byte)6),
     ;
 
     private String platform ;

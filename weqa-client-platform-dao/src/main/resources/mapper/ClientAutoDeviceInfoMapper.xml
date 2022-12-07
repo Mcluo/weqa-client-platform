@@ -26,6 +26,7 @@
     <select id="getAllClientAutoDevice" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_device_info
+        ORDER BY id DESC
     </select>
 
     <select id="getClientAutoDeviceByIds" resultMap="BaseResultMap">

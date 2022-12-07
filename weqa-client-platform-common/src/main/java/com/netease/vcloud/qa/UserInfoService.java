@@ -22,6 +22,11 @@ public class UserInfoService {
     @Autowired
     private WeqaYunxinUserinfoDAO weqaYunxinUserinfoDAO ;
 
+    /**
+     * 批量查询用户信息
+     * @param emailSet
+     * @return
+     */
     public Map<String,UserInfoBO> queryUserInfoBOMap(Set<String> emailSet){
         Map<String,UserInfoBO> userInfoMap = new HashMap<String, UserInfoBO>() ;
         UserInfoBO systemUserInfoBO = new UserInfoBO();
@@ -44,6 +49,12 @@ public class UserInfoService {
         return userInfoMap ;
     }
 
+    /**
+     * 单个查询用户信息
+     * (不要连续调用)
+     * @param email
+     * @return
+     */
     public UserInfoBO getUserInfoByEmail(String email){
         if (StringUtils.isBlank(email)){
             return null ;

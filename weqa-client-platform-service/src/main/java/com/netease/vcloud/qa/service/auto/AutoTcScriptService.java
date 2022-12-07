@@ -1,19 +1,23 @@
 package com.netease.vcloud.qa.service.auto;
 
+import com.netease.vcloud.qa.CommonUtils;
+import com.netease.vcloud.qa.UserInfoBO;
+import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.dao.ClientScriptTcInfoDAO;
 import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
+import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptListVO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -27,6 +31,8 @@ public class AutoTcScriptService {
     @Autowired
     private ClientScriptTcInfoDAO clientScriptTcInfoDAO ;
 
+    @Autowired
+    private UserInfoService userInfoService ;
     /**
      * 根据ID，获取对应的脚本信息
      * @param scriptIdSet
@@ -124,8 +130,15 @@ public class AutoTcScriptService {
         autoScriptListVO.setTotal(total);
         if (!CollectionUtils.isEmpty(clientScriptTcInfoDOList)){
             List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<AutoScriptInfoVO>() ;
+            Set<String> userInfoSet = new HashSet<String>() ;
             for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
-                AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO);
+                if (clientScriptTcInfoDO!=null && StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner())){
+                    userInfoSet.add(clientScriptTcInfoDO.getScriptOwner()) ;
+                }
+            }
+            Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userInfoSet) ;
+            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
+                AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO,userInfoBOMap);
                 if (autoScriptInfoVO!=null){
                     autoScriptInfoVOList.add(autoScriptInfoVO) ;
                 }
@@ -135,7 +148,7 @@ public class AutoTcScriptService {
         return autoScriptListVO ;
     }
 
-    private AutoScriptInfoVO buildScriptListVOByDO(ClientScriptTcInfoDO clientScriptTcInfoDO){
+    private AutoScriptInfoVO buildScriptListVOByDO(ClientScriptTcInfoDO clientScriptTcInfoDO ,  Map<String, UserInfoBO> userInfoBOMap){
         if (clientScriptTcInfoDO == null){
             return null ;
         }
@@ -146,7 +159,14 @@ public class AutoTcScriptService {
         autoScriptInfoVO.setExecClass(clientScriptTcInfoDO.getExecClass());
         autoScriptInfoVO.setExecMethod(clientScriptTcInfoDO.getExecMethod());
         autoScriptInfoVO.setExecParam(clientScriptTcInfoDO.getExecParam());
-        //user info 暂时不加
+        autoScriptInfoVO.setTcId(clientScriptTcInfoDO.getTcId());
+        if (StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner()) && !CollectionUtils.isEmpty(userInfoBOMap)){
+            UserInfoBO userInfoBO = userInfoBOMap.get(clientScriptTcInfoDO.getScriptOwner()) ;
+            if (userInfoBO != null){
+                UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
+                autoScriptInfoVO.setUserInfo(userInfoVO);
+            }
+        }
         return autoScriptInfoVO ;
     }
 

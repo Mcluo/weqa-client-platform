@@ -21,7 +21,7 @@ public interface ClientScriptTcInfoDAO {
 
     int getClientScriptCount() ;
 
-    int updateClientScript(@Param("info") ClientScriptTcInfoDO clientScriptTcInfoDO) ;
+    int updateClientScript(@Param("script") ClientScriptTcInfoDO clientScriptTcInfoDO) ;
 
     int deleteClientScript(@Param("id") long id ) ;
 
