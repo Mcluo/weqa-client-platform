@@ -10,12 +10,12 @@
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,suitName,suitOwner
+        select id,gmt_create,gmt_update,suit_name,suit_owner
     </sql>
 
-    <insert id="addNewAutoTestSuit" parameterType="com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO">
-        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suitName,suitOwner)
-        value(now(),now(),#{info.suit_name},#{info.suit_owner})
+    <insert id="addNewAutoTestSuit" parameterType="com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO" keyProperty="info.id" useGeneratedKeys="true" >
+        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suit_name,suit_owner)
+        value(now(),now(),#{info.suitName},#{info.suitOwner})
     </insert>
 
 
@@ -25,9 +25,18 @@
         WHERE id = #{id}
     </select>
 
+    <select id="getAutoTestSuitByName" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_test_suit_base_info
+        WHERE suit_name = #{name}
+    </select>
+
+
     <select id="queryAutoTestSuitByName" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_test_suit_base_info
-        WHERE suitName = #{name}
+        <if test="name!=null and name!=''">
+            WHERE suit_name LIKE CONCAT('%',#{name},'%')
+        </if>
     </select>
 </mapper>

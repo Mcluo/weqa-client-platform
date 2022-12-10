@@ -17,4 +17,6 @@ public interface ClientAutoTestSuitRelationDAO {
 
     int patchInsertClientTestRelation(@Param("relationList") List<ClientAutoTestSuitRelationDO> clientAutoTestSuitRelationDOList) ;
 
+    List<ClientAutoTestSuitRelationDO> getAutoTestSuitRelationListBySuit(@Param("suit") long suitId) ;
+
 }

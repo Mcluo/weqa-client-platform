@@ -4,6 +4,7 @@ import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public interface ClientScriptTcInfoDAO {
 
     int patchInsertClientScript(@Param("list") List<ClientScriptTcInfoDO> clientScriptTcInfoDOList) ;
 
-    List<ClientScriptTcInfoDO> getClientScriptSet(@Param("idSet") List<Long> scriptIdSet) ;
+    List<ClientScriptTcInfoDO> getClientScriptSet(@Param("idSet") Collection<Long> scriptIdSet) ;
 
     List<ClientScriptTcInfoDO> getClientScript(@Param("start") Integer start, @Param("size") Integer size) ;
 

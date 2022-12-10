@@ -17,7 +17,7 @@
         insert into vcloud_client_auto_test_suit_relation_info(gmt_create,gmt_update,suit_id,script_id)
         values
         <foreach collection="relationList" item="relation" separator=",">
-            (now(),now(),#{relation.suitId},#{relation.scriptId}})
+            (now(),now(),#{relation.suitId},#{relation.scriptId})
         </foreach>
     </insert>
 
@@ -25,5 +25,11 @@
         DELETE FROM vcloud_client_auto_test_suit_relation_info
         WHERE suit_id = #{suit}
     </delete>
+
+    <select id="getAutoTestSuitRelationListBySuit" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_test_suit_relation_info
+        WHERE suit_id = #{suit}
+    </select>
 
 </mapper>

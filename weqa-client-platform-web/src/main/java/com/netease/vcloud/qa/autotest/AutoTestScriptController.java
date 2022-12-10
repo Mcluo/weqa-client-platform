@@ -57,8 +57,8 @@ public class AutoTestScriptController {
         List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList = new ArrayList<AutoTCScriptInfoDTO>() ;
         autoTCScriptInfoDTOList.add(autoTCScriptInfoDTO) ;
         try {
-            boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList);
-            resultVO = ResultUtils.build(flag) ;
+            List<Long> idList = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList);
+            resultVO = ResultUtils.build(idList != null);
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getMessage()) ;
         }
@@ -128,6 +128,7 @@ public class AutoTestScriptController {
      * @return
      */
     @RequestMapping("/query")
+    @ResponseBody
     public ResultVO queryTCScript(@RequestParam(name = "page",required = false ,defaultValue = "1") Integer pageNo,
                                   @RequestParam(name = "size",required = false , defaultValue = "20") Integer pageSize){
         ResultVO resultVO = null ;
@@ -152,6 +153,7 @@ public class AutoTestScriptController {
      * @return
      */
     @RequestMapping("/init")
+    @ResponseBody
     public ResultVO initAutoScript(@RequestBody String tcScriptArray){
 //        for (Object tcScriptObj:tcScriptArray){
 //            AutoTestTaskInfoDTO autoTestTaskInfoDTO = (AutoTestTaskInfoDTO) JSONObject.toJSON(tcScriptObj) ;
@@ -160,11 +162,12 @@ public class AutoTestScriptController {
 //        System.out.println(tcScriptArray);
         ResultVO resultVO = null ;
         try {
-            boolean flag = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
-            resultVO = ResultUtils.build(flag) ;
+            List<Long> idList = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
+            resultVO = ResultUtils.build(idList != null) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getMessage()) ;
         }
         return resultVO ;
     }
+
 }

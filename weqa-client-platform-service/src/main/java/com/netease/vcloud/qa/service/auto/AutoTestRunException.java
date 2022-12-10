@@ -14,6 +14,8 @@ public class AutoTestRunException extends Exception{
 
     public static String AUTO_TEST_SCRIPT_IS_NULL = "自动化脚本为空" ;
 
+    public static String AUTO_TEST_SUIT_IS_NOT_EXIST = "用例集不存在" ;
+
     public static String AUTO_TEST_SCRIPT_ID_EMPTY = "自动化脚本信息为空" ;
 
     public static String DEVICE_PARAM_EXCEPTION = "设备参数信息错误" ;
@@ -35,4 +37,9 @@ public class AutoTestRunException extends Exception{
         return exceptionInfo;
     }
 
+
+    @Override
+    public String getMessage() {
+        return getExceptionInfo() ;
+    }
 }

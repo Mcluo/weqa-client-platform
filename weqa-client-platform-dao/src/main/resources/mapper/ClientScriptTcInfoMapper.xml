@@ -27,7 +27,7 @@
         </foreach>
     </select>
 
-    <insert id="patchInsertClientScript" parameterType="com.netease.vcloud.qa.model.ClientScriptTcInfoDO">
+    <insert id="patchInsertClientScript" parameterType="com.netease.vcloud.qa.model.ClientScriptTcInfoDO" keyProperty="id" useGeneratedKeys="true">
         insert into vcloud_client_script_tc_info (gmt_create,gmt_update,script_name,script_detail,exec_class,exec_method,exec_param,tc_id,script_owner)
         values
         <foreach collection="list" item="script" separator=",">

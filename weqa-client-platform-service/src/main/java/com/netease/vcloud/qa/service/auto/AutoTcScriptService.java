@@ -63,7 +63,7 @@ public class AutoTcScriptService {
      * @param autoTCScriptInfoDTOList
      * @return
      */
-    public boolean addScriptInfo(List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList) throws AutoTestRunException{
+    public List<Long> addScriptInfo(List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList) throws AutoTestRunException{
         if (CollectionUtils.isEmpty(autoTCScriptInfoDTOList)){
 //            return false ;
             throw  new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
@@ -81,7 +81,13 @@ public class AutoTcScriptService {
 //            return false ;
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
         }else {
-            return true ;
+            List<Long> idList = new ArrayList<Long>() ;
+            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
+                if (clientScriptTcInfoDO != null){
+                    idList.add(clientScriptTcInfoDO.getId()) ;
+                }
+            }
+            return idList ;
         }
     }
 
@@ -119,7 +125,6 @@ public class AutoTcScriptService {
         }
     }
 
-
     public AutoScriptListVO getAllScript(Integer pageNo , Integer pageSize) throws AutoTestRunException{
         AutoScriptListVO autoScriptListVO = new AutoScriptListVO() ;
         int start = pageNo == null ? 0 : (pageNo - 1) * pageSize ;
@@ -128,25 +133,49 @@ public class AutoTcScriptService {
         autoScriptListVO.setCurrent(pageNo);
         autoScriptListVO.setSize(pageSize);
         autoScriptListVO.setTotal(total);
-        if (!CollectionUtils.isEmpty(clientScriptTcInfoDOList)){
-            List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<AutoScriptInfoVO>() ;
-            Set<String> userInfoSet = new HashSet<String>() ;
-            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
-                if (clientScriptTcInfoDO!=null && StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner())){
-                    userInfoSet.add(clientScriptTcInfoDO.getScriptOwner()) ;
-                }
-            }
-            Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userInfoSet) ;
-            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
-                AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO,userInfoBOMap);
-                if (autoScriptInfoVO!=null){
-                    autoScriptInfoVOList.add(autoScriptInfoVO) ;
-                }
-            }
-            autoScriptListVO.setAutoScriptInfoVOList(autoScriptInfoVOList);
-        }
+//        if (!CollectionUtils.isEmpty(clientScriptTcInfoDOList)){
+//            List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<AutoScriptInfoVO>() ;
+//            Set<String> userInfoSet = new HashSet<String>() ;
+//            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
+//                if (clientScriptTcInfoDO!=null && StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner())){
+//                    userInfoSet.add(clientScriptTcInfoDO.getScriptOwner()) ;
+//                }
+//            }
+//            Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userInfoSet) ;
+//            for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
+//                AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO,userInfoBOMap);
+//                if (autoScriptInfoVO!=null){
+//                    autoScriptInfoVOList.add(autoScriptInfoVO) ;
+//                }
+//            }
+//            autoScriptListVO.setAutoScriptInfoVOList(autoScriptInfoVOList);
+//        }
+        List<AutoScriptInfoVO> autoScriptInfoVOList = this.buildAutoScriptInfoVOByDOList(clientScriptTcInfoDOList) ;
+        autoScriptListVO.setAutoScriptInfoVOList(autoScriptInfoVOList);
         return autoScriptListVO ;
     }
+
+    public  List<AutoScriptInfoVO> buildAutoScriptInfoVOByDOList( Collection<ClientScriptTcInfoDO> clientScriptTcInfoDOCollection) {
+        if (CollectionUtils.isEmpty(clientScriptTcInfoDOCollection)) {
+            return null;
+        }
+        List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<AutoScriptInfoVO>();
+        Set<String> userInfoSet = new HashSet<String>();
+        for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOCollection) {
+            if (clientScriptTcInfoDO != null && StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner())) {
+                userInfoSet.add(clientScriptTcInfoDO.getScriptOwner());
+            }
+        }
+        Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userInfoSet);
+        for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOCollection) {
+            AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO, userInfoBOMap);
+            if (autoScriptInfoVO != null) {
+                autoScriptInfoVOList.add(autoScriptInfoVO);
+            }
+        }
+        return autoScriptInfoVOList;
+    }
+
 
     private AutoScriptInfoVO buildScriptListVOByDO(ClientScriptTcInfoDO clientScriptTcInfoDO ,  Map<String, UserInfoBO> userInfoBOMap){
         if (clientScriptTcInfoDO == null){

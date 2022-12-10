@@ -18,6 +18,7 @@ public interface ClientAutoTestSuitBaseInfoDAO {
 
     ClientAutoTestSuitBaseInfoDO getAutoTestSuitById(@Param("id") Long id) ;
 
+    List<ClientAutoTestSuitBaseInfoDO> getAutoTestSuitByName(@Param("name") String name) ;
 
     List<ClientAutoTestSuitBaseInfoDO> queryAutoTestSuitByName(@Param("name")String name) ;
 }
