@@ -14,8 +14,8 @@
     </sql>
 
     <insert id="addNewAutoTestSuit" parameterType="com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO" keyProperty="info.id" useGeneratedKeys="true" >
-        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suit_name,suit_owner)
-        value(now(),now(),#{info.suitName},#{info.suitOwner})
+        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suit_name,suit_owner,is_delete)
+        value(now(),now(),#{info.suitName},#{info.suitOwner},0)
     </insert>
 
 
@@ -23,20 +23,31 @@
         <include refid="baseSql"/>
         FROM vcloud_client_auto_test_suit_base_info
         WHERE id = #{id}
+        AND is_delete=0
     </select>
 
     <select id="getAutoTestSuitByName" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_test_suit_base_info
-        WHERE suit_name = #{name}
+        WHERE  is_delete=0
+        AND suit_name = #{name}
+        ORDER BY id DESC
     </select>
 
 
     <select id="queryAutoTestSuitByName" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_test_suit_base_info
+        WHERE is_delete=0
         <if test="name!=null and name!=''">
-            WHERE suit_name LIKE CONCAT('%',#{name},'%')
+            AND suit_name LIKE CONCAT('%',#{name},'%')
         </if>
+        ORDER BY id DESC
     </select>
+
+    <update id="deleteAUtoTestSuit" >
+        UPDATE vcloud_client_auto_test_suit_base_info
+        SET is_delete=1
+        WHERE id = #{id}
+    </update>
 </mapper>

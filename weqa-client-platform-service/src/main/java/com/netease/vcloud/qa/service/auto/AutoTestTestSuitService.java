@@ -1,5 +1,8 @@
 package com.netease.vcloud.qa.service.auto;
 
+import com.netease.vcloud.qa.CommonUtils;
+import com.netease.vcloud.qa.UserInfoBO;
+import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.dao.ClientAutoTestSuitBaseInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTestSuitRelationDAO;
 import com.netease.vcloud.qa.dao.ClientScriptTcInfoDAO;
@@ -30,6 +33,8 @@ public class AutoTestTestSuitService {
     private ClientAutoTestSuitRelationDAO clientAutoTestSuitRelationDAO ;
 
     @Autowired
+    private UserInfoService userInfoService ;
+    @Autowired
     private ClientScriptTcInfoDAO clientScriptTcInfoDAO ;
     @Autowired
     private AutoTcScriptService autoTcScriptService ;
@@ -51,6 +56,15 @@ public class AutoTestTestSuitService {
             return  clientAutoTestSuitBaseInfoDO.getId() ;
         }else {
             throw  new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION) ;
+        }
+    }
+
+    public boolean deleteTestSuitById(long id) {
+        int count = clientAutoTestSuitBaseInfoDAO.deleteAUtoTestSuit(id) ;
+        if (count>0){
+            return true ;
+        }else{
+            return false ;
         }
     }
 
@@ -107,6 +121,14 @@ public class AutoTestTestSuitService {
         List<ClientAutoTestSuitBaseInfoDO> clientAutoTestSuitBaseInfoDOList = clientAutoTestSuitBaseInfoDAO.queryAutoTestSuitByName(queryKey) ;
         List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = new ArrayList<TestSuitBaseInfoVO>() ;
         if (!CollectionUtils.isEmpty(clientAutoTestSuitBaseInfoDOList)){
+            Set<String> userSet = new HashSet<>() ;
+            for (ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO : clientAutoTestSuitBaseInfoDOList){
+                if (clientAutoTestSuitBaseInfoDO == null || StringUtils.isBlank(clientAutoTestSuitBaseInfoDO.getSuitOwner())){
+                    continue;
+                }
+                userSet.add(clientAutoTestSuitBaseInfoDO.getSuitOwner()) ;
+            }
+            Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userSet) ;
             for (ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO : clientAutoTestSuitBaseInfoDOList){
                 if (clientAutoTestSuitBaseInfoDO == null){
                     continue;
@@ -114,8 +136,8 @@ public class AutoTestTestSuitService {
                 TestSuitBaseInfoVO testSuitBaseInfoVO = new TestSuitBaseInfoVO() ;
                 testSuitBaseInfoVO.setId(clientAutoTestSuitBaseInfoDO.getId());
                 testSuitBaseInfoVO.setName(clientAutoTestSuitBaseInfoDO.getSuitName());
-                UserInfoVO userInfoVO = new UserInfoVO() ;
-                userInfoVO.setEmail(clientAutoTestSuitBaseInfoDO.getSuitOwner());
+                UserInfoBO userInfoBO = userInfoBOMap.get(clientAutoTestSuitBaseInfoDO.getSuitOwner()) ;
+                UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
                 testSuitBaseInfoVO.setOwner(userInfoVO);
                 testSuitBaseInfoVOList.add(testSuitBaseInfoVO) ;
             }

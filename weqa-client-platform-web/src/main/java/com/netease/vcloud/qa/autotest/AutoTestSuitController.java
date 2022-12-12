@@ -101,6 +101,20 @@ public class AutoTestSuitController {
     }
 
     /**
+     * http://127.0.0.1:8788/g2-client/auto/suit/delete?id=1
+     * @param id
+     * @return
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResultVO deleteTestSuit(@RequestParam("id") long id) {
+        ResultVO resultVO = null;
+        boolean flag = autoTestTestSuitService.deleteTestSuitById(id);
+        resultVO = ResultUtils.build(flag);
+        return resultVO;
+    }
+
+    /**
      *http://127.0.0.1:8788/g2-client/auto/suit/script/add?suit=2&script=1
      * @param suitId
      * @param scriptId
