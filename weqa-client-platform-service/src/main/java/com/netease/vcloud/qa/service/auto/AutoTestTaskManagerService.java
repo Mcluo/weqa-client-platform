@@ -155,6 +155,8 @@ public class AutoTestTaskManagerService {
                 taskRunScriptInfoVO.setExecClass(clientAutoScriptRunInfoDO.getExecClass());
                 taskRunScriptInfoVO.setExecMethod(clientAutoScriptRunInfoDO.getExecMethod());
                 taskRunScriptInfoVO.setExecParam(clientAutoScriptRunInfoDO.getExecParam());
+                taskRunScriptInfoVO.setSpendTime(clientAutoScriptRunInfoDO.getRunTime());
+                taskRunScriptInfoVO.setErrorInfo(clientAutoScriptRunInfoDO.getErrorInfo());
                 ScriptRunStatus scriptRunStatus = ScriptRunStatus.getStatusByCode(clientAutoScriptRunInfoDO.getExecStatus()) ;
                 if (scriptRunStatus!=null) {
                     taskRunScriptInfoVO.setStatus(scriptRunStatus.getStatus());

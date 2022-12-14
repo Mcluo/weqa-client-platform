@@ -19,6 +19,10 @@ public class TaskRunScriptInfoVO {
 
     private String status ;
 
+    private Long spendTime ;
+
+    private String errorInfo ;
+
     public long getTaskId() {
         return taskId;
     }
@@ -73,5 +77,21 @@ public class TaskRunScriptInfoVO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getSpendTime() {
+        return spendTime;
+    }
+
+    public void setSpendTime(Long spendTime) {
+        this.spendTime = spendTime;
+    }
+
+    public String getErrorInfo() {
+        return errorInfo;
+    }
+
+    public void setErrorInfo(String errorInfo) {
+        this.errorInfo = errorInfo;
     }
 }

@@ -36,6 +36,10 @@ public class ClientAutoScriptRunInfoDO {
 
     private byte execStatus ;
 
+    private Long runTime ;
+
+    private String errorInfo ;
+
     public long getId() {
         return id;
     }
@@ -114,5 +118,21 @@ public class ClientAutoScriptRunInfoDO {
 
     public void setExecStatus(byte execStatus) {
         this.execStatus = execStatus;
+    }
+
+    public Long getRunTime() {
+        return runTime;
+    }
+
+    public void setRunTime(Long runTime) {
+        this.runTime = runTime;
+    }
+
+    public String getErrorInfo() {
+        return errorInfo;
+    }
+
+    public void setErrorInfo(String errorInfo) {
+        this.errorInfo = errorInfo;
     }
 }

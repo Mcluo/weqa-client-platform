@@ -12,10 +12,12 @@
         <result column="exec_method" jdbcType="VARCHAR" property="execMethod"/>
         <result column="exec_param" jdbcType="VARCHAR" property="execParam"/>
         <result column="exec_status" jdbcType="TINYINT" property="execStatus"/>
+        <result column="run_time" jdbcType="BIGINT" property="runTime"/>
+        <result column="error_info" jdbcType="VARCHAR" property="errorInfo"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status
+        select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,run_time,error_info
     </sql>
 
     <update id="updateStatus">
