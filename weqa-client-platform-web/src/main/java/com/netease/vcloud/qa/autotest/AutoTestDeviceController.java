@@ -61,7 +61,8 @@ public class AutoTestDeviceController {
                                  @RequestParam("port") Integer port ,
                                  @RequestParam("platform") String platform ,
                                  @RequestParam(name = "user" ,required = false) String userId ,
-                                 @RequestParam(name = "cpu" ,required = false) String cpu){
+                                 @RequestParam(name = "cpu" ,required = false) String cpu,
+                                 @RequestParam(name = "owner", required = false,defaultValue = "system") String owner){
         ResultVO resultVO = null ;
         try {
             boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu);
@@ -72,5 +73,26 @@ public class AutoTestDeviceController {
         return resultVO ;
     }
 
+    /**
+     *http://127.0.0.1:8788/g2-client/auto/device/update?id=1&ip=127.0.0.1&port=5001&platform=pc&user=44944
+     * @return
+     */
+    @RequestMapping("/update")
+    @ResponseBody
+    public ResultVO updateDeviceInfo(@RequestParam("id") Long id ,
+                                     @RequestParam("ip") String ip ,
+                                     @RequestParam("port") Integer port ,
+                                     @RequestParam("platform") String platform ,
+                                     @RequestParam(name = "user" ,required = false) String userId ,
+                                     @RequestParam(name = "cpu" ,required = false) String cpu){
+        ResultVO resultVO = null ;
+        try{
+            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu);
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
 
 }

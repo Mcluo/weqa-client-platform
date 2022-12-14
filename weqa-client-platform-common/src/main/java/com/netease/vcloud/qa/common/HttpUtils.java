@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.common;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -74,6 +75,20 @@ public class HttpUtils {
             COMMON_LOGGER.error("[HttpUtils.get] send request exception",e);
         }
         return buildJSONResult(response) ;
+    }
+
+    public JSONArray getArray(String url,Map<String,String> headers){
+        CloseableHttpResponse response = null;
+        HttpGet httpGet = new HttpGet(url);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            httpGet.addHeader(entry.getKey(), entry.getValue());
+        }
+        try {
+            response = client.execute(httpGet, context);
+        }catch (Exception e){
+            COMMON_LOGGER.error("[HttpUtils.get] send request exception",e);
+        }
+        return buildJSONArrayResult(response) ;
     }
 
     public JSONObject formPost(String url
@@ -211,6 +226,28 @@ public class HttpUtils {
                 COMMON_LOGGER.error("[HttpRequest.buildJSONResult]response status is not 200,statusLine is "+response.getStatusLine());
                 if (response.getStatusLine()!=null) {
                     COMMON_LOGGER.error("[HttpRequest.buildJSONResult]response status is not 200,status is " + response.getStatusLine().getStatusCode());
+                }
+            }
+        }
+        return null ;
+    }
+
+    private static JSONArray buildJSONArrayResult(CloseableHttpResponse response){
+        if (response != null && response.getStatusLine() != null && response.getStatusLine().getStatusCode() == 200) {
+            try {
+                String body = EntityUtils.toString(response.getEntity());
+                COMMON_LOGGER.info("[HttpRequest.buildJSONArrayResult]response body :"+ body);
+                return JSONArray.parseArray(body);
+            } catch (Exception e) {
+                COMMON_LOGGER.error("[HttpRequest.buildJSONArrayResult]parse response exception",e);
+            }
+        }else {
+            if(response==null) {
+                COMMON_LOGGER.error("[HttpRequest.buildJSONArrayResult]response is null or fail");
+            }else {
+                COMMON_LOGGER.error("[HttpRequest.buildJSONArrayResult]response status is not 200,statusLine is "+response.getStatusLine());
+                if (response.getStatusLine()!=null) {
+                    COMMON_LOGGER.error("[HttpRequest.buildJSONArrayResult]response status is not 200,status is " + response.getStatusLine().getStatusCode());
                 }
             }
         }

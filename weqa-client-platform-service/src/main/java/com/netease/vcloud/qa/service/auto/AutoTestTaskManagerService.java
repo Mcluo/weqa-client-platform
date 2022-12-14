@@ -1,5 +1,9 @@
 package com.netease.vcloud.qa.service.auto;
 
+import com.alibaba.fastjson.JSONArray;
+import com.netease.vcloud.qa.CommonUtils;
+import com.netease.vcloud.qa.UserInfoBO;
+import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.auto.ScriptRunStatus;
 import com.netease.vcloud.qa.auto.ScriptType;
 import com.netease.vcloud.qa.auto.TaskRunStatus;
@@ -7,6 +11,7 @@ import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
@@ -14,14 +19,14 @@ import com.netease.vcloud.qa.service.auto.view.TaskBaseInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
 import com.netease.vcloud.qa.service.auto.view.TaskRunScriptInfoVO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -44,6 +49,11 @@ public class AutoTestTaskManagerService {
     @Autowired
     private ClientAutoScriptRunInfoDAO clientAutoScriptRunInfoDAO ;
 
+    @Autowired
+    private UserInfoService userInfoService ;
+
+    @Autowired
+    private AutoTestDeviceService  autoTestDeviceService ;
 
     public Long addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
@@ -77,6 +87,10 @@ public class AutoTestTaskManagerService {
         autoTestTaskInfoBO.setGitInfo(autoTestTaskInfoDTO.getGitInfo());
         autoTestTaskInfoBO.setGitBranch(autoTestTaskInfoDTO.getGitBranch());
         autoTestTaskInfoBO.setOperator(autoTestTaskInfoDTO.getOperator());
+        List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(autoTestTaskInfoDTO.getDeviceList()) ;
+        if (deviceInfoVOList!=null) {
+            autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(deviceInfoVOList));
+        }
         return autoTestTaskInfoBO ;
     }
 
@@ -110,9 +124,17 @@ public class AutoTestTaskManagerService {
         taskInfoListVO.setSize(pageSize);
         taskInfoListVO.setTotal(count);
         if (!CollectionUtils.isEmpty(clientAutoTaskInfoDOList)){
+            Set<String> emailSet = new HashSet<String>() ;
+            for (ClientAutoTaskInfoDO clientAutoTaskInfoDO : clientAutoTaskInfoDOList){
+                if (clientAutoTaskInfoDO!=null && StringUtils.isNotBlank(clientAutoTaskInfoDO.getOperator())){
+                    emailSet.add(clientAutoTaskInfoDO.getOperator()) ;
+                }
+            }
+            Map<String,UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(emailSet) ;
             List<TaskBaseInfoVO> taskBaseInfoVOList = new ArrayList<TaskBaseInfoVO>() ;
             for (ClientAutoTaskInfoDO clientAutoTaskInfoDO : clientAutoTaskInfoDOList){
-                TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO) ;
+                UserInfoBO userInfoBO = userInfoBOMap.get(clientAutoTaskInfoDO.getOperator()) ;
+                TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO,userInfoBO) ;
                 if (taskBaseInfoVO!=null) {
                     taskBaseInfoVOList.add(taskBaseInfoVO);
                 }
@@ -122,7 +144,7 @@ public class AutoTestTaskManagerService {
         return taskInfoListVO ;
     }
 
-    private TaskBaseInfoVO buildTaskBaseInfoVOByDO(ClientAutoTaskInfoDO clientAutoTaskInfoDO){
+    private TaskBaseInfoVO buildTaskBaseInfoVOByDO(ClientAutoTaskInfoDO clientAutoTaskInfoDO,UserInfoBO userInfoBO){
         if (clientAutoTaskInfoDO == null){
             return null ;
         }
@@ -132,9 +154,21 @@ public class AutoTestTaskManagerService {
         taskBaseInfoVO.setTaskType(clientAutoTaskInfoDO.getTaskType());
         taskBaseInfoVO.setGitInfo(clientAutoTaskInfoDO.getGitInfo());
         taskBaseInfoVO.setBranch(clientAutoTaskInfoDO.getGitBranch());
+        taskBaseInfoVO.setStartTime(clientAutoTaskInfoDO.getGmtCreate().getTime());
+        taskBaseInfoVO.setUserInfo(CommonUtils.buildUserInfoVOByBO(userInfoBO));
         TaskRunStatus taskRunStatus = TaskRunStatus.getTaskRunStatusByCode(clientAutoTaskInfoDO.getTaskStatus()) ;
         if (taskRunStatus!=null) {
             taskBaseInfoVO.setStatus(taskRunStatus.getStatus());
+        }
+        if (StringUtils.isNotBlank(clientAutoTaskInfoDO.getDeviceInfo())){
+            try{
+                List<DeviceInfoVO> deviceInfoVOList = JSONArray.parseArray(clientAutoTaskInfoDO.getDeviceInfo(),DeviceInfoVO.class) ;
+                if (deviceInfoVOList!=null){
+                    taskBaseInfoVO.setDeviceList(deviceInfoVOList);
+                }
+            }catch (Exception e){
+                AUTO_LOGGER.error("[AutoTestTaskManagerService.buildTaskBaseInfoVOByDO] parse device object exception",e);
+            }
         }
         return taskBaseInfoVO ;
     }
@@ -142,7 +176,8 @@ public class AutoTestTaskManagerService {
     public TaskDetailInfoVO getTaskDetailInfo(Long taskId) throws AutoTestRunException{
         TaskDetailInfoVO taskDetailInfoVO = new TaskDetailInfoVO() ;
         ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
-        TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO) ;
+        UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientAutoTaskInfoDO.getOperator()) ;
+        TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO,userInfoBO) ;
         taskDetailInfoVO.setBaseInfo(taskBaseInfoVO) ;
         List<ClientAutoScriptRunInfoDO> clientAutoScriptRunInfoDOList = clientAutoScriptRunInfoDAO.getClientAutoScriptRunInfoByTaskId(taskId) ;
         if (!CollectionUtils.isEmpty(clientAutoScriptRunInfoDOList)) {

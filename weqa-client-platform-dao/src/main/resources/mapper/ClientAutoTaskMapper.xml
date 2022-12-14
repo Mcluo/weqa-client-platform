@@ -46,6 +46,7 @@
         <include refid="baseSql"/>
         FROM vcloud_client_auto_task_info
         WHERE 1=1
+        ORDER BY id desc
         LIMIT #{start}, #{size}
     </select>
 

@@ -22,10 +22,10 @@
             <artifactId>weqa-client-platform-model</artifactId>
             <groupId>com.netease.vcloud.qa</groupId>
         </dependency>
-        <dependency>
-            <artifactId>weqa-client-platform-common</artifactId>
-            <groupId>com.netease.vcloud.qa</groupId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <artifactId>weqa-client-platform-common</artifactId>-->
+<!--            <groupId>com.netease.vcloud.qa</groupId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>

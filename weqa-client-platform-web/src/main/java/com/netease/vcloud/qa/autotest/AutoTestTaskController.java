@@ -40,7 +40,7 @@ public class AutoTestTaskController {
                                   @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
                                   @RequestParam("gitBranch") String gitBranch,
                                   @RequestParam("operator") String operator,
-                                  @RequestParam("device") String deviceList,
+                                  @RequestParam("device") List<Long> deviceList,
                                   @RequestParam("ids") List<Long> idSet){
         ResultVO resultVO = null ;
         Long id = null ;

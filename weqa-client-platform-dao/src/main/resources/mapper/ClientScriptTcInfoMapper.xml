@@ -27,7 +27,7 @@
         </foreach>
     </select>
 
-    <insert id="patchInsertClientScript" parameterType="com.netease.vcloud.qa.model.ClientScriptTcInfoDO">
+    <insert id="patchInsertClientScript" parameterType="com.netease.vcloud.qa.model.ClientScriptTcInfoDO" keyProperty="id" useGeneratedKeys="true">
         insert into vcloud_client_script_tc_info (gmt_create,gmt_update,script_name,script_detail,exec_class,exec_method,exec_param,tc_id,script_owner)
         values
         <foreach collection="list" item="script" separator=",">
@@ -38,14 +38,27 @@
     <select id="getClientScript" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_script_tc_info
-        WHERE 1=1
+        WHERE id_delete=0
+        ORDER BY id DESC
         LIMIT #{start}, #{size}
     </select>
 
     <select id="getClientScriptCount" resultType="java.lang.Integer">
         SELECT count(1)
         FROM vcloud_client_script_tc_info
-        WHERE 1=1
+        WHERE id_delete=0
     </select>
+
+    <update id="updateClientScript">
+        update vcloud_client_script_tc_info
+        set gmt_update=now(),script_name=#{script.scriptName},script_detail=#{script.scriptDetail},exec_class=#{script.execClass},exec_method=#{script.execMethod},exec_param=#{script.execParam},tc_id=#{script.tcId}
+        where id = #{script.id}
+    </update>
+
+    <update id="deleteClientScript">
+        update vcloud_client_script_tc_info
+        set gmt_update=now(),id_delete=1
+        where id=#{id}
+    </update>
 
 </mapper>
