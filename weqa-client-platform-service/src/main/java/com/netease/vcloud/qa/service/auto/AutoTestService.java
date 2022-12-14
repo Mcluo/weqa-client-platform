@@ -27,6 +27,9 @@ public class AutoTestService {
     private AutoCoveredService autoCoveredService ;
 
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
+        if (StringUtils.isBlank(runInfo)||runInfo.startsWith("auto")){
+            return false ;
+        }
         AutoTestResultDO autoTestResultDO = new AutoTestResultDO();
         autoTestResultDO.setRunInfo(runInfo);
         autoTestResultDO.setCaseName(caseName);
