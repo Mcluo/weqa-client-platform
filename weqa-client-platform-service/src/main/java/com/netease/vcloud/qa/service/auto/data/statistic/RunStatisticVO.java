@@ -6,6 +6,8 @@ package com.netease.vcloud.qa.service.auto.data.statistic;
  */
 public class RunStatisticVO {
 
+    private String runningInfo ;
+
     private Integer total ;
 
     private Integer success ;
@@ -16,6 +18,14 @@ public class RunStatisticVO {
 
     public Integer getTotal() {
         return total;
+    }
+
+    public String getRunningInfo() {
+        return runningInfo;
+    }
+
+    public void setRunningInfo(String runningInfo) {
+        this.runningInfo = runningInfo;
     }
 
     public void setTotal(Integer total) {

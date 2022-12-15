@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class RunResultStatisticInfoVO {
 
-    private String runningInfo ;
+//    private String runningInfo ;
 
     private Long startTime ;
 
@@ -16,13 +16,13 @@ public class RunResultStatisticInfoVO {
 
     private List<RunStatisticVO>  runStatisticList ;
 
-    public String getRunningInfo() {
-        return runningInfo;
-    }
-
-    public void setRunningInfo(String runningInfo) {
-        this.runningInfo = runningInfo;
-    }
+//    public String getRunningInfo() {
+//        return runningInfo;
+//    }
+//
+//    public void setRunningInfo(String runningInfo) {
+//        this.runningInfo = runningInfo;
+//    }
 
     public Long getStartTime() {
         return startTime;
