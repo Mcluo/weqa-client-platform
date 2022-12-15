@@ -28,7 +28,8 @@ public class AutoTestService {
 
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
         if (StringUtils.isBlank(runInfo)||runInfo.startsWith("auto")){
-            return false ;
+            TC_LOGGER.warn("[AutoTestService.saveAutoTestResult] run info is invalid");
+            return true ;
         }
         AutoTestResultDO autoTestResultDO = new AutoTestResultDO();
         autoTestResultDO.setRunInfo(runInfo);
