@@ -8,10 +8,12 @@ import com.netease.vcloud.qa.service.auto.data.statistic.RunResultStatisticDetai
 import com.netease.vcloud.qa.service.auto.data.statistic.RunResultStatisticInfoVO;
 import com.netease.vcloud.qa.service.auto.data.statistic.RunStatisticVO;
 import com.netease.vcloud.qa.service.auto.data.statistic.RunSummerInfoVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -21,6 +23,8 @@ import java.util.*;
 @Service
 public class AutoTestResultStatisticService {
 
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##%") ;
+
     @Autowired
     private ClientAutoTestStatisticDAO clientAutoTestStatisticDAO ;
 
@@ -29,10 +33,11 @@ public class AutoTestResultStatisticService {
      */
     public RunSummerInfoVO getGroupRunSummer(){
         long current = System.currentTimeMillis() ;
-        Date todayZeroTime  =DateUtils.getFirstTimeOfWeek(current) ;
+        Date weekZeroTime  =DateUtils.getFirstTimeOfWeek(current) ;
         Date firstTimeOfMonth = DateUtils.getFirstTimeOfMonth(current) ;
-        ClientAutoTestStatisticRunInfoDO weekClientAutoTestStatisticRunInfoDO = clientAutoTestStatisticDAO.countAllSummerRunInfo(todayZeroTime,firstTimeOfMonth) ;
-        ClientAutoTestStatisticRunInfoDO monthClientAutoTestStatisticRunInfoDO = clientAutoTestStatisticDAO.countAllSummerRunInfo(todayZeroTime,firstTimeOfMonth) ;
+        Date finishTime = new Date(current) ;
+        ClientAutoTestStatisticRunInfoDO weekClientAutoTestStatisticRunInfoDO = clientAutoTestStatisticDAO.countAllSummerRunInfo(weekZeroTime,finishTime) ;
+        ClientAutoTestStatisticRunInfoDO monthClientAutoTestStatisticRunInfoDO = clientAutoTestStatisticDAO.countAllSummerRunInfo(firstTimeOfMonth,finishTime) ;
         RunSummerInfoVO runSummerInfoVO = new RunSummerInfoVO() ;
         runSummerInfoVO.setMonth(buildRunStatisticVO(monthClientAutoTestStatisticRunInfoDO));
         runSummerInfoVO.setWeek(buildRunStatisticVO(weekClientAutoTestStatisticRunInfoDO));
@@ -51,18 +56,26 @@ public class AutoTestResultStatisticService {
         runStatisticVO.setFail(failNumber);
         int total = successNumber + failNumber ;
         runStatisticVO.setTotal(total);
-        double rate = (double) successNumber / (double) total * 100 ;
-        runStatisticVO.setSuccessRate(rate);
+        String rateStr = "-" ;
+        if (total >0) {
+             double rate = (double) successNumber / (double) total ;
+             rateStr = decimalFormat.format(rate) ;
+        }
+        runStatisticVO.setSuccessRate(rateStr);
         return runStatisticVO ;
     }
 
     /**
+     *
      * 列表的展示
      * @param startTime
      * @param finishTime
      * @return
      */
     public RunResultStatisticInfoVO queryRunResultStatistic(Long startTime , Long finishTime){
+        if (startTime == null || finishTime == null){
+            return null ;
+        }
         List<ClientAutoTestStatisticRunInfoDO> clientAutoTestStatisticRunInfoDOList = clientAutoTestStatisticDAO.countSummerRunInfoGroupByRunInfo(new Date(startTime),new Date(finishTime)) ;
         RunResultStatisticInfoVO runResultStatisticInfoVO = new RunResultStatisticInfoVO() ;
         runResultStatisticInfoVO.setStartTime(startTime);
@@ -82,13 +95,15 @@ public class AutoTestResultStatisticService {
     }
 
     /**
-     *
      * @param startTime
      * @param finishTime
      * @param runInfo
      * @return
      */
     public RunResultStatisticDetailVO queryRunResultDetail(Long startTime , Long finishTime , String runInfo){
+        if (startTime == null || finishTime == null || StringUtils.isBlank(runInfo)){
+            return null ;
+        }
         List<ClientAutoTestStatisticErrorInfoDO> clientAutoTestStatisticErrorInfoDOList = clientAutoTestStatisticDAO.countSummerErrorInfo(runInfo,new Date(startTime),new Date(finishTime)) ;
         RunResultStatisticDetailVO runResultStatisticDetailVO = new RunResultStatisticDetailVO() ;
         runResultStatisticDetailVO.setRunningInfo(runInfo);

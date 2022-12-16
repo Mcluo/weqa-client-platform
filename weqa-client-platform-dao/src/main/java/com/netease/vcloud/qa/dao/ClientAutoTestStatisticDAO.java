@@ -23,11 +23,17 @@ public interface ClientAutoTestStatisticDAO {
      */
     ClientAutoTestStatisticRunInfoDO countAllSummerRunInfo(@Param("start") Date startTime , @Param("finish") Date finishTime) ;
 
+    /**
+     * 根据时间获取具体的运行结果
+     * @param startTime
+     * @param finishTime
+     * @return
+     */
     List<ClientAutoTestStatisticRunInfoDO> countSummerRunInfoGroupByRunInfo(@Param("start") Date startTime , @Param("finish") Date finishTime) ;
 
 
     /**
-     *
+     * 根据时间和运行信息，获取具体的运行结果
      * @param startTime
      * @param finishTime
      * @return
