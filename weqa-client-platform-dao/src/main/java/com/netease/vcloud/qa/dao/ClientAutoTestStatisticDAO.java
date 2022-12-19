@@ -5,6 +5,9 @@ import com.netease.vcloud.qa.model.ClientAutoTestStatisticRunInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2022/12/15 17:35
@@ -18,14 +21,23 @@ public interface ClientAutoTestStatisticDAO {
      * @param finishTime
      * @return
      */
-    ClientAutoTestStatisticRunInfoDO countSummerRunInfo(@Param("start") Long startTime , @Param("finish") Long finishTime) ;
+    ClientAutoTestStatisticRunInfoDO countAllSummerRunInfo(@Param("start") Date startTime , @Param("finish") Date finishTime) ;
 
     /**
-     *
+     * 根据时间获取具体的运行结果
      * @param startTime
      * @param finishTime
      * @return
      */
-    ClientAutoTestStatisticErrorInfoDO countSummerErrorInfo(@Param("runInfo") String runInfo, @Param("start") Long startTime , @Param("finish") Long finishTime) ;
+    List<ClientAutoTestStatisticRunInfoDO> countSummerRunInfoGroupByRunInfo(@Param("start") Date startTime , @Param("finish") Date finishTime) ;
+
+
+    /**
+     * 根据时间和运行信息，获取具体的运行结果
+     * @param startTime
+     * @param finishTime
+     * @return
+     */
+    List<ClientAutoTestStatisticErrorInfoDO> countSummerErrorInfo(@Param("runInfo") String runInfo, @Param("start") Date startTime , @Param("finish") Date finishTime) ;
 
 }

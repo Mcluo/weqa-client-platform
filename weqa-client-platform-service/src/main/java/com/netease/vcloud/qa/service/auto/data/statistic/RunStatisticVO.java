@@ -6,16 +6,33 @@ package com.netease.vcloud.qa.service.auto.data.statistic;
  */
 public class RunStatisticVO {
 
+    private String runInfo ;
+
+
+    private String operator ;
+
+    private String runIp ;
+
+    private String branch ;
+
     private Integer total ;
 
     private Integer success ;
 
     private Integer fail ;
 
-    private Double successRate ;
+    private String successRate ;
 
     public Integer getTotal() {
         return total;
+    }
+
+    public String getRunInfo() {
+        return runInfo;
+    }
+
+    public void setRunInfo(String runInfo) {
+        this.runInfo = runInfo;
     }
 
     public void setTotal(Integer total) {
@@ -38,11 +55,35 @@ public class RunStatisticVO {
         this.fail = fail;
     }
 
-    public Double getSuccessRate() {
+    public String getSuccessRate() {
         return successRate;
     }
 
-    public void setSuccessRate(Double successRate) {
+    public void setSuccessRate(String successRate) {
         this.successRate = successRate;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public String getRunIp() {
+        return runIp;
+    }
+
+    public void setRunIp(String runIp) {
+        this.runIp = runIp;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 }

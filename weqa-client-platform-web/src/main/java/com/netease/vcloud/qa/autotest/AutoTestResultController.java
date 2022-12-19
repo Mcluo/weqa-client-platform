@@ -6,8 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.AutoCoveredService;
+import com.netease.vcloud.qa.service.auto.AutoTestResultStatisticService;
 import com.netease.vcloud.qa.service.auto.AutoTestService;
 import com.netease.vcloud.qa.service.auto.data.TCCoveredInfoDTO;
+import com.netease.vcloud.qa.service.auto.data.statistic.RunResultStatisticDetailVO;
+import com.netease.vcloud.qa.service.auto.data.statistic.RunResultStatisticInfoVO;
+import com.netease.vcloud.qa.service.auto.data.statistic.RunSummerInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,9 @@ public class AutoTestResultController {
 
     @Autowired
     private AutoCoveredService autoCoveredService;
+
+    @Autowired
+    private AutoTestResultStatisticService autoTestResultStatisticService ;
 
     /**
      *http://127.0.0.1:8080/g2-client/auto/test/result/add?info=test_01_0zz
@@ -71,4 +78,59 @@ public class AutoTestResultController {
         resultVO = ResultUtils.build(flag) ;
         return resultVO ;
     }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/statistic/summer
+     * @return
+     */
+    @RequestMapping("/statistic/summer")
+    @ResponseBody
+    public ResultVO queryGroupRunSummer(){
+        ResultVO resultVO = new ResultVO() ;
+        RunSummerInfoVO runSummerInfoVO = autoTestResultStatisticService.getGroupRunSummer() ;
+        if (runSummerInfoVO != null){
+            resultVO = ResultUtils.buildSuccess(runSummerInfoVO) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/statistic/list?start=1669824000000&finish=1671180817000
+     * @return
+     */
+    @RequestMapping("/statistic/list")
+    @ResponseBody
+    public ResultVO queryRunResultStatistic(@RequestParam("start") Long startTime ,
+                                            @RequestParam("finish") Long finishTime){
+        ResultVO resultVO = null ;
+        RunResultStatisticInfoVO runResultStatisticInfoVO = autoTestResultStatisticService.queryRunResultStatistic(startTime, finishTime) ;
+        if (runResultStatisticInfoVO!=null){
+            resultVO = ResultUtils.buildSuccess(runResultStatisticInfoVO) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/statistic/detail?start=1669824000000&finish=1671180817000&runInfo=
+     * @return
+     */
+    @RequestMapping("/statistic/detail")
+    @ResponseBody
+    public  ResultVO queryRunResultDetail(@RequestParam("start") Long startTime ,
+                                          @RequestParam("finish") Long finishTime ,
+                                          @RequestParam("runInfo") String runInfo){
+        ResultVO resultVO = null ;
+        RunResultStatisticDetailVO runResultStatisticDetailVO = autoTestResultStatisticService.queryRunResultDetail(startTime, finishTime,runInfo) ;
+        if (runResultStatisticDetailVO!=null){
+            resultVO = ResultUtils.buildSuccess(runResultStatisticDetailVO) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
 }
