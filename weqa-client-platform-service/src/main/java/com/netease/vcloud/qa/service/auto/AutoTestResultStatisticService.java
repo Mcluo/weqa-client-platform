@@ -49,7 +49,16 @@ public class AutoTestResultStatisticService {
             return null ;
         }
         RunStatisticVO runStatisticVO = new RunStatisticVO() ;
-        runStatisticVO.setRunningInfo(clientAutoTestStatisticRunInfoDO.getRunInfo());
+        String runInfo = clientAutoTestStatisticRunInfoDO.getRunInfo() ;
+        runStatisticVO.setRunInfo(runInfo);
+        if (StringUtils.isNotBlank(runInfo)){
+            String[] runInfoArray = runInfo.split("_") ;
+            if (runInfoArray.length>=3){
+                runStatisticVO.setOperator(runInfoArray[0]);
+                runStatisticVO.setRunIp(runInfoArray[1]);
+                runStatisticVO.setBranch(runInfoArray[2]);
+            }
+        }
         int successNumber = clientAutoTestStatisticRunInfoDO.getSuccess() ;
         int failNumber = clientAutoTestStatisticRunInfoDO.getFail();
         runStatisticVO.setSuccess(successNumber);
