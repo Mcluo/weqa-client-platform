@@ -36,7 +36,7 @@
         WHERE gmt_create &gt; #{start}
         AND gmt_create &lt; #{finish}
         AND fail_number > 0
-        AND run_info like #{runInfo}
+        AND run_info like CONCAT (#{runInfo},"%")
         group by error_info
         order by total_count desc ;
     </select>
