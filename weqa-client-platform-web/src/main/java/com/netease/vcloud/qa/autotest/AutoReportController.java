@@ -9,10 +9,9 @@ import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.AutoPerfService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -26,65 +25,34 @@ public class AutoReportController {
     private AutoPerfService autoPerfService;
     @RequestMapping("/addIosMemoryInfo")
     @ResponseBody
-    public ResultVO addIosMemoryInfo(
-            @RequestParam(name = "memory") float memory,
-            @RequestParam(name = "appCpu") float appCpu,
-            @RequestParam(name = "times") Integer times,
-            @RequestParam(name = "taskid") Integer taskid,
-            @RequestParam(name = "sysCpu") float sysCpu) {
-        VcloudClientAutoIosPrefMemoryInfoDO clientAutoIosPrefMemoryInfoDO = new VcloudClientAutoIosPrefMemoryInfoDO();
-        clientAutoIosPrefMemoryInfoDO.setMemory(memory);
-        clientAutoIosPrefMemoryInfoDO.setSysCpu(sysCpu);
-        clientAutoIosPrefMemoryInfoDO.setAppCpu(appCpu);
-        clientAutoIosPrefMemoryInfoDO.setTimes(times);
-        clientAutoIosPrefMemoryInfoDO.setTaskid(taskid);
-        autoPerfService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
+    public ResultVO addIosMemoryInfo(@RequestBody JSONObject jsonObject ) {
+        List<VcloudClientAutoIosPrefMemoryInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefMemoryInfoDO.class);
+        for(VcloudClientAutoIosPrefMemoryInfoDO clientAutoIosPrefMemoryInfoDO : list){
+            clientAutoIosPrefMemoryInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
+            autoPerfService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
+        }
         return ResultUtils.build(true);
     }
 
     @RequestMapping("/addIosPowerInfo")
     @ResponseBody
-    public ResultVO addIosPowerInfo(
-            @RequestParam(name = "voltage") float voltage,
-            @RequestParam(name = "temperature") float temperature,
-            @RequestParam(name = "instantAmperage") float instantAmperage,
-            @RequestParam(name = "power") float power,
-            @RequestParam(name = "level") float level,
-            @RequestParam(name = "times") Integer times,
-            @RequestParam(name = "taskId") Integer taskId) {
-        VcloudClientAutoIosPrefInfoDO clientAutoIosPrefInfoDO = new VcloudClientAutoIosPrefInfoDO();
-        clientAutoIosPrefInfoDO.setPower(power);
-        clientAutoIosPrefInfoDO.setInstantamperage(instantAmperage);
-        clientAutoIosPrefInfoDO.setLevel(level);
-        clientAutoIosPrefInfoDO.setTemperature(temperature);
-        clientAutoIosPrefInfoDO.setVoltage(voltage);
-        clientAutoIosPrefInfoDO.setTimes(times);
-        clientAutoIosPrefInfoDO.setTaskid(taskId);
-        autoPerfService.insertIosInfo(clientAutoIosPrefInfoDO);
+    public ResultVO addIosPowerInfo(@RequestBody JSONObject jsonObject ) {
+        List<VcloudClientAutoIosPrefInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefInfoDO.class);
+        for(VcloudClientAutoIosPrefInfoDO clientAutoIosPrefInfoDO : list){
+            clientAutoIosPrefInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
+            autoPerfService.insertIosInfo(clientAutoIosPrefInfoDO);
+        }
         return ResultUtils.build(true);
     }
 
     @RequestMapping("/addAndroidInfo")
     @ResponseBody
-    public ResultVO addAndroidInfo(
-            @RequestParam(name = "voltage") float voltage,
-            @RequestParam(name = "temperature") float temperature,
-            @RequestParam(name = "instantAmperage") float instantAmperage,
-            @RequestParam(name = "power") float power,
-            @RequestParam(name = "level") float level,
-            @RequestParam(name = "times") Integer times,
-            @RequestParam(name = "taskId") Integer taskId,
-            @RequestParam(name = "memory") float memory) {
-        VcloudClientAutoAndroidPrefInfoDO clientAutoAndroidPrefInfoDO = new VcloudClientAutoAndroidPrefInfoDO();
-        clientAutoAndroidPrefInfoDO.setInstantamperage(instantAmperage);
-        clientAutoAndroidPrefInfoDO.setPower(power);
-        clientAutoAndroidPrefInfoDO.setTaskid(taskId);
-        clientAutoAndroidPrefInfoDO.setTemperature(temperature);
-        clientAutoAndroidPrefInfoDO.setMemory(memory);
-        clientAutoAndroidPrefInfoDO.setLevel(level);
-        clientAutoAndroidPrefInfoDO.setTimes(times);
-        clientAutoAndroidPrefInfoDO.setVoltage(voltage);
-        autoPerfService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);
+    public ResultVO addAndroidInfo(@RequestBody JSONObject jsonObject ) {
+        List<VcloudClientAutoAndroidPrefInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoAndroidPrefInfoDO.class);
+        for (VcloudClientAutoAndroidPrefInfoDO clientAutoAndroidPrefInfoDO: list){
+            clientAutoAndroidPrefInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
+            autoPerfService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);
+        }
         return ResultUtils.build(true);
     }
 
@@ -108,7 +76,7 @@ public class AutoReportController {
         clientAutoPerfTaskDO.setSdkinfo(sdkInfo);
         clientAutoPerfTaskDO.setSdkversion(sdkVersion);
         clientAutoPerfTaskDO.setUser(user);
-        int taskId = autoPerfService.insertPerfTask(clientAutoPerfTaskDO);
+        autoPerfService.insertPerfTask(clientAutoPerfTaskDO);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("taskId", clientAutoPerfTaskDO.getId());
         return ResultUtils.build(true,jsonObject);
