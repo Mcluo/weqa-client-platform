@@ -16,7 +16,11 @@ public class AutoTestRunException extends Exception{
 
     public static String AUTO_TEST_SUIT_IS_NOT_EXIST = "用例集不存在" ;
 
+    public static String AUTO_TEST_TASK_IS_NOT_EXIST = "自动化任务不存在" ;
+
     public static String AUTO_TEST_SCRIPT_ID_EMPTY = "自动化脚本信息为空" ;
+
+    public static String AUTO_TEST_TASK_STATUS_EXCEPTION = "任务状态不支持该操作" ;
 
     public static String DEVICE_PARAM_EXCEPTION = "设备参数信息错误" ;
 

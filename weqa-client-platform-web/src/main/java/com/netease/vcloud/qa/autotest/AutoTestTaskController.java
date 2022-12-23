@@ -113,4 +113,21 @@ public class AutoTestTaskController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/task/cancel?id=29
+     * @param taskId
+     * @return
+     */
+    @RequestMapping("/cancel")
+    public ResultVO cancelAutoTask(@RequestParam("id") Long taskId){
+        ResultVO resultVO = null ;
+        try {
+            boolean flag = autoTestTaskManagerService.cancelAutoTask(taskId) ;
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.build(false,e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
 }

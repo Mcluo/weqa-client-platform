@@ -38,4 +38,13 @@ public interface ClientAutoScriptRunInfoDAO {
      */
     List<ClientAutoScriptRunInfoDO> getClientAutoScriptRunInfoByTaskId(@Param("taskId") long taskId) ;
 
+    /**
+     * 批量变更状态（主要用于任务取消）
+     * @param taskId
+     * @param originStatusCode
+     * @param newStatusCode
+     * @return
+     */
+    int updateStatusByTaskAndStatus(@Param("taskId") long taskId,@Param("origin") byte originStatusCode ,@Param("newStatus") byte newStatusCode) ;
+
 }
