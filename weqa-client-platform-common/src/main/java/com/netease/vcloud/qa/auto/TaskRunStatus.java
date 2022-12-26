@@ -15,6 +15,8 @@ public enum TaskRunStatus {
     FINISH("finish" ,(byte) 4) ,
 
     ERROR("error" ,(byte) -1) ,
+
+    CANCEL("cancel", (byte) 9) ,
     ;
     private String status ;
 
@@ -51,5 +53,13 @@ public enum TaskRunStatus {
             }
         }
         return null ;
+    }
+
+    public static boolean isTaskFinish(byte code){
+        if (code == FINISH.code || code == ERROR.code || code == CANCEL.code){
+            return true ;
+        }else {
+            return false ;
+        }
     }
 }

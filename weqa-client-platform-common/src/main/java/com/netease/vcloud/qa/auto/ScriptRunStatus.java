@@ -16,6 +16,7 @@ public enum ScriptRunStatus {
 
     SUCCESS("success" ,(byte) 6) ,
 
+    CANCEL("cancel", (byte) 9) ,
     ;
     private String status ;
 
@@ -56,6 +57,14 @@ public enum ScriptRunStatus {
             }
         }
         return null ;
+    }
+
+    public static boolean isTaskFinish(byte code){
+        if (code == SUCCESS.code || code == FAIL.code || code == CANCEL.code){
+            return true ;
+        }else {
+            return false ;
+        }
     }
 
 }
