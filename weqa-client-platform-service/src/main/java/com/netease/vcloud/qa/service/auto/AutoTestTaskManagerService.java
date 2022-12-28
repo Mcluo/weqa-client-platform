@@ -11,14 +11,13 @@ import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.model.ClientAutoTestStatisticRunInfoDO;
+import com.netease.vcloud.qa.nos.NosService;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
-import com.netease.vcloud.qa.service.auto.view.TaskBaseInfoVO;
-import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
-import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
-import com.netease.vcloud.qa.service.auto.view.TaskRunScriptInfoVO;
+import com.netease.vcloud.qa.service.auto.view.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -54,6 +55,9 @@ public class AutoTestTaskManagerService {
 
     @Autowired
     private AutoTestDeviceService  autoTestDeviceService ;
+
+    @Autowired
+    private NosService nosService ;
 
     public Long addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
@@ -192,14 +196,53 @@ public class AutoTestTaskManagerService {
                 taskRunScriptInfoVO.setExecParam(clientAutoScriptRunInfoDO.getExecParam());
                 taskRunScriptInfoVO.setSpendTime(clientAutoScriptRunInfoDO.getRunTime());
                 taskRunScriptInfoVO.setErrorInfo(clientAutoScriptRunInfoDO.getErrorInfo());
+                taskRunScriptInfoVO.setRunScriptId(clientAutoScriptRunInfoDO.getId());
                 ScriptRunStatus scriptRunStatus = ScriptRunStatus.getStatusByCode(clientAutoScriptRunInfoDO.getExecStatus()) ;
                 if (scriptRunStatus!=null) {
                     taskRunScriptInfoVO.setStatus(scriptRunStatus.getStatus());
+                }
+                if (StringUtils.isNotBlank(clientAutoScriptRunInfoDO.getLogInfo())){
+                    String nosUrl = nosService.getDownFileUrl(clientAutoScriptRunInfoDO.getLogInfo()) ;
+                    taskRunScriptInfoVO.setLogUrl(nosUrl);
                 }
                 scriptList.add(taskRunScriptInfoVO) ;
             }
             taskDetailInfoVO.setScriptList(scriptList);
         }
         return taskDetailInfoVO ;
+    }
+
+    /**
+     * @param logScriptId
+     * @return
+     */
+    public ScriptRunLogVO getScriptRunLog(Long logScriptId) {
+        ClientAutoScriptRunInfoDO clientAutoScriptRunInfoById = clientAutoScriptRunInfoDAO.getClientAutoScriptRunInfoById(logScriptId) ;
+        if (clientAutoScriptRunInfoById == null){
+            return null ;
+        }
+        ScriptRunLogVO scriptRunLogVO = new ScriptRunLogVO() ;
+        if (StringUtils.isBlank(clientAutoScriptRunInfoById.getLogInfo())){
+            return scriptRunLogVO ;
+        }
+        InputStream inputStream = nosService.getFile(clientAutoScriptRunInfoById.getLogInfo()) ;
+        if (inputStream == null){
+            return scriptRunLogVO ;
+        }
+        try {
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            String logStr = new String(bytes);
+            scriptRunLogVO.setLog(logStr);
+        }catch (IOException e){
+            AUTO_LOGGER.error("[AutoTestTaskManagerService.getScriptRunLog] read nos file exception",e);
+        }finally {
+            try {
+                inputStream.close();
+            }catch (IOException e){
+                AUTO_LOGGER.error("[AutoTestTaskManagerService.getScriptRunLog] close inputStream exception",e);
+            }
+        }
+        return scriptRunLogVO ;
     }
 }

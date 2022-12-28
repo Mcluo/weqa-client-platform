@@ -40,6 +40,8 @@ public class ClientAutoScriptRunInfoDO {
 
     private String errorInfo ;
 
+    private String logInfo ;
+
     public long getId() {
         return id;
     }
@@ -134,5 +136,13 @@ public class ClientAutoScriptRunInfoDO {
 
     public void setErrorInfo(String errorInfo) {
         this.errorInfo = errorInfo;
+    }
+
+    public String getLogInfo() {
+        return logInfo;
+    }
+
+    public void setLogInfo(String logInfo) {
+        this.logInfo = logInfo;
     }
 }

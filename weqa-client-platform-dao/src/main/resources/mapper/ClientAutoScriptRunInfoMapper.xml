@@ -14,10 +14,11 @@
         <result column="exec_status" jdbcType="TINYINT" property="execStatus"/>
         <result column="run_time" jdbcType="BIGINT" property="runTime"/>
         <result column="error_info" jdbcType="VARCHAR" property="errorInfo"/>
+        <result column="log_info" jdbcType="VARCHAR" property="logInfo"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,run_time,error_info
+        select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,run_time,error_info,log_info
     </sql>
 
     <update id="updateStatus">
@@ -27,10 +28,10 @@
     </update>
 
     <insert id="patchInsertAutoScript" parameterType="com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO">
-        insert into vcloud_client_auto_script_run_info (gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status)
+        insert into vcloud_client_auto_script_run_info (gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,log_info)
         values
         <foreach collection="scriptList" item="script" separator=",">
-            (now(),now(),#{script.taskId},#{script.scriptName},#{script.scriptDetail},#{script.execClass},#{script.execMethod},#{script.execParam},#{script.execStatus})
+            (now(),now(),#{script.taskId},#{script.scriptName},#{script.scriptDetail},#{script.execClass},#{script.execMethod},#{script.execParam},#{script.execStatus},#{script.logInfo})
         </foreach>
     </insert>
 
@@ -39,5 +40,11 @@
         <include refid="baseSql"/>
         FROM vcloud_client_auto_script_run_info
         WHERE task_id = #{taskId}
+    </select>
+
+    <select id="getClientAutoScriptRunInfoById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_script_run_info
+        WHERE id = #{id}
     </select>
 </mapper>
