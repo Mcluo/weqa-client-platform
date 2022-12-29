@@ -246,4 +246,21 @@ public class AutoTestTaskManagerService {
         }
         return scriptRunLogVO ;
     }
+
+	 public boolean cancelAutoTask(Long taskId) throws AutoTestRunException{
+        ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        if (clientAutoTaskInfoDO == null){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_TASK_IS_NOT_EXIST) ;
+        }
+        if (TaskRunStatus.isTaskFinish(clientAutoTaskInfoDO.getTaskStatus())){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_TASK_STATUS_EXCEPTION) ;
+        }
+        int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus(taskId,TaskRunStatus.CANCEL.getCode()) ;
+        if (count<1){
+            throw  new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
+        }
+        clientAutoScriptRunInfoDAO.updateStatusByTaskAndStatus(taskId,ScriptRunStatus.INIT.getCode(),ScriptRunStatus.CANCEL.getCode()) ;
+        return true ;
+    }
+
 }

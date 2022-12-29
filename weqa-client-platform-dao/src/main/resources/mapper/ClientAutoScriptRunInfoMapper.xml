@@ -42,9 +42,17 @@
         WHERE task_id = #{taskId}
     </select>
 
+    <update id="updateStatusByTaskAndStatus">
+        UPDATE vcloud_client_auto_script_run_info
+        SET gmt_update=now(),exec_status=#{newStatus}
+        WHERE task_id=#{taskId} AND exec_status = #{origin}
+    </update>
+
+	
     <select id="getClientAutoScriptRunInfoById" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_script_run_info
         WHERE id = #{id}
     </select>
+
 </mapper>
