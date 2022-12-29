@@ -11,14 +11,13 @@ import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.model.ClientAutoTestStatisticRunInfoDO;
+import com.netease.vcloud.qa.nos.NosService;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
-import com.netease.vcloud.qa.service.auto.view.TaskBaseInfoVO;
-import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
-import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
-import com.netease.vcloud.qa.service.auto.view.TaskRunScriptInfoVO;
+import com.netease.vcloud.qa.service.auto.view.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -54,6 +56,9 @@ public class AutoTestTaskManagerService {
 
     @Autowired
     private AutoTestDeviceService  autoTestDeviceService ;
+
+    @Autowired
+    private NosService nosService ;
 
     public Long addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
@@ -192,9 +197,14 @@ public class AutoTestTaskManagerService {
                 taskRunScriptInfoVO.setExecParam(clientAutoScriptRunInfoDO.getExecParam());
                 taskRunScriptInfoVO.setSpendTime(clientAutoScriptRunInfoDO.getRunTime());
                 taskRunScriptInfoVO.setErrorInfo(clientAutoScriptRunInfoDO.getErrorInfo());
+                taskRunScriptInfoVO.setRunScriptId(clientAutoScriptRunInfoDO.getId());
                 ScriptRunStatus scriptRunStatus = ScriptRunStatus.getStatusByCode(clientAutoScriptRunInfoDO.getExecStatus()) ;
                 if (scriptRunStatus!=null) {
                     taskRunScriptInfoVO.setStatus(scriptRunStatus.getStatus());
+                }
+                if (StringUtils.isNotBlank(clientAutoScriptRunInfoDO.getLogInfo())){
+                    String nosUrl = nosService.getDownFileUrl(clientAutoScriptRunInfoDO.getLogInfo()) ;
+                    taskRunScriptInfoVO.setLogUrl(nosUrl);
                 }
                 scriptList.add(taskRunScriptInfoVO) ;
             }
@@ -203,7 +213,41 @@ public class AutoTestTaskManagerService {
         return taskDetailInfoVO ;
     }
 
-    public boolean cancelAutoTask(Long taskId) throws AutoTestRunException{
+    /**
+     * @param logScriptId
+     * @return
+     */
+    public ScriptRunLogVO getScriptRunLog(Long logScriptId) {
+        ClientAutoScriptRunInfoDO clientAutoScriptRunInfoById = clientAutoScriptRunInfoDAO.getClientAutoScriptRunInfoById(logScriptId) ;
+        if (clientAutoScriptRunInfoById == null){
+            return null ;
+        }
+        ScriptRunLogVO scriptRunLogVO = new ScriptRunLogVO() ;
+        if (StringUtils.isBlank(clientAutoScriptRunInfoById.getLogInfo())){
+            return scriptRunLogVO ;
+        }
+        InputStream inputStream = nosService.getFile(clientAutoScriptRunInfoById.getLogInfo()) ;
+        if (inputStream == null){
+            return scriptRunLogVO ;
+        }
+        try {
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            String logStr = new String(bytes, Charset.forName("UTF-8").name());
+            scriptRunLogVO.setLog(logStr);
+        }catch (IOException e){
+            AUTO_LOGGER.error("[AutoTestTaskManagerService.getScriptRunLog] read nos file exception",e);
+        }finally {
+            try {
+                inputStream.close();
+            }catch (IOException e){
+                AUTO_LOGGER.error("[AutoTestTaskManagerService.getScriptRunLog] close inputStream exception",e);
+            }
+        }
+        return scriptRunLogVO ;
+    }
+
+	 public boolean cancelAutoTask(Long taskId) throws AutoTestRunException{
         ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
         if (clientAutoTaskInfoDO == null){
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_TASK_IS_NOT_EXIST) ;
@@ -218,4 +262,5 @@ public class AutoTestTaskManagerService {
         clientAutoScriptRunInfoDAO.updateStatusByTaskAndStatus(taskId,ScriptRunStatus.INIT.getCode(),ScriptRunStatus.CANCEL.getCode()) ;
         return true ;
     }
+
 }
