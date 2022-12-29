@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -232,7 +233,7 @@ public class AutoTestTaskManagerService {
         try {
             byte[] bytes = new byte[inputStream.available()];
             inputStream.read(bytes);
-            String logStr = new String(bytes);
+            String logStr = new String(bytes, Charset.forName("UTF-8").name());
             scriptRunLogVO.setLog(logStr);
         }catch (IOException e){
             AUTO_LOGGER.error("[AutoTestTaskManagerService.getScriptRunLog] read nos file exception",e);
