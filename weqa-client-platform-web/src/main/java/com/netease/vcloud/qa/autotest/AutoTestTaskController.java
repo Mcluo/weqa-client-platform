@@ -1,10 +1,16 @@
 package com.netease.vcloud.qa.autotest;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
+import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
+import com.netease.vcloud.qa.service.auto.AutoTestTaskUrlService;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +32,9 @@ public class AutoTestTaskController {
     @Autowired
     private AutoTestTaskManagerService autoTestTaskManagerService;
 
+    @Autowired
+    private AutoTestTaskUrlService autoTestTaskUrlService;
+
     /**
      * 创建自动化测试任务
      * @param taskName
@@ -41,7 +50,8 @@ public class AutoTestTaskController {
                                   @RequestParam("gitBranch") String gitBranch,
                                   @RequestParam("operator") String operator,
                                   @RequestParam("device") List<Long> deviceList,
-                                  @RequestParam("ids") List<Long> idSet){
+                                  @RequestParam("ids") List<Long> idSet,
+                                   @RequestParam("urls") String urls){
         ResultVO resultVO = null ;
         Long id = null ;
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
@@ -54,6 +64,13 @@ public class AutoTestTaskController {
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
             id = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
+            List<AutoTestTaskUrlDTO> array = JSONArray.parseArray(urls, AutoTestTaskUrlDTO.class);
+
+            for(AutoTestTaskUrlDTO dto : array){
+                autoTestTaskUrlService.addTaskUrl(dto.getPlatform(), id, dto.getUrl());
+            }
+            autoTestTaskManagerService.installApi(deviceList, array, id);
+
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
             return resultVO ;

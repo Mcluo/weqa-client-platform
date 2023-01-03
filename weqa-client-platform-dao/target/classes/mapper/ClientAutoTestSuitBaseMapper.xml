@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientAutoTestSuitBaseInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="suit_name" jdbcType="VARCHAR" property="suitName"/>
+        <result column="suit_owner" jdbcType="VARCHAR" property="suitOwner"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,suit_name,suit_owner
+    </sql>
+
+    <insert id="addNewAutoTestSuit" parameterType="com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO" keyProperty="info.id" useGeneratedKeys="true" >
+        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suit_name,suit_owner,is_delete)
+        value(now(),now(),#{info.suitName},#{info.suitOwner},0)
+    </insert>
+
+
+    <select id="getAutoTestSuitById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_test_suit_base_info
+        WHERE id = #{id}
+        AND is_delete=0
+    </select>
+
+    <select id="getAutoTestSuitByName" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_test_suit_base_info
+        WHERE  is_delete=0
+        AND suit_name = #{name}
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="queryAutoTestSuitByName" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_test_suit_base_info
+        WHERE is_delete=0
+        <if test="name!=null and name!=''">
+            AND suit_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <update id="deleteAUtoTestSuit" >
+        UPDATE vcloud_client_auto_test_suit_base_info
+        SET is_delete=1
+        WHERE id = #{id}
+    </update>
+</mapper>

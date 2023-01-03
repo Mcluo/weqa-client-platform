@@ -52,7 +52,7 @@ public class AutoTestDeviceService {
         return deviceInfoVOList ;
     }
 
-    public boolean addNewDeviceInfo(String ip , Integer port , String platform , String userId , String cpu) throws AutoTestRunException{
+    public boolean addNewDeviceInfo(String ip , Integer port , String platform , String userId , String cpu, String owner, Integer run, Integer live) throws AutoTestRunException{
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(platform) ;
         if (StringUtils.isBlank(ip) || port == null || devicePlatform == null){
             throw new AutoTestRunException(AutoTestRunException.DEVICE_PARAM_EXCEPTION) ;
@@ -64,6 +64,9 @@ public class AutoTestDeviceService {
         clientAutoDeviceInfoDO.setUserId(userId);
         clientAutoDeviceInfoDO.setPlatform(devicePlatform.getCode());
         clientAutoDeviceInfoDO.setCpuInfo(cpu);
+        clientAutoDeviceInfoDO.setOwner(owner);
+        clientAutoDeviceInfoDO.setRun(run);
+        clientAutoDeviceInfoDO.setLive(live);
         int count = clientAutoDeviceInfoDAO.insertNewDeviceInfo(clientAutoDeviceInfoDO) ;
         if (count>0){
             return true ;
@@ -100,6 +103,9 @@ public class AutoTestDeviceService {
         deviceInfoVO.setUserId(clientAutoDeviceInfoDO.getUserId());
         deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
         deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
+        deviceInfoVO.setOwner(clientAutoDeviceInfoDO.getOwner());
+        deviceInfoVO.setRun(clientAutoDeviceInfoDO.getRun());
+        deviceInfoVO.setLive(clientAutoDeviceInfoDO.getLive());
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform()) ;
         if (devicePlatform!=null) {
             deviceInfoVO.setPlatform(devicePlatform.getPlatform());
@@ -107,7 +113,7 @@ public class AutoTestDeviceService {
         return deviceInfoVO ;
     }
 
-    public boolean updateDeviceInfo(Long id , String ip , Integer port , String platform , String userId , String cpu) throws AutoTestRunException{
+    public boolean updateDeviceInfo(Long id , String ip , Integer port , String platform , String userId , String cpu, String owner, Integer run, Integer live) throws AutoTestRunException{
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(platform) ;
 
         if (id == null ||StringUtils.isBlank(ip) || port == null || devicePlatform == null){
@@ -121,6 +127,9 @@ public class AutoTestDeviceService {
         clientAutoDeviceInfoDO.setUserId(userId);
         clientAutoDeviceInfoDO.setPlatform(devicePlatform.getCode());
         clientAutoDeviceInfoDO.setCpuInfo(cpu);
+        clientAutoDeviceInfoDO.setOwner(owner);
+        clientAutoDeviceInfoDO.setRun(run);
+        clientAutoDeviceInfoDO.setLive(live);
         int count = clientAutoDeviceInfoDAO.updateDeviceInfo(clientAutoDeviceInfoDO) ;
         if (count > 0){
             return true ;

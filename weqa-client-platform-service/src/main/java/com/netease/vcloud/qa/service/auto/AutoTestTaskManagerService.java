@@ -1,12 +1,14 @@
 package com.netease.vcloud.qa.service.auto;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.auto.ScriptRunStatus;
 import com.netease.vcloud.qa.auto.ScriptType;
 import com.netease.vcloud.qa.auto.TaskRunStatus;
+import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
@@ -14,6 +16,7 @@ import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
 import com.netease.vcloud.qa.service.auto.view.TaskBaseInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
@@ -68,6 +71,39 @@ public class AutoTestTaskManagerService {
         }
         autoTestTaskInfoBO.setScriptList(taskScriptRunInfoBOList);
         return autoTestTaskProducer.productNewAutoTestTask(autoTestTaskInfoBO) ;
+    }
+
+    public void installApi(List<Long> deviceList, List<AutoTestTaskUrlDTO> array, long taskId){
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(deviceList) ;
+                //触发下载安装 获取权限
+                boolean success = true;
+                for(DeviceInfoVO deviceInfoVO : deviceInfoVOList){
+                    if(deviceInfoVO.getOwner().equals("system")){
+                        for(AutoTestTaskUrlDTO dto: array){
+                            if(deviceInfoVO.getPlatform().equals(dto.getPlatform())){
+                                String url1 = "http://10.219.24.15:5000/api_install";
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("platform", dto.getPlatform());
+                                jsonObject.put("download_url", dto.getUrl());
+                                JSONObject result = HttpUtils.getInstance().jsonPost(url1,jsonObject.toJSONString());
+                                if (result.getInteger("code") != 200){
+                                    success = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (success){
+                    autoTestTaskProducer.setTaskRead(taskId);
+                }else {
+                    autoTestTaskProducer.setTaskInitError(taskId);
+                }
+            }
+        });
+        t.start();
     }
 
     /**

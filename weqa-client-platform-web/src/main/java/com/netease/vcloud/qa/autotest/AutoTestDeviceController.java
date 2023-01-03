@@ -62,10 +62,12 @@ public class AutoTestDeviceController {
                                  @RequestParam("platform") String platform ,
                                  @RequestParam(name = "user" ,required = false) String userId ,
                                  @RequestParam(name = "cpu" ,required = false) String cpu,
-                                 @RequestParam(name = "owner", required = false,defaultValue = "system") String owner){
+                                 @RequestParam(name = "owner", required = false,defaultValue = "system") String owner,
+                                 @RequestParam("run") Integer run ,
+                                 @RequestParam("live") Integer live){
         ResultVO resultVO = null ;
         try {
-            boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu);
+            boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu,owner,run,live);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
@@ -84,10 +86,13 @@ public class AutoTestDeviceController {
                                      @RequestParam("port") Integer port ,
                                      @RequestParam("platform") String platform ,
                                      @RequestParam(name = "user" ,required = false) String userId ,
-                                     @RequestParam(name = "cpu" ,required = false) String cpu){
+                                     @RequestParam(name = "cpu" ,required = false) String cpu,
+                                     @RequestParam(name = "owner", required = false,defaultValue = "system") String owner,
+                                     @RequestParam("run") Integer run ,
+                                     @RequestParam("live") Integer live){
         ResultVO resultVO = null ;
         try{
-            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu);
+            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner,run,live);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;

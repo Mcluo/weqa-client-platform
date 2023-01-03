@@ -54,12 +54,26 @@ public class AutoTestTaskProducer {
             return null ;
         }
         //任务状态修改为ready
-        int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus( autoTestTaskInfoBO.getId(), TaskRunStatus.READY.getCode()) ;
+//        int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus( autoTestTaskInfoBO.getId(), TaskRunStatus.READY.getCode()) ;
+//        if (count<1){
+//            AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] update task status exception");
+//            return null ;
+//        }
+        return autoTestTaskInfoBO.getId();
+    }
+
+    public void setTaskRead(long taskId){
+        int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus( taskId, TaskRunStatus.READY.getCode()) ;
         if (count<1){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] update task status exception");
-            return null ;
         }
-        return autoTestTaskInfoBO.getId();
+    }
+
+    public void setTaskInitError(long taskId){
+        int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus( taskId, TaskRunStatus.INIT_ERROR.getCode()) ;
+        if (count<1){
+            AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] update task status exception");
+        }
     }
 
 

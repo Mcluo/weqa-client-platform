@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.AutoTestResultDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.AutoTestResultDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="run_info" jdbcType="VARCHAR" property="runInfo"/>
+        <result column="case_name" jdbcType="VARCHAR" property="caseName"/>
+        <result column="case_detail" jdbcType="VARCHAR" property="caseDetail"/>
+        <result column="success_number" jdbcType="INTEGER" property="successNumber"/>
+        <result column="fail_number" jdbcType="INTEGER" property="failNumber"/>
+        <result column="run_result" jdbcType="VARCHAR" property="runResult"/>
+        <result column="error_info" jdbcType="VARCHAR" property="errorInfo"/>
+        <result column="tc_id" jdbcType="BIGINT" property="tcId"/>
+    </resultMap>
+
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,run_info,case_name,case_detail,success_number,fail_number,run_result,error_info,tc_id
+    </sql>
+
+
+    <insert id="insertIntoAutoTestResult" parameterType="com.netease.vcloud.qa.model.AutoTestResultDO">
+        insert into vcloud_auto_test_result_info (gmt_create,gmt_update,run_info,case_name,case_detail,success_number,fail_number,run_result,error_info,tc_id)
+        value(now(),now(),#{result.runInfo},#{result.caseName},#{result.caseDetail},#{result.successNumber},#{result.failNumber},#{result.runResult},#{result.errorInfo},#{result.tcId}) ;
+    </insert>
+
+</mapper>
