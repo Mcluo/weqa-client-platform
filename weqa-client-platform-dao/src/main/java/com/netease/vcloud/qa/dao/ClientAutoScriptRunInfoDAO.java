@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.dao;
 
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
+import com.netease.vcloud.qa.model.ClientAutoTestStatisticRunInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -47,4 +48,5 @@ public interface ClientAutoScriptRunInfoDAO {
      */
     int updateStatusByTaskAndStatus(@Param("taskId") long taskId,@Param("origin") byte originStatusCode ,@Param("newStatus") byte newStatusCode) ;
 
+	ClientAutoScriptRunInfoDO getClientAutoScriptRunInfoById(@Param("id") long id) ;
 }

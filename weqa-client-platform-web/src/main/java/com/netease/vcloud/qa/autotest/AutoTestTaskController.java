@@ -11,6 +11,7 @@ import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskUrlService;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
+import com.netease.vcloud.qa.service.auto.view.ScriptRunLogVO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,26 @@ public class AutoTestTaskController {
         return resultVO ;
     }
 
+
     /**
+     * http://127.0.0.1:8788/g2-client/auto/task/log/get?id=1
+     * @param runScriptId
+     * @return
+     */
+    @RequestMapping("/log/get")
+    public ResultVO  queryScriptRunLog(@RequestParam("id") Long runScriptId) {
+        ResultVO resultVO = null;
+        ScriptRunLogVO scriptRunLogVO = autoTestTaskManagerService.getScriptRunLog(runScriptId);
+        if (scriptRunLogVO != null) {
+            resultVO = ResultUtils.buildSuccess(scriptRunLogVO);
+        } else {
+            resultVO = ResultUtils.buildFail();
+        }
+        return resultVO;
+    }
+
+
+	/**
      * http://127.0.0.1:8788/g2-client/auto/task/cancel?id=29
      * @param taskId
      * @return
@@ -146,5 +166,4 @@ public class AutoTestTaskController {
         }
         return resultVO ;
     }
-
 }

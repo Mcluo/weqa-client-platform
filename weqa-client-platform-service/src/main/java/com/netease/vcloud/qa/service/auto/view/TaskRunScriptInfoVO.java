@@ -23,6 +23,10 @@ public class TaskRunScriptInfoVO {
 
     private String errorInfo ;
 
+    private Long runScriptId ;
+
+    private String logUrl ;
+
     public long getTaskId() {
         return taskId;
     }
@@ -93,5 +97,21 @@ public class TaskRunScriptInfoVO {
 
     public void setErrorInfo(String errorInfo) {
         this.errorInfo = errorInfo;
+    }
+
+    public Long getRunScriptId() {
+        return runScriptId;
+    }
+
+    public void setRunScriptId(Long runScriptId) {
+        this.runScriptId = runScriptId;
+    }
+
+    public String getLogUrl() {
+        return logUrl;
+    }
+
+    public void setLogUrl(String logUrl) {
+        this.logUrl = logUrl;
     }
 }
