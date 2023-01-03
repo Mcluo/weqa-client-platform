@@ -3,6 +3,9 @@ package com.netease.vcloud.qa.dao;
 import com.netease.vcloud.qa.model.VcloudClientAutoTaskUrlDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
 @Mapper
 public interface VcloudClientAutoTaskUrlDAO {
 
@@ -21,4 +24,6 @@ public interface VcloudClientAutoTaskUrlDAO {
     int updateByPrimaryKeySelective(VcloudClientAutoTaskUrlDO record);
 
     int updateByPrimaryKey(VcloudClientAutoTaskUrlDO record);
+
+    List<VcloudClientAutoTaskUrlDO> getTaskUrlDOByTaskID(@Param("taskId") Long taskId) ;
 }

@@ -62,7 +62,7 @@ public class AutoTestTaskProducer {
         return autoTestTaskInfoBO.getId();
     }
 
-    public void setTaskRead(long taskId){
+    public void setTaskReady(long taskId){
         int count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus( taskId, TaskRunStatus.READY.getCode()) ;
         if (count<1){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] update task status exception");

@@ -39,6 +39,7 @@ public class AutoTestUtils {
         clientAutoTaskInfoDO.setTestSuitId(autoTestTaskInfoBO.getTestSuitId()) ;
         clientAutoTaskInfoDO.setOperator(autoTestTaskInfoBO.getOperator()) ;
         clientAutoTaskInfoDO.setDeviceInfo(autoTestTaskInfoBO.getDeviceInfo());
+        clientAutoTaskInfoDO.setDeviceType(autoTestTaskInfoBO.getDeviceType());
         if (StringUtils.isNotBlank(autoTestTaskInfoBO.getGitInfo())) {
             clientAutoTaskInfoDO.setGitInfo(autoTestTaskInfoBO.getGitInfo());
         }else {

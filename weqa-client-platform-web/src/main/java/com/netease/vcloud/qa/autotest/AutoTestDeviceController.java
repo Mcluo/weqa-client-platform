@@ -29,6 +29,7 @@ public class AutoTestDeviceController {
      * 获取可用设备列表
      * @return
      */
+    // TODO: 2023/1/3 增加获取远端设备和本地设备的区别
     @RequestMapping("/get")
     @ResponseBody
     public ResultVO getAllDevice(){

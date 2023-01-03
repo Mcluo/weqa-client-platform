@@ -10,6 +10,8 @@ public class TaskDetailInfoVO {
 
     private TaskBaseInfoVO baseInfo ;
 
+    private List<TaskUrlInfoVO> packageInfo ;
+
     private List<TaskRunScriptInfoVO> scriptList ;
 
     public TaskBaseInfoVO getBaseInfo() {
@@ -18,6 +20,14 @@ public class TaskDetailInfoVO {
 
     public void setBaseInfo(TaskBaseInfoVO baseInfo) {
         this.baseInfo = baseInfo;
+    }
+
+    public List<TaskUrlInfoVO> getPackageInfo() {
+        return packageInfo;
+    }
+
+    public void setPackageInfo(List<TaskUrlInfoVO> packageInfo) {
+        this.packageInfo = packageInfo;
     }
 
     public List<TaskRunScriptInfoVO> getScriptList() {

@@ -167,4 +167,11 @@
       url = #{url,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getTaskUrlDOByTaskID" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vcloud_client_auto_task_url
+    where task_id = #{taskId}
+  </select>
 </mapper>

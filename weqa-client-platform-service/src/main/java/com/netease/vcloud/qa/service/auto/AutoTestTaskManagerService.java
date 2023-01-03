@@ -13,7 +13,6 @@ import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
-import com.netease.vcloud.qa.model.ClientAutoTestStatisticRunInfoDO;
 import com.netease.vcloud.qa.nos.NosService;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
@@ -28,10 +27,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -42,6 +45,9 @@ public class AutoTestTaskManagerService {
 
     private static final Logger AUTO_LOGGER = LoggerFactory.getLogger("autoLog");
 
+    private static final String INSTALL_URL = "http://10.219.24.15:5000/api_install";
+
+    private ThreadPoolExecutor executor;
     @Autowired
     private AutoTestTaskProducer autoTestTaskProducer ;
 
@@ -61,7 +67,16 @@ public class AutoTestTaskManagerService {
     private AutoTestDeviceService  autoTestDeviceService ;
 
     @Autowired
+    private AutoTestTaskUrlService autoTestTaskUrlService ;
+
+    @Autowired
     private NosService nosService ;
+
+    @PostConstruct
+    public void init(){
+        executor = new ThreadPoolExecutor(5, 10, 30, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(100));
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+    }
 
     public Long addNewTaskInfo(AutoTestTaskInfoDTO autoTestTaskInfoDTO) throws AutoTestRunException{
         if (autoTestTaskInfoDTO == null){
@@ -79,36 +94,39 @@ public class AutoTestTaskManagerService {
     }
 
     public void installApi(List<Long> deviceList, List<AutoTestTaskUrlDTO> array, long taskId){
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(deviceList) ;
-                //触发下载安装 获取权限
-                boolean success = true;
-                for(DeviceInfoVO deviceInfoVO : deviceInfoVOList){
-                    if(deviceInfoVO.getOwner().equals("system")){
-                        for(AutoTestTaskUrlDTO dto: array){
-                            if(deviceInfoVO.getPlatform().equals(dto.getPlatform())){
-                                String url1 = "http://10.219.24.15:5000/api_install";
-                                JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("platform", dto.getPlatform());
-                                jsonObject.put("download_url", dto.getUrl());
-                                JSONObject result = HttpUtils.getInstance().jsonPost(url1,jsonObject.toJSONString());
-                                if (result.getInteger("code") != 200){
-                                    success = false;
-                                }
+        Thread thread = new Thread(() -> {
+            List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(deviceList) ;
+            //触发下载安装 获取权限
+            boolean success = true;
+            for(DeviceInfoVO deviceInfoVO : deviceInfoVOList){
+                if (deviceInfoVO == null || StringUtils.isBlank(deviceInfoVO.getOwner())){
+                    continue;
+                }
+                if(deviceInfoVO.getOwner().equals("system")){
+                    for(AutoTestTaskUrlDTO dto: array){
+                        if (dto == null || StringUtils.isBlank(deviceInfoVO.getPlatform())){
+                            continue;
+                        }
+                        if(deviceInfoVO.getPlatform().equals(dto.getPlatform())){
+//                                String url1 = "http://10.219.24.15:5000/api_install";
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("platform", dto.getPlatform());
+                            jsonObject.put("download_url", dto.getUrl());
+                            JSONObject result = HttpUtils.getInstance().jsonPost(INSTALL_URL,jsonObject.toJSONString());
+                            if (result.getInteger("code") != 200){
+                                success = false;
                             }
                         }
                     }
                 }
-                if (success){
-                    autoTestTaskProducer.setTaskRead(taskId);
-                }else {
-                    autoTestTaskProducer.setTaskInitError(taskId);
-                }
+            }
+            if (success){
+                autoTestTaskProducer.setTaskReady(taskId);
+            }else {
+                autoTestTaskProducer.setTaskInitError(taskId);
             }
         });
-        t.start();
+        executor.execute(thread);
     }
 
     /**
@@ -128,6 +146,7 @@ public class AutoTestTaskManagerService {
         autoTestTaskInfoBO.setGitInfo(autoTestTaskInfoDTO.getGitInfo());
         autoTestTaskInfoBO.setGitBranch(autoTestTaskInfoDTO.getGitBranch());
         autoTestTaskInfoBO.setOperator(autoTestTaskInfoDTO.getOperator());
+        autoTestTaskInfoBO.setDeviceType(autoTestTaskInfoDTO.getDeviceType());
         List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(autoTestTaskInfoDTO.getDeviceList()) ;
         if (deviceInfoVOList!=null) {
             autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(deviceInfoVOList));
@@ -217,6 +236,8 @@ public class AutoTestTaskManagerService {
     public TaskDetailInfoVO getTaskDetailInfo(Long taskId) throws AutoTestRunException{
         TaskDetailInfoVO taskDetailInfoVO = new TaskDetailInfoVO() ;
         ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        List<TaskUrlInfoVO> taskUrlInfoVOList = autoTestTaskUrlService.getTaskUrlInfoList(taskId) ;
+        taskDetailInfoVO.setPackageInfo(taskUrlInfoVOList);
         UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientAutoTaskInfoDO.getOperator()) ;
         TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO,userInfoBO) ;
         taskDetailInfoVO.setBaseInfo(taskBaseInfoVO) ;

@@ -30,6 +30,7 @@ public class ClientAutoTaskInfoDO {
 
     private String operator ;
 
+    private byte deviceType ;
     private String deviceInfo ;
 
     private String gitInfo ;
@@ -84,6 +85,14 @@ public class ClientAutoTaskInfoDO {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public byte getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(byte deviceType) {
+        this.deviceType = deviceType;
     }
 
     public String getDeviceInfo() {

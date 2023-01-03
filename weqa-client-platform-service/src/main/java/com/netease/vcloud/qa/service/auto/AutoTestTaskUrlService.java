@@ -6,6 +6,7 @@ import com.netease.vcloud.qa.dao.VcloudClientAutoTaskUrlDAO;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoTaskUrlDO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
+import com.netease.vcloud.qa.service.auto.view.TaskUrlInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,23 @@ public class AutoTestTaskUrlService {
         }else {
             return false ;
         }
+    }
+
+    public List<TaskUrlInfoVO> getTaskUrlInfoList(Long taskId){
+        List<VcloudClientAutoTaskUrlDO> taskUrlDOList = clientAutoTaskUrlDAO.getTaskUrlDOByTaskID(taskId) ;
+        List<TaskUrlInfoVO> taskUrlInfoVOList = new ArrayList<TaskUrlInfoVO>() ;
+        if (CollectionUtils.isEmpty(taskUrlDOList)){
+            return taskUrlInfoVOList ;
+        }
+        for (VcloudClientAutoTaskUrlDO vcloudClientAutoTaskUrlDO : taskUrlDOList){
+            if (vcloudClientAutoTaskUrlDO != null){
+                TaskUrlInfoVO taskUrlInfoVO = new TaskUrlInfoVO() ;
+                DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(vcloudClientAutoTaskUrlDO.getPlatform()) ;
+                taskUrlInfoVO.setPlatform(devicePlatform.getPlatform());
+                taskUrlInfoVO.setUrl(vcloudClientAutoTaskUrlDO.getUrl());
+                taskUrlInfoVOList.add(taskUrlInfoVO);
+            }
+        }
+        return taskUrlInfoVOList ;
     }
 }

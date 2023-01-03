@@ -15,6 +15,7 @@ import com.netease.vcloud.qa.service.auto.view.ScriptRunLogVO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,9 +51,10 @@ public class AutoTestTaskController {
                                   @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
                                   @RequestParam("gitBranch") String gitBranch,
                                   @RequestParam("operator") String operator,
+                                  @RequestParam(name = "deviceType", required = false, defaultValue = "0") byte deviceType,
                                   @RequestParam("device") List<Long> deviceList,
                                   @RequestParam("ids") List<Long> idSet,
-                                   @RequestParam("urls") String urls){
+                                   @RequestParam(name = "urls" ,required = false ) String urls){
         ResultVO resultVO = null ;
         Long id = null ;
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
@@ -61,16 +63,18 @@ public class AutoTestTaskController {
         autoTestTaskInfoDTO.setGitInfo(gitInfo);
         autoTestTaskInfoDTO.setGitBranch(gitBranch);
         autoTestTaskInfoDTO.setOperator(operator);
+        autoTestTaskInfoDTO.setDeviceType(deviceType);
         autoTestTaskInfoDTO.setDeviceList(deviceList);
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
             id = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
-            List<AutoTestTaskUrlDTO> array = JSONArray.parseArray(urls, AutoTestTaskUrlDTO.class);
-
-            for(AutoTestTaskUrlDTO dto : array){
-                autoTestTaskUrlService.addTaskUrl(dto.getPlatform(), id, dto.getUrl());
+            List<AutoTestTaskUrlDTO> deviceArray = JSONArray.parseArray(urls, AutoTestTaskUrlDTO.class);
+            if (!CollectionUtils.isEmpty(deviceArray)) {
+                for (AutoTestTaskUrlDTO dto : deviceArray) {
+                    autoTestTaskUrlService.addTaskUrl(dto.getPlatform(), id, dto.getUrl());
+                }
             }
-            autoTestTaskManagerService.installApi(deviceList, array, id);
+            autoTestTaskManagerService.installApi(deviceList, deviceArray, id);
 
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
