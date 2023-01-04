@@ -114,10 +114,10 @@ public class AutoTestTaskManagerService {
             //触发下载安装 获取权限
             boolean success = true;
             for(DeviceInfoVO deviceInfoVO : deviceInfoVOList){
-                if (deviceInfoVO == null || StringUtils.isBlank(deviceInfoVO.getOwner())){
+                if (deviceInfoVO == null || deviceInfoVO.getOperator()!=null){
                     continue;
                 }
-                if(deviceInfoVO.getOwner().equals("system")){
+                if(deviceInfoVO.getOperator().getName().equals("system")){
                     for(AutoTestTaskUrlDTO dto: array){
                         if (dto == null || StringUtils.isBlank(deviceInfoVO.getPlatform())){
                             continue;

@@ -1,5 +1,8 @@
 package com.netease.vcloud.qa.service.auto;
 
+import com.netease.vcloud.qa.CommonUtils;
+import com.netease.vcloud.qa.UserInfoBO;
+import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.auto.DevicePlatform;
 import com.netease.vcloud.qa.dao.ClientAutoDeviceInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
@@ -9,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -28,6 +30,8 @@ public class AutoTestDeviceService {
     @Autowired
     private ClientAutoDeviceInfoDAO clientAutoDeviceInfoDAO ;
 
+    @Autowired
+    private UserInfoService userInfoService ;
     /**
      * 获取可以选择的设备
      * @return
@@ -47,8 +51,15 @@ public class AutoTestDeviceService {
             throw new AutoTestRunException(AutoTestRunException.DEVICE_IS_OFFLINE) ;
 //            return deviceInfoVOList ;
         }
+        Set<String> userIdSet = new HashSet<>() ;
         for (ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList){
-            DeviceInfoVO deviceInfoVO = this.buildDeviceInfoVOByDO(clientAutoDeviceInfoDO) ;
+            if (clientAutoDeviceInfoDO!=null && StringUtils.isNotBlank(clientAutoDeviceInfoDO.getOwner())){
+                userIdSet.add(clientAutoDeviceInfoDO.getOwner()) ;
+            }
+        }
+        Map<String , UserInfoBO> userInfoMap = userInfoService.queryUserInfoBOMap(userIdSet) ;
+        for (ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList){
+            DeviceInfoVO deviceInfoVO = this.buildDeviceInfoVOByDO(clientAutoDeviceInfoDO,userInfoMap) ;
 //            DeviceInfoVO deviceInfoVO = new DeviceInfoVO() ;
 //            deviceInfoVO.setIp(clientAutoDeviceInfoDO.getDeviceIp());
 //            deviceInfoVO.setPort(clientAutoDeviceInfoDO.getDevicePort());
@@ -95,9 +106,16 @@ public class AutoTestDeviceService {
             return deviceInfoVOList ;
         }
         List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(deviceIdList) ;
+        Set<String> userIdSet = new HashSet<>() ;
+        for (ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList){
+            if (clientAutoDeviceInfoDO!=null && StringUtils.isNotBlank(clientAutoDeviceInfoDO.getOwner())){
+                userIdSet.add(clientAutoDeviceInfoDO.getOwner()) ;
+            }
+        }
+        Map<String , UserInfoBO> userInfoMap = userInfoService.queryUserInfoBOMap(userIdSet) ;
         if (clientAutoDeviceInfoDOList != null) {
             for (ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList) {
-                DeviceInfoVO deviceInfoVO = this.buildDeviceInfoVOByDO(clientAutoDeviceInfoDO) ;
+                DeviceInfoVO deviceInfoVO = this.buildDeviceInfoVOByDO(clientAutoDeviceInfoDO,userInfoMap) ;
                 if (deviceInfoVO != null){
                     deviceInfoVOList.add(deviceInfoVO) ;
                 }
@@ -107,7 +125,7 @@ public class AutoTestDeviceService {
     }
 
 
-    private DeviceInfoVO buildDeviceInfoVOByDO(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO){
+    private DeviceInfoVO buildDeviceInfoVOByDO(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO,Map<String , UserInfoBO> userInfoMap){
         if (clientAutoDeviceInfoDO == null){
             return null ;
         }
@@ -117,7 +135,10 @@ public class AutoTestDeviceService {
         deviceInfoVO.setUserId(clientAutoDeviceInfoDO.getUserId());
         deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
         deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
-        deviceInfoVO.setOwner(clientAutoDeviceInfoDO.getOwner());
+        UserInfoBO userInfoBO = userInfoMap.get(clientAutoDeviceInfoDO.getOwner()) ;
+        if (userInfoBO!=null) {
+            deviceInfoVO.setOperator(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        }
         deviceInfoVO.setRun((clientAutoDeviceInfoDO.getRun()!=null && clientAutoDeviceInfoDO.getRun()==(byte)1) ? true:false);
         deviceInfoVO.setAlive((clientAutoDeviceInfoDO.getAlive()==null||clientAutoDeviceInfoDO.getAlive()==(byte)1)?true:false);
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform()) ;

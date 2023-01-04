@@ -21,7 +21,7 @@ public enum TaskRunStatus {
 
     ERROR("error" ,(byte) -1) ,
 
-    PREPARE_ERROR("prepare" ,(byte) -2) ,
+    PREPARE_ERROR("prepareError" ,(byte) -2) ,
     CANCEL("cancel", (byte) 9) ,
     ;
     private String status ;
