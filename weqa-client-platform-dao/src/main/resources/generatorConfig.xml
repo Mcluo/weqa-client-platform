@@ -31,14 +31,14 @@
             <property name="nullCatalogMeansCurrent" value="true" />
         </jdbcConnection>
         <!--指定生成model的路径-->
-        <javaModelGenerator targetPackage="com.netease.vcloud.qa.dao" targetProject="src\main\java"/>
+        <javaModelGenerator targetPackage="com.netease.vcloud.qa.dao" targetProject="src/main/java"/>
         <!--指定生成mapper.xml的路径-->
-        <sqlMapGenerator targetPackage="mapper" targetProject="src\main\resources"/>
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
         <!--指定生成mapper接口的的路径-->
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.netease.vcloud.qa.dao"
-                             targetProject="src\main\java"/>
+                             targetProject="src/main/java"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="vcloud_client_auto_pref_task">
+        <table tableName="vcloud_client_auto_task_url">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

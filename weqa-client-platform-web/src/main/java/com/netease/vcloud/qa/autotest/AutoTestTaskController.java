@@ -1,14 +1,21 @@
 package com.netease.vcloud.qa.autotest;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
+import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
+import com.netease.vcloud.qa.service.auto.AutoTestTaskUrlService;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.view.ScriptRunLogVO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +34,9 @@ public class AutoTestTaskController {
     @Autowired
     private AutoTestTaskManagerService autoTestTaskManagerService;
 
+    @Autowired
+    private AutoTestTaskUrlService autoTestTaskUrlService;
+
     /**
      * 创建自动化测试任务
      * @param taskName
@@ -41,8 +51,10 @@ public class AutoTestTaskController {
                                   @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
                                   @RequestParam("gitBranch") String gitBranch,
                                   @RequestParam("operator") String operator,
+                                  @RequestParam(name = "deviceType", required = false, defaultValue = "0") byte deviceType,
                                   @RequestParam("device") List<Long> deviceList,
-                                  @RequestParam("ids") List<Long> idSet){
+                                  @RequestParam("ids") List<Long> idSet,
+                                   @RequestParam(name = "urls" ,required = false ) String urls){
         ResultVO resultVO = null ;
         Long id = null ;
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
@@ -51,10 +63,21 @@ public class AutoTestTaskController {
         autoTestTaskInfoDTO.setGitInfo(gitInfo);
         autoTestTaskInfoDTO.setGitBranch(gitBranch);
         autoTestTaskInfoDTO.setOperator(operator);
+        autoTestTaskInfoDTO.setDeviceType(deviceType);
         autoTestTaskInfoDTO.setDeviceList(deviceList);
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
             id = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
+            List<AutoTestTaskUrlDTO> deviceArray = JSONArray.parseArray(urls, AutoTestTaskUrlDTO.class);
+            if (!CollectionUtils.isEmpty(deviceArray)) {
+                for (AutoTestTaskUrlDTO dto : deviceArray) {
+                    autoTestTaskUrlService.addTaskUrl(dto.getPlatform(), id, dto.getUrl());
+                }
+            }
+            //准备工作完毕，交由执行器处理
+            autoTestTaskManagerService.setTaskReadySuccess(id,true);
+//            autoTestTaskManagerService.installApi(deviceList, deviceArray, id);
+
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
             return resultVO ;

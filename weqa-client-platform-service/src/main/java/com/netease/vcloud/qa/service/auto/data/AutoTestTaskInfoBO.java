@@ -20,6 +20,7 @@ public class AutoTestTaskInfoBO {
 
     private String operator ;
 
+    private byte deviceType ;
     private String deviceInfo ;
 
     private String gitInfo ;
@@ -68,6 +69,14 @@ public class AutoTestTaskInfoBO {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public byte getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(byte deviceType) {
+        this.deviceType = deviceType;
     }
 
     public String getDeviceInfo() {

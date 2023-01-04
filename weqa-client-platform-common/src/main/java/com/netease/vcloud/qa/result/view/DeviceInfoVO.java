@@ -17,6 +17,29 @@ public class DeviceInfoVO {
 
     private String cpu ;
 
+    private String owner ;
+    private UserInfoVO operator;
+
+    private boolean run;
+
+    private boolean alive;
+
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public UserInfoVO getOperator() {
+        return operator;
+    }
+
+    public void setOperator(UserInfoVO operator) {
+        this.operator = operator;
+    }
 
     public Long getId() {
         return id;
@@ -64,5 +87,22 @@ public class DeviceInfoVO {
 
     public void setCpu(String cpu) {
         this.cpu = cpu;
+    }
+
+
+    public boolean isRun() {
+        return run;
+    }
+
+    public void setRun(boolean run) {
+        this.run = run;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 }

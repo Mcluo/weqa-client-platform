@@ -24,6 +24,38 @@ public class ClientAutoDeviceInfoDO {
 
     private String cpuInfo ;
 
+
+    private String owner;
+
+    private Byte run;
+
+    private Byte alive;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public Byte getRun() {
+        return run;
+    }
+
+    public void setRun(Byte run) {
+        this.run = run;
+    }
+
+    public Byte getAlive() {
+        return alive;
+    }
+
+    public void setAlive(Byte alive) {
+        this.alive = alive;
+    }
+
+
     public long getId() {
         return id;
     }

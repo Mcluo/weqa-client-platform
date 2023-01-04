@@ -9,6 +9,7 @@
         <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
         <result column="test_suit_id" jdbcType="BIGINT" property="testSuitId"/>
         <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="device_type" jdbcType="TINYINT" property="deviceType"/>
         <result column="device_info" jdbcType="VARCHAR" property="deviceInfo"/>
         <result column="git_info" jdbcType="VARCHAR" property="gitInfo"/>
         <result column="git_branch" jdbcType="VARCHAR" property="gitBranch"/>
@@ -16,7 +17,7 @@
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_info,git_info,git_branch,task_status
+        select id,gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status
     </sql>
 
     <select id="getClientAutoTaskInfoById" resultMap="BaseResultMap">
@@ -38,8 +39,8 @@
     </select>
 
     <insert id="insertNewClientAutoTask" parameterType="com.netease.vcloud.qa.model.ClientAutoTaskInfoDO" keyProperty="taskInfo.id" useGeneratedKeys="true">
-        insert into vcloud_client_auto_task_info (gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_info,git_info,git_branch,task_status)
-        value(now(),now(),#{taskInfo.taskType},#{taskInfo.taskName},#{taskInfo.testSuitId},#{taskInfo.operator},#{taskInfo.deviceInfo},#{taskInfo.gitInfo},#{taskInfo.gitBranch},#{taskInfo.taskStatus})
+        insert into vcloud_client_auto_task_info (gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status)
+        value(now(),now(),#{taskInfo.taskType},#{taskInfo.taskName},#{taskInfo.testSuitId},#{taskInfo.operator},#{taskInfo.deviceType},#{taskInfo.deviceInfo},#{taskInfo.gitInfo},#{taskInfo.gitBranch},#{taskInfo.taskStatus})
     </insert>
 
     <select id="queryAutoTaskInfo" resultMap="BaseResultMap">

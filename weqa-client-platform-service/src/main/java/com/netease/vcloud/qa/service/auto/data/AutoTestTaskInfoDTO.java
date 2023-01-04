@@ -14,6 +14,7 @@ public class AutoTestTaskInfoDTO {
 
     private String operator ;
 
+    private byte deviceType ;
     private List<Long> deviceList;
 
     private String gitInfo ;
@@ -51,6 +52,14 @@ public class AutoTestTaskInfoDTO {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public byte getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(byte deviceType) {
+        this.deviceType = deviceType;
     }
 
     public List<Long> getDeviceList() {

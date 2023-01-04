@@ -10,12 +10,18 @@ public enum TaskRunStatus {
 
     READY("ready",(byte)1) ,
 
+    PREPARING("preparing",(byte) 11) ,
+
+    PREPARED("prepared",(byte) 12) ,
+
     RUNNING("running",(byte) 2) ,
+
 
     FINISH("finish" ,(byte) 4) ,
 
     ERROR("error" ,(byte) -1) ,
 
+    PREPARE_ERROR("prepareError" ,(byte) -2) ,
     CANCEL("cancel", (byte) 9) ,
     ;
     private String status ;
@@ -56,7 +62,7 @@ public enum TaskRunStatus {
     }
 
     public static boolean isTaskFinish(byte code){
-        if (code == FINISH.code || code == ERROR.code || code == CANCEL.code){
+        if (code == FINISH.code || code == ERROR.code || code == CANCEL.code || code == PREPARE_ERROR.code){
             return true ;
         }else {
             return false ;

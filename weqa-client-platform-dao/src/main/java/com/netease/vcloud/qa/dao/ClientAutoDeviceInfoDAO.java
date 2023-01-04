@@ -16,6 +16,7 @@ public interface ClientAutoDeviceInfoDAO {
     int insertNewDeviceInfo(@Param("device") ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) ;
 
     List<ClientAutoDeviceInfoDO> getAllClientAutoDevice() ;
+    List<ClientAutoDeviceInfoDO> getClientAutoDeviceByOwner(@Param("owner") String owner) ;
 
     List<ClientAutoDeviceInfoDO> getClientAutoDeviceByIds(@Param("list")List<Long> deviceIdList) ;
 
