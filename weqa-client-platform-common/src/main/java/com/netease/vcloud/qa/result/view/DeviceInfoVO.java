@@ -20,9 +20,9 @@ public class DeviceInfoVO {
 
     private String owner;
 
-    private Integer run;
+    private boolean run;
 
-    private Integer live;
+    private boolean alive;
 
     public String getOwner() {
         return owner;
@@ -30,22 +30,6 @@ public class DeviceInfoVO {
 
     public void setOwner(String owner) {
         this.owner = owner;
-    }
-
-    public Integer getRun() {
-        return run;
-    }
-
-    public void setRun(Integer run) {
-        this.run = run;
-    }
-
-    public Integer getLive() {
-        return live;
-    }
-
-    public void setLive(Integer live) {
-        this.live = live;
     }
 
     public Long getId() {
@@ -94,5 +78,22 @@ public class DeviceInfoVO {
 
     public void setCpu(String cpu) {
         this.cpu = cpu;
+    }
+
+
+    public boolean isRun() {
+        return run;
+    }
+
+    public void setRun(boolean run) {
+        this.run = run;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 }

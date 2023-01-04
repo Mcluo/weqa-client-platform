@@ -19,6 +19,12 @@ import java.util.List;
 @Service
 public class AutoTestDeviceService {
 
+    private static final byte LOCAL_DEVICE_TYPE = 0 ;
+
+    private static final byte REMOTE_DEVICE_TYPE = 1 ;
+
+    private static final String REMOTE_DEVICE_OWNER = "system" ;
+
     @Autowired
     private ClientAutoDeviceInfoDAO clientAutoDeviceInfoDAO ;
 
@@ -26,8 +32,16 @@ public class AutoTestDeviceService {
      * 获取可以选择的设备
      * @return
      */
-    public List<DeviceInfoVO> getDeviceList() throws AutoTestRunException{
-        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getAllClientAutoDevice() ;
+    public List<DeviceInfoVO> getDeviceList(String userInfo , byte deviceType) throws AutoTestRunException{
+//        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getAllClientAutoDevice() ;
+        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = null;
+        if (deviceType == REMOTE_DEVICE_TYPE){
+            clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByOwner(REMOTE_DEVICE_OWNER) ;
+        } else if (deviceType == LOCAL_DEVICE_TYPE && StringUtils.isNotBlank(userInfo)) {
+            clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByOwner(userInfo) ;
+        }else {
+            clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getAllClientAutoDevice() ;
+        }
         List<DeviceInfoVO> deviceInfoVOList =  new ArrayList<>() ;
         if (CollectionUtils.isEmpty(clientAutoDeviceInfoDOList)){
             throw new AutoTestRunException(AutoTestRunException.DEVICE_IS_OFFLINE) ;
@@ -52,7 +66,7 @@ public class AutoTestDeviceService {
         return deviceInfoVOList ;
     }
 
-    public boolean addNewDeviceInfo(String ip , Integer port , String platform , String userId , String cpu, String owner, Integer run, Integer live) throws AutoTestRunException{
+    public boolean addNewDeviceInfo(String ip , Integer port , String platform , String userId , String cpu, String owner) throws AutoTestRunException{
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(platform) ;
         if (StringUtils.isBlank(ip) || port == null || devicePlatform == null){
             throw new AutoTestRunException(AutoTestRunException.DEVICE_PARAM_EXCEPTION) ;
@@ -65,8 +79,8 @@ public class AutoTestDeviceService {
         clientAutoDeviceInfoDO.setPlatform(devicePlatform.getCode());
         clientAutoDeviceInfoDO.setCpuInfo(cpu);
         clientAutoDeviceInfoDO.setOwner(owner);
-        clientAutoDeviceInfoDO.setRun(run);
-        clientAutoDeviceInfoDO.setLive(live);
+        clientAutoDeviceInfoDO.setRun((byte)0);
+        clientAutoDeviceInfoDO.setAlive((byte)1);
         int count = clientAutoDeviceInfoDAO.insertNewDeviceInfo(clientAutoDeviceInfoDO) ;
         if (count>0){
             return true ;
@@ -104,8 +118,8 @@ public class AutoTestDeviceService {
         deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
         deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
         deviceInfoVO.setOwner(clientAutoDeviceInfoDO.getOwner());
-        deviceInfoVO.setRun(clientAutoDeviceInfoDO.getRun());
-        deviceInfoVO.setLive(clientAutoDeviceInfoDO.getLive());
+        deviceInfoVO.setRun((clientAutoDeviceInfoDO.getRun()!=null && clientAutoDeviceInfoDO.getRun()==(byte)1) ? true:false);
+        deviceInfoVO.setAlive((clientAutoDeviceInfoDO.getAlive()==null||clientAutoDeviceInfoDO.getAlive()==(byte)1)?true:false);
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform()) ;
         if (devicePlatform!=null) {
             deviceInfoVO.setPlatform(devicePlatform.getPlatform());
@@ -113,7 +127,7 @@ public class AutoTestDeviceService {
         return deviceInfoVO ;
     }
 
-    public boolean updateDeviceInfo(Long id , String ip , Integer port , String platform , String userId , String cpu, String owner, Integer run, Integer live) throws AutoTestRunException{
+    public boolean updateDeviceInfo(Long id , String ip , Integer port , String platform , String userId , String cpu, String owner) throws AutoTestRunException{
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(platform) ;
 
         if (id == null ||StringUtils.isBlank(ip) || port == null || devicePlatform == null){
@@ -128,8 +142,8 @@ public class AutoTestDeviceService {
         clientAutoDeviceInfoDO.setPlatform(devicePlatform.getCode());
         clientAutoDeviceInfoDO.setCpuInfo(cpu);
         clientAutoDeviceInfoDO.setOwner(owner);
-        clientAutoDeviceInfoDO.setRun(run);
-        clientAutoDeviceInfoDO.setLive(live);
+//        clientAutoDeviceInfoDO.setRun(run);
+//        clientAutoDeviceInfoDO.setAlive(live);
         int count = clientAutoDeviceInfoDAO.updateDeviceInfo(clientAutoDeviceInfoDO) ;
         if (count > 0){
             return true ;

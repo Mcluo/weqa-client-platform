@@ -93,6 +93,21 @@ public class AutoTestTaskManagerService {
         return autoTestTaskProducer.productNewAutoTestTask(autoTestTaskInfoBO) ;
     }
 
+    public void setTaskReadySuccess(Long taskId , boolean isSuccess){
+        if (isSuccess) {
+            autoTestTaskProducer.setTaskReady(taskId);
+        }else {
+            autoTestTaskProducer.setTaskInitError(taskId);
+        }
+    }
+
+    /**
+     * 触发安装逻辑，但这个操作需移到执行器操作
+     * @param deviceList
+     * @param array
+     * @param taskId
+     */
+    @Deprecated
     public void installApi(List<Long> deviceList, List<AutoTestTaskUrlDTO> array, long taskId){
         Thread thread = new Thread(() -> {
             List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(deviceList) ;

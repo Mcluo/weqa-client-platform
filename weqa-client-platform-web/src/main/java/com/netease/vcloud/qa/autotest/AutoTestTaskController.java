@@ -74,7 +74,9 @@ public class AutoTestTaskController {
                     autoTestTaskUrlService.addTaskUrl(dto.getPlatform(), id, dto.getUrl());
                 }
             }
-            autoTestTaskManagerService.installApi(deviceList, deviceArray, id);
+            //准备工作完毕，交由执行器处理
+            autoTestTaskManagerService.setTaskReadySuccess(id,true);
+//            autoTestTaskManagerService.installApi(deviceList, deviceArray, id);
 
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;

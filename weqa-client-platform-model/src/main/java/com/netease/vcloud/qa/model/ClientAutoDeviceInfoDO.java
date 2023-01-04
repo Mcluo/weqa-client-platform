@@ -27,9 +27,9 @@ public class ClientAutoDeviceInfoDO {
 
     private String owner;
 
-    private Integer run;
+    private Byte run;
 
-    private Integer live;
+    private Byte alive;
 
     public String getOwner() {
         return owner;
@@ -39,20 +39,20 @@ public class ClientAutoDeviceInfoDO {
         this.owner = owner;
     }
 
-    public Integer getRun() {
+    public Byte getRun() {
         return run;
     }
 
-    public void setRun(Integer run) {
+    public void setRun(Byte run) {
         this.run = run;
     }
 
-    public Integer getLive() {
-        return live;
+    public Byte getAlive() {
+        return alive;
     }
 
-    public void setLive(Integer live) {
-        this.live = live;
+    public void setAlive(Byte alive) {
+        this.alive = alive;
     }
 
 

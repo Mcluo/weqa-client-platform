@@ -32,10 +32,11 @@ public class AutoTestDeviceController {
     // TODO: 2023/1/3 增加获取远端设备和本地设备的区别
     @RequestMapping("/get")
     @ResponseBody
-    public ResultVO getAllDevice(){
+    public ResultVO getAllDevice(@RequestParam(name = "user" ,required = false) String useInfo,
+                                 @RequestParam(name = "type" , required = false,defaultValue = "0") byte deviceType){
         ResultVO resultVO = null ;
         try {
-            List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceList();
+            List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceList(useInfo,deviceType);
             if (deviceInfoVOList!=null){
                 resultVO = ResultUtils.buildSuccess(deviceInfoVOList) ;
             }else {
@@ -63,12 +64,10 @@ public class AutoTestDeviceController {
                                  @RequestParam("platform") String platform ,
                                  @RequestParam(name = "user" ,required = false) String userId ,
                                  @RequestParam(name = "cpu" ,required = false) String cpu,
-                                 @RequestParam(name = "owner", required = false,defaultValue = "system") String owner,
-                                 @RequestParam("run") Integer run ,
-                                 @RequestParam("live") Integer live){
+                                 @RequestParam(name = "owner", required = false,defaultValue = "system") String owner){
         ResultVO resultVO = null ;
         try {
-            boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu,owner,run,live);
+            boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu,owner);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
@@ -88,12 +87,10 @@ public class AutoTestDeviceController {
                                      @RequestParam("platform") String platform ,
                                      @RequestParam(name = "user" ,required = false) String userId ,
                                      @RequestParam(name = "cpu" ,required = false) String cpu,
-                                     @RequestParam(name = "owner", required = false,defaultValue = "system") String owner,
-                                     @RequestParam("run") Integer run ,
-                                     @RequestParam("live") Integer live){
+                                     @RequestParam(name = "owner", required = false,defaultValue = "system") String owner){
         ResultVO resultVO = null ;
         try{
-            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner,run,live);
+            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
