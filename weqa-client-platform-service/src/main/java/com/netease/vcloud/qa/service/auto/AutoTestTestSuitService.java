@@ -117,6 +117,23 @@ public class AutoTestTestSuitService {
     }
 
 
+    public boolean deleteTestAndSuitRelation(Long suitId ,Long scriptId) throws AutoTestRunException{
+        if (suitId == null || scriptId == null) {
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION);
+        }
+        ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO = clientAutoTestSuitBaseInfoDAO.getAutoTestSuitById(suitId);
+        if (clientAutoTestSuitBaseInfoDO == null) {
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SUIT_IS_NOT_EXIST);
+        }
+         int count = clientAutoTestSuitRelationDAO.deleteClientTestRelationBySuitAndScript(suitId,scriptId) ;
+        if (count > 0){
+            return true ;
+        }else {
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
+        }
+    }
+
+
     public List<TestSuitBaseInfoVO> getTestSuitBaseInfo(String queryKey){
         List<ClientAutoTestSuitBaseInfoDO> clientAutoTestSuitBaseInfoDOList = clientAutoTestSuitBaseInfoDAO.queryAutoTestSuitByName(queryKey) ;
         List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = new ArrayList<TestSuitBaseInfoVO>() ;

@@ -56,6 +56,7 @@ public class AutoTestSuitController {
     }
 
     /**
+     * 查询suit下面的全量脚本
      * http://127.0.0.1:8788/g2-client/auto/suit/script?suit=1
      * @param suitId
      * @return
@@ -136,6 +137,31 @@ public class AutoTestSuitController {
         }
         return resultVO ;
     }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/suit/script/delete?suit=2&script=1
+     * 解除脚本-执行集绑定关系
+     * @param suitId
+     * @param scriptId
+     * @return
+     */
+    @RequestMapping("/script/delete")
+    @ResponseBody
+    public ResultVO deleteTestAndSuitRelation(@RequestParam("suit")Long suitId ,@RequestParam("script")Long scriptId){
+        ResultVO resultVO = null ;
+        try {
+            boolean flag = autoTestTestSuitService.deleteTestAndSuitRelation(suitId,scriptId) ;
+            if (flag){
+                resultVO = ResultUtils.buildSuccess() ;
+            }else {
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
 
     @RequestMapping("/init")
     @ResponseBody

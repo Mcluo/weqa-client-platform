@@ -146,6 +146,31 @@ public class AutoTestScriptController {
     }
 
 
+    /**
+     *  http://127.0.0.1:8788/g2-client/auto/script/search?key=%E6%91%84%E5%83%8F%E5%A4%B4
+     * @param key
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/search")
+    @ResponseBody
+    public ResultVO searchTCScript(@RequestParam(name = "key") String key,
+                                   @RequestParam(name = "page",required = false ,defaultValue = "1") Integer pageNo,
+                                  @RequestParam(name = "size",required = false , defaultValue = "10") Integer pageSize){
+        ResultVO resultVO = null ;
+        try {
+            AutoScriptListVO autoScriptListVO = autoTcScriptService.queryScriptList(key,pageNo, pageSize);
+            if (autoScriptListVO != null){
+                resultVO = ResultUtils.buildSuccess(autoScriptListVO) ;
+            }else {
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (AutoTestRunException autoTestRunException){
+            resultVO = ResultUtils.buildFail(autoTestRunException.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
 
     /**
      * http://127.0.0.1:8788/g2-client/auto/script/init

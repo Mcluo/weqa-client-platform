@@ -32,4 +32,9 @@
         WHERE suit_id = #{suit}
     </select>
 
+    <delete id="deleteClientTestRelationBySuitAndScript">
+        DELETE FROM vcloud_client_auto_test_suit_relation_info
+        WHERE suit_id = #{suit} AND script_id = #{script}
+    </delete>
+
 </mapper>

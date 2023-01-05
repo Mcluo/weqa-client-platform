@@ -19,4 +19,6 @@ public interface ClientAutoTestSuitRelationDAO {
 
     List<ClientAutoTestSuitRelationDO> getAutoTestSuitRelationListBySuit(@Param("suit") long suitId) ;
 
+    int deleteClientTestRelationBySuitAndScript(@Param("suit") long suitId,@Param("script") long ScriptId) ;
+
 }
