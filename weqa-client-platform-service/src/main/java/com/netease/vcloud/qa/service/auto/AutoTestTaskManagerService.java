@@ -28,8 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -303,10 +305,18 @@ public class AutoTestTaskManagerService {
             return scriptRunLogVO ;
         }
         try {
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes);
-            String logStr = new String(bytes, Charset.forName("UTF-8").name());
-            scriptRunLogVO.setLog(logStr);
+//            byte[] bytes = new byte[inputStream.available()];
+//            inputStream.read(bytes);
+//            String logStr = new String(bytes, Charset.forName("UTF-8").name());
+//            scriptRunLogVO.setLog(logStr);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            String line ;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,Charset.forName("UTF-8").name())) ;
+            while((line=bufferedReader.readLine())!=null){
+                stringBuilder.append(line) ;
+            }
+            scriptRunLogVO.setLog(stringBuilder.toString());
         }catch (IOException e){
             AUTO_LOGGER.error("[AutoTestTaskManagerService.getScriptRunLog] read nos file exception",e);
         }finally {
