@@ -118,15 +118,15 @@ public class AutoTestSuitController {
     /**
      *http://127.0.0.1:8788/g2-client/auto/suit/script/add?suit=2&script=1
      * @param suitId
-     * @param scriptId
+     * @param scriptIds
      * @return
      */
     @RequestMapping("/script/add")
     @ResponseBody
-    public ResultVO addTestAndSuitRelation(@RequestParam("suit")Long suitId ,@RequestParam("script")Long scriptId){
+    public ResultVO addTestAndSuitRelation(@RequestParam("suit")Long suitId ,@RequestParam("scriptList")List<Long> scriptIds){
         ResultVO resultVO = null ;
         try {
-            boolean flag = autoTestTestSuitService.addTestAndSuitRelation(suitId,scriptId) ;
+            boolean flag = autoTestTestSuitService.addTestAndSuitRelation(suitId,scriptIds) ;
             if (flag){
                 resultVO = ResultUtils.buildSuccess() ;
             }else {
