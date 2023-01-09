@@ -195,4 +195,39 @@ public class AutoTestScriptController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/script/patch/add?tc=%5B%5D
+     * @param tcScriptArray
+     * @param operator
+     * @return
+     */
+    @RequestMapping("/patch/add")
+    @ResponseBody
+    public ResultVO patchAddNewScript(@RequestParam(name = "tc") String tcScriptArray,@RequestParam(name = "operator",required = false,defaultValue = "system")String operator){
+        ResultVO resultVO = null ;
+        List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList = null ;
+        try {
+             autoTCScriptInfoDTOList = JSONArray.parseArray(tcScriptArray, AutoTCScriptInfoDTO.class);
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
+        if (autoTCScriptInfoDTOList == null){
+            resultVO = ResultUtils.buildFail("参数解析错误") ;
+            return resultVO ;
+        }
+        try {
+            for(AutoTCScriptInfoDTO autoTCScriptInfoDTO:autoTCScriptInfoDTOList){
+                autoTCScriptInfoDTO.setOwner(operator);
+            }
+            List<Long> idList = autoTcScriptService.addScriptInfo(autoTCScriptInfoDTOList) ;
+            resultVO = ResultUtils.build(idList != null) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
+
+
+
 }
