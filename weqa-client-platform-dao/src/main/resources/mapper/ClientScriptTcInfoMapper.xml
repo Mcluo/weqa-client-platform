@@ -61,4 +61,24 @@
         where id=#{id}
     </update>
 
+    <select id="queryClientScript" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_script_tc_info
+        WHERE id_delete=0
+        AND (script_name LIKE CONCAT ("%",#{key},"%")
+        OR script_detail LIKE CONCAT ("%",#{key},"%")
+        OR exec_class LIKE CONCAT ("%",#{key},"%"))
+        ORDER BY id DESC
+        LIMIT #{start}, #{size}
+    </select>
+
+    <select id="queryClientScriptCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM vcloud_client_script_tc_info
+        WHERE id_delete=0
+        AND (script_name LIKE CONCAT ("%",#{key},"%")
+        OR script_detail LIKE CONCAT ("%",#{key},"%")
+        OR exec_class LIKE CONCAT ("%",#{key},"%"))
+    </select>
+
 </mapper>

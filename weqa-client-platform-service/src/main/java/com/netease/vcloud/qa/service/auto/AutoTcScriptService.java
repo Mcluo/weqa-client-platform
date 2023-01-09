@@ -111,6 +111,12 @@ public class AutoTcScriptService {
         }
     }
 
+    /**
+     * 删除脚本
+     * @param id
+     * @return
+     * @throws AutoTestRunException
+     */
     public boolean deleteScript(Long id ) throws AutoTestRunException{
         if (id == null){
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
@@ -125,6 +131,13 @@ public class AutoTcScriptService {
         }
     }
 
+    /**
+     * 获取全量脚本（带分页）
+     * @param pageNo
+     * @param pageSize
+     * @return
+     * @throws AutoTestRunException
+     */
     public AutoScriptListVO getAllScript(Integer pageNo , Integer pageSize) throws AutoTestRunException{
         AutoScriptListVO autoScriptListVO = new AutoScriptListVO() ;
         int start = pageNo == null ? 0 : (pageNo - 1) * pageSize ;
@@ -199,4 +212,29 @@ public class AutoTcScriptService {
         return autoScriptInfoVO ;
     }
 
+
+    /**
+     * 根据关键字查询具体的脚本
+     * @param key
+     * @param pageNo
+     * @param pageSize
+     * @return
+     * @throws AutoTestRunException
+     */
+    public AutoScriptListVO queryScriptList(String key , Integer pageNo , Integer pageSize)throws AutoTestRunException{
+        if (StringUtils.isBlank(key)||pageNo == null || pageSize == null){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        int start = (pageNo - 1) * pageSize ;
+        AutoScriptListVO autoScriptListVO = new AutoScriptListVO() ;
+        autoScriptListVO.setCurrent(pageNo);
+        autoScriptListVO.setSize(pageSize);
+
+        List<ClientScriptTcInfoDO> clientScriptTcInfoDOList = clientScriptTcInfoDAO.queryClientScript(key,start,pageSize) ;
+        int count = clientScriptTcInfoDAO.queryClientScriptCount(key) ;
+        autoScriptListVO.setTotal(count);
+        List<AutoScriptInfoVO> autoScriptInfoVOList = this.buildAutoScriptInfoVOByDOList(clientScriptTcInfoDOList) ;
+        autoScriptListVO.setAutoScriptInfoVOList(autoScriptInfoVOList);
+        return autoScriptListVO;
+    }
 }

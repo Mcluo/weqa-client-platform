@@ -26,4 +26,8 @@ public interface ClientScriptTcInfoDAO {
 
     int deleteClientScript(@Param("id") long id ) ;
 
+    List<ClientScriptTcInfoDO> queryClientScript(@Param("key")String key, @Param("start") Integer start, @Param("size") Integer size) ;
+
+    int queryClientScriptCount(@Param("key") String key) ;
+
 }

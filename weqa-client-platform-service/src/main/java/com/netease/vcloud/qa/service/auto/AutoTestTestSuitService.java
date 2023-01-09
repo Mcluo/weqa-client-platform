@@ -95,8 +95,8 @@ public class AutoTestTestSuitService {
         }
     }
 
-    public boolean addTestAndSuitRelation(Long suitId ,Long scriptId) throws AutoTestRunException {
-        if (suitId == null || scriptId == null) {
+    public boolean addTestAndSuitRelation(Long suitId ,List<Long> scriptIdList) throws AutoTestRunException {
+        if (suitId == null || CollectionUtils.isEmpty(scriptIdList)) {
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION);
         }
         ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO = clientAutoTestSuitBaseInfoDAO.getAutoTestSuitById(suitId);
@@ -104,14 +104,33 @@ public class AutoTestTestSuitService {
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SUIT_IS_NOT_EXIST);
         }
         List<ClientAutoTestSuitRelationDO> clientAutoTestSuitRelationDOList = new ArrayList<ClientAutoTestSuitRelationDO>();
-        ClientAutoTestSuitRelationDO clientAutoTestSuitRelationDO = new ClientAutoTestSuitRelationDO();
-        clientAutoTestSuitRelationDO.setSuitId(suitId);
-        clientAutoTestSuitRelationDO.setScriptId(scriptId);
-        clientAutoTestSuitRelationDOList.add(clientAutoTestSuitRelationDO);
+        for(Long scriptId : scriptIdList) {
+            ClientAutoTestSuitRelationDO clientAutoTestSuitRelationDO = new ClientAutoTestSuitRelationDO();
+            clientAutoTestSuitRelationDO.setSuitId(suitId);
+            clientAutoTestSuitRelationDO.setScriptId(scriptId);
+            clientAutoTestSuitRelationDOList.add(clientAutoTestSuitRelationDO);
+        }
         int count = clientAutoTestSuitRelationDAO.patchInsertClientTestRelation(clientAutoTestSuitRelationDOList);
         if (count > 0) {
             return true;
         } else {
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
+        }
+    }
+
+
+    public boolean deleteTestAndSuitRelation(Long suitId ,Long scriptId) throws AutoTestRunException{
+        if (suitId == null || scriptId == null) {
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION);
+        }
+        ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO = clientAutoTestSuitBaseInfoDAO.getAutoTestSuitById(suitId);
+        if (clientAutoTestSuitBaseInfoDO == null) {
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SUIT_IS_NOT_EXIST);
+        }
+         int count = clientAutoTestSuitRelationDAO.deleteClientTestRelationBySuitAndScript(suitId,scriptId) ;
+        if (count > 0){
+            return true ;
+        }else {
             throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION);
         }
     }
