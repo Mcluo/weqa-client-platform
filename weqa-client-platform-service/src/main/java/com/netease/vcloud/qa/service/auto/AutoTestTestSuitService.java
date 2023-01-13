@@ -10,6 +10,7 @@ import com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTestSuitRelationDO;
 import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTCSuitInfoDTO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
@@ -136,8 +137,11 @@ public class AutoTestTestSuitService {
     }
 
 
-    public List<TestSuitBaseInfoVO> getTestSuitBaseInfo(String queryKey){
-        List<ClientAutoTestSuitBaseInfoDO> clientAutoTestSuitBaseInfoDOList = clientAutoTestSuitBaseInfoDAO.queryAutoTestSuitByName(queryKey) ;
+    public List<TestSuitBaseInfoVO> getTestSuitBaseInfo(String owner,String queryKey){
+        if (StringUtils.isBlank(owner)){
+            owner = null ;
+        }
+        List<ClientAutoTestSuitBaseInfoDO> clientAutoTestSuitBaseInfoDOList = clientAutoTestSuitBaseInfoDAO.queryAutoTestSuitByName(owner,queryKey) ;
         List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = new ArrayList<TestSuitBaseInfoVO>() ;
         if (!CollectionUtils.isEmpty(clientAutoTestSuitBaseInfoDOList)){
             Set<String> userSet = new HashSet<>() ;
@@ -186,6 +190,7 @@ public class AutoTestTestSuitService {
         return autoScriptInfoVOList ;
     }
 
+    @Deprecated
     public boolean initTestSuitScriptInfo(AutoTCSuitInfoDTO autoTCSuitInfoDTO) throws AutoTestRunException{
         if (autoTCSuitInfoDTO == null){
             return false ;
@@ -198,5 +203,28 @@ public class AutoTestTestSuitService {
         }
         return result ;
     }
+
+    /**
+     * 批量向suit中添加用例
+     * @param suitName
+     * @param scriptList
+     * @param operator
+     * @return
+     * @throws AutoTestRunException
+     */
+    public boolean patchAddTestScriptToSuit(String suitName, List<AutoTCScriptInfoDTO> scriptList, String operator)throws AutoTestRunException{
+        if (StringUtils.isBlank(suitName) || CollectionUtils.isEmpty(scriptList)  || StringUtils.isBlank(operator)){
+            throw  new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        Long testSuitID = this.addNewTestSuit(suitName,operator) ;
+        for (AutoTCScriptInfoDTO autoTCScriptInfoDTO :scriptList){
+            autoTCScriptInfoDTO.setOwner(operator);
+        }
+        List<Long> scriptIdList = autoTcScriptService.addScriptInfo(scriptList) ;
+        //批量添加，不再删除
+        boolean flag = this.addTestAndSuitRelation(testSuitID,scriptIdList) ;
+        return flag ;
+    }
+
 
 }

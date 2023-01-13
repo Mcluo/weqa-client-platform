@@ -25,6 +25,7 @@
         <foreach collection="idSet" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        AND id_delete=0
     </select>
 
     <insert id="patchInsertClientScript" parameterType="com.netease.vcloud.qa.model.ClientScriptTcInfoDO" keyProperty="id" useGeneratedKeys="true">
