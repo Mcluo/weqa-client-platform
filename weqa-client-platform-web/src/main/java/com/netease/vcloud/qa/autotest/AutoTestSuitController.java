@@ -11,6 +11,7 @@ import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTCSuitInfoDTO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +35,9 @@ public class AutoTestSuitController {
      */
     @RequestMapping("/getAll")
     @ResponseBody
-    public ResultVO getAllTestSuit() {
+    public ResultVO getAllTestSuit(@RequestParam(name = "owner",required = false) String owner) {
         ResultVO resultVO = null;
-        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = autoTestTestSuitService.getTestSuitBaseInfo(null);
+        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = autoTestTestSuitService.getTestSuitBaseInfo(owner,null);
         resultVO = ResultUtils.buildSuccess(testSuitBaseInfoVOList);
         return resultVO;
     }
@@ -50,7 +51,7 @@ public class AutoTestSuitController {
     @ResponseBody
     public ResultVO queryTestSuit(@RequestParam("key") String queryKey){
         ResultVO resultVO = null;
-        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = autoTestTestSuitService.getTestSuitBaseInfo(queryKey);
+        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = autoTestTestSuitService.getTestSuitBaseInfo(null,queryKey);
         resultVO = ResultUtils.buildSuccess(testSuitBaseInfoVOList);
         return resultVO;
     }
@@ -165,6 +166,7 @@ public class AutoTestSuitController {
 
     @RequestMapping("/init")
     @ResponseBody
+    @Deprecated
     public ResultVO initAutoScriptWithSuit(@RequestBody String tcSuitInfo){
 //        for (Object tcScriptObj:tcScriptArray){
 //            AutoTestTaskInfoDTO autoTestTaskInfoDTO = (AutoTestTaskInfoDTO) JSONObject.toJSON(tcScriptObj) ;
@@ -174,6 +176,32 @@ public class AutoTestSuitController {
         ResultVO resultVO = null ;
         try {
             boolean flag = autoTestTestSuitService.initTestSuitScriptInfo(autoTCSuitInfoDTO) ;
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
+    @RequestMapping("/script/patch/add")
+    @ResponseBody
+    public ResultVO patchAddAutoScriptToSuit(@RequestParam("suit") String suitName, @RequestParam(name = "tc" ,required = false) String tcArray, @RequestParam("operator") String operator){
+        if(StringUtils.isBlank(tcArray)){
+            return this.addNewTestSuit(suitName,operator) ;
+        }
+        ResultVO resultVO = null ;
+        List<AutoTCScriptInfoDTO> autoTCScriptInfoDTOList = null ;
+        try {
+            autoTCScriptInfoDTOList = JSONArray.parseArray(tcArray, AutoTCScriptInfoDTO.class);
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
+        if (autoTCScriptInfoDTOList == null){
+            resultVO = ResultUtils.buildFail("参数解析错误") ;
+            return resultVO ;
+        }
+        try {
+            boolean flag = autoTestTestSuitService.patchAddTestScriptToSuit(suitName, autoTCScriptInfoDTOList, operator);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getMessage()) ;

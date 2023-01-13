@@ -99,11 +99,12 @@ public class AutoTestTaskController {
      * @return
      */
     @RequestMapping("/query")
-    public ResultVO queryAutoTaskList(@RequestParam(name = "size" , required = false , defaultValue = "20")int size ,
+    public ResultVO queryAutoTaskList(@RequestParam(name = "owner",required = false) String owner,
+                                      @RequestParam(name = "size" , required = false , defaultValue = "20")int size ,
                                       @RequestParam(name = "page" , required = false , defaultValue = "1") int pageNo){
         ResultVO resultVO = null ;
         try {
-            TaskInfoListVO taskInfoListVO = autoTestTaskManagerService.queryTaskInfoList(size, pageNo);
+            TaskInfoListVO taskInfoListVO = autoTestTaskManagerService.queryTaskInfoList(owner,size, pageNo);
             if (taskInfoListVO!=null){
                 resultVO = ResultUtils.buildSuccess( taskInfoListVO) ;
             }else {

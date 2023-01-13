@@ -39,6 +39,9 @@
         <include refid="baseSql"/>
         FROM vcloud_client_auto_test_suit_base_info
         WHERE is_delete=0
+        <if test="owner!=null and owner!=''">
+            AND suit_owner = #{owner}
+        </if>
         <if test="name!=null and name!=''">
             AND suit_name LIKE CONCAT('%',#{name},'%')
         </if>

@@ -51,7 +51,7 @@ public interface ClientAutoTaskInfoDAO {
      * @param size
      * @return
      */
-    List<ClientAutoTaskInfoDO> queryAutoTaskInfo(@Param("start") int start , @Param("size") int size) ;
+    List<ClientAutoTaskInfoDO> queryAutoTaskInfo(@Param("owner") String owner,@Param("start") int start , @Param("size") int size) ;
 
     /**
      *

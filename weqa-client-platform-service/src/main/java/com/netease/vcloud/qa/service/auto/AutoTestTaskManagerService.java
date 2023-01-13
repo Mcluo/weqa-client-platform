@@ -192,10 +192,13 @@ public class AutoTestTaskManagerService {
         return taskScriptRunInfoBOList ;
     }
 
-    public TaskInfoListVO queryTaskInfoList(int pageSize , int pageNo)  throws AutoTestRunException{
+    public TaskInfoListVO queryTaskInfoList(String owner,int pageSize , int pageNo)  throws AutoTestRunException{
         TaskInfoListVO taskInfoListVO = new TaskInfoListVO() ;
         int start = (pageNo-1) * pageSize ;
-        List<ClientAutoTaskInfoDO> clientAutoTaskInfoDOList = clientAutoTaskInfoDAO.queryAutoTaskInfo(start,pageSize) ;
+        if (StringUtils.isBlank(owner)){
+            owner = null ;
+        }
+        List<ClientAutoTaskInfoDO> clientAutoTaskInfoDOList = clientAutoTaskInfoDAO.queryAutoTaskInfo(owner,start,pageSize) ;
         int count = clientAutoTaskInfoDAO.queryAutoTaskInfoCount() ;
         taskInfoListVO.setCurrent(pageNo);
         taskInfoListVO.setSize(pageSize);
