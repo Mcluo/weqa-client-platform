@@ -199,7 +199,7 @@ public class AutoTestTaskManagerService {
             owner = null ;
         }
         List<ClientAutoTaskInfoDO> clientAutoTaskInfoDOList = clientAutoTaskInfoDAO.queryAutoTaskInfo(owner,start,pageSize) ;
-        int count = clientAutoTaskInfoDAO.queryAutoTaskInfoCount() ;
+        int count = clientAutoTaskInfoDAO.queryAutoTaskInfoCount(owner) ;
         taskInfoListVO.setCurrent(pageNo);
         taskInfoListVO.setSize(pageSize);
         taskInfoListVO.setTotal(count);
@@ -317,7 +317,8 @@ public class AutoTestTaskManagerService {
             String line ;
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,Charset.forName("UTF-8").name())) ;
             while((line=bufferedReader.readLine())!=null){
-                stringBuilder.append(line) ;
+                stringBuilder.append(line).append("\n") ;
+//                stringBuilder.append(line);
             }
             scriptRunLogVO.setLog(stringBuilder.toString());
         }catch (IOException e){

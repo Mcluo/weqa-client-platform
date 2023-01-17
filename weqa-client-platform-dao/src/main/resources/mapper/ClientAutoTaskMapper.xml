@@ -58,6 +58,9 @@
         SELECT count(1)
         FROM vcloud_client_auto_task_info
         WHERE 1=1
+        <if test="owner!=null and owner != ''">
+            AND operator = #{owner}
+        </if>
     </select>
 
 </mapper>
