@@ -57,6 +57,6 @@ public interface ClientAutoTaskInfoDAO {
      *
      * @return
      */
-    int queryAutoTaskInfoCount() ;
+    int queryAutoTaskInfoCount(@Param("owner") String owner) ;
 
 }
