@@ -166,7 +166,19 @@ public class AutoTestTaskManagerService {
         autoTestTaskInfoBO.setDeviceType(autoTestTaskInfoDTO.getDeviceType());
         List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getDeviceInfoList(autoTestTaskInfoDTO.getDeviceList()) ;
         if (deviceInfoVOList!=null) {
-            autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(deviceInfoVOList));
+            //设备从DB读取后，需要重新排序
+            Map<Long,DeviceInfoVO> deviceMap = new HashMap<Long,DeviceInfoVO>();
+            List<DeviceInfoVO> saveDeviceInfoVOList = new ArrayList<DeviceInfoVO>() ;
+            for (DeviceInfoVO deviceInfoVO:deviceInfoVOList){
+                deviceMap.put(deviceInfoVO.getId(),deviceInfoVO) ;
+            }
+            for (Long deviceId : autoTestTaskInfoDTO.getDeviceList()){
+                DeviceInfoVO deviceInfo = deviceMap.get(deviceId) ;
+                if (deviceInfo!=null) {
+                    saveDeviceInfoVOList.add(deviceInfo);
+                }
+            }
+            autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(saveDeviceInfoVOList));
         }
         return autoTestTaskInfoBO ;
     }
