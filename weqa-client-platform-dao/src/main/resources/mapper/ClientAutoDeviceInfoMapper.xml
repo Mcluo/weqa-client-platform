@@ -13,6 +13,8 @@
         <result column="owner" jdbcType="VARCHAR" property="owner"/>
         <result column="run" jdbcType="INTEGER" property="run"/>
         <result column="alive" jdbcType="INTEGER" property="alive"/>
+        <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
+
     </resultMap>
 
 
@@ -22,8 +24,8 @@
 
 
     <insert id="insertNewDeviceInfo" parameterType="com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO">
-        insert into vcloud_client_auto_device_info (gmt_create,gmt_update,device_ip,device_port,platform,user_id,cpu_info,owner,run,alive)
-        value(now(),now(),#{device.deviceIp},#{device.devicePort},#{device.platform},#{device.userId},#{device.cpuInfo},#{device.owner},#{device.run},#{device.alive}) ;
+        insert into vcloud_client_auto_device_info (gmt_create,gmt_update,device_ip,device_port,platform,user_id,cpu_info,owner,run,alive,device_id)
+        value(now(),now(),#{device.deviceIp},#{device.devicePort},#{device.platform},#{device.userId},#{device.cpuInfo},#{device.owner},#{device.run},#{device.alive},#{device.deviceId}) ;
     </insert>
 
     <select id="getAllClientAutoDevice" resultMap="BaseResultMap">

@@ -135,6 +135,7 @@ public class AutoTestDeviceService {
         deviceInfoVO.setUserId(clientAutoDeviceInfoDO.getUserId());
         deviceInfoVO.setCpu(clientAutoDeviceInfoDO.getCpuInfo());
         deviceInfoVO.setId(clientAutoDeviceInfoDO.getId());
+        deviceInfoVO.setDeviceId(clientAutoDeviceInfoDO.getDeviceId());
         UserInfoBO userInfoBO = userInfoMap.get(clientAutoDeviceInfoDO.getOwner()) ;
         if (userInfoBO!=null) {
             deviceInfoVO.setOperator(CommonUtils.buildUserInfoVOByBO(userInfoBO));

@@ -31,6 +31,16 @@ public class ClientAutoDeviceInfoDO {
 
     private Byte alive;
 
+    private String deviceId;
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
     public String getOwner() {
         return owner;
     }
