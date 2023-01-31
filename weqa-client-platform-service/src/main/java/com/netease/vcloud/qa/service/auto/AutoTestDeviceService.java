@@ -93,11 +93,7 @@ public class AutoTestDeviceService {
         clientAutoDeviceInfoDO.setRun((byte)0);
         clientAutoDeviceInfoDO.setAlive((byte)1);
         int count = clientAutoDeviceInfoDAO.insertNewDeviceInfo(clientAutoDeviceInfoDO) ;
-        if (count>0){
-            return true ;
-        }else {
-            return false ;
-        }
+        return count > 0;
     }
 
     public List<DeviceInfoVO> getDeviceInfoList(List<Long> deviceIdList){

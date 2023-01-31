@@ -19,7 +19,7 @@
 
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,device_ip,device_port,platform,user_id,cpu_info,owner,run,alive
+        select id,gmt_create,gmt_update,device_ip,device_port,platform,user_id,cpu_info,owner,run,alive,device_id
     </sql>
 
 
