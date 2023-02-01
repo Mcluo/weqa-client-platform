@@ -177,12 +177,7 @@ public class AutoTestDeviceService {
         if (clientAutoDeviceInfoDOList.size() > 0 ){
             for(ClientAutoDeviceInfoDO autoDeviceInfoDO : clientAutoDeviceInfoDOList){
                 autoDeviceInfoDO.setAlive(clientAutoDeviceInfoDO.getAlive());
-                int count = clientAutoDeviceInfoDAO.updateDeviceInfo(autoDeviceInfoDO) ;
-                if (count > 0){
-                    return true ;
-                }else {
-                    return false ;
-                }
+                clientAutoDeviceInfoDAO.updateDeviceInfo(autoDeviceInfoDO) ;
             }
             return true;
         }
