@@ -53,7 +53,12 @@
     <update id="updateDeviceInfo" parameterType="com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO">
         update vcloud_client_auto_device_info
         set gmt_update=now() , device_ip=#{device.deviceIp},device_port=#{device.devicePort},platform=#{device.platform},user_id=#{device.userId},cpu_info=#{device.cpuInfo} ,owner=#{device.owner}
-        ,run=#{device.run},alive=#{device.alive},device_id=#{device.deviceId}
+        where id = #{device.id}
+    </update>
+
+    <update id="updateDeviceAlive" parameterType="com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO">
+        update vcloud_client_auto_device_info
+        set gmt_update=now() ,alive=#{device.alive}
         where id = #{device.id}
     </update>
 

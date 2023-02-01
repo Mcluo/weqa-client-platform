@@ -21,5 +21,6 @@ public interface ClientAutoDeviceInfoDAO {
     List<ClientAutoDeviceInfoDO> getClientAutoDeviceByIds(@Param("list")List<Long> deviceIdList) ;
 
     int updateDeviceInfo(@Param("device") ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) ;
+    int updateDeviceAlive(@Param("device") ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) ;
 
 }
