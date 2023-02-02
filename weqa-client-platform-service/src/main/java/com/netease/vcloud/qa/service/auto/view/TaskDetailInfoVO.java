@@ -14,6 +14,8 @@ public class TaskDetailInfoVO {
 
     private List<TaskRunScriptInfoVO> scriptList ;
 
+    private TaskStatisticInfoVO statisticInfo ;
+
     public TaskBaseInfoVO getBaseInfo() {
         return baseInfo;
     }
@@ -36,5 +38,13 @@ public class TaskDetailInfoVO {
 
     public void setScriptList(List<TaskRunScriptInfoVO> scriptList) {
         this.scriptList = scriptList;
+    }
+
+    public TaskStatisticInfoVO getStatisticInfo() {
+        return statisticInfo;
+    }
+
+    public void setStatisticInfo(TaskStatisticInfoVO statisticInfo) {
+        this.statisticInfo = statisticInfo;
     }
 }

@@ -274,7 +274,9 @@ public class AutoTestTaskManagerService {
         TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO,userInfoBO) ;
         taskDetailInfoVO.setBaseInfo(taskBaseInfoVO) ;
         List<ClientAutoScriptRunInfoDO> clientAutoScriptRunInfoDOList = clientAutoScriptRunInfoDAO.getClientAutoScriptRunInfoByTaskId(taskId) ;
+        Map<ScriptRunStatus,Integer> statusStatisticMap = new HashMap<ScriptRunStatus,Integer>() ;
         if (!CollectionUtils.isEmpty(clientAutoScriptRunInfoDOList)) {
+            //处理脚本信息
             List<TaskRunScriptInfoVO> scriptList = new ArrayList<TaskRunScriptInfoVO>() ;
             for (ClientAutoScriptRunInfoDO clientAutoScriptRunInfoDO : clientAutoScriptRunInfoDOList) {
                 TaskRunScriptInfoVO taskRunScriptInfoVO = new TaskRunScriptInfoVO() ;
@@ -290,6 +292,13 @@ public class AutoTestTaskManagerService {
                 ScriptRunStatus scriptRunStatus = ScriptRunStatus.getStatusByCode(clientAutoScriptRunInfoDO.getExecStatus()) ;
                 if (scriptRunStatus!=null) {
                     taskRunScriptInfoVO.setStatus(scriptRunStatus.getStatus());
+                    Integer scriptCount = statusStatisticMap.get(scriptRunStatus) ;
+                    if (scriptCount == null){
+                        scriptCount = 1 ;
+                    }else {
+                        scriptCount = scriptCount + 1 ;
+                    }
+                    statusStatisticMap.put(scriptRunStatus , scriptCount) ;
                 }
                 if (StringUtils.isNotBlank(clientAutoScriptRunInfoDO.getLogInfo())){
                     String nosUrl = nosService.getDownFileUrl(clientAutoScriptRunInfoDO.getLogInfo()) ;
@@ -298,6 +307,16 @@ public class AutoTestTaskManagerService {
                 scriptList.add(taskRunScriptInfoVO) ;
             }
             taskDetailInfoVO.setScriptList(scriptList);
+            //处理统计结果
+            TaskStatisticInfoVO taskStatisticInfoVO = new TaskStatisticInfoVO() ;
+            taskStatisticInfoVO.setWaitingNumber(statusStatisticMap.get(ScriptRunStatus.INIT)==null?0:statusStatisticMap.get(ScriptRunStatus.INIT));
+            taskStatisticInfoVO.setRunningNumber(statusStatisticMap.get(ScriptRunStatus.RUNNING)==null?0:statusStatisticMap.get(ScriptRunStatus.RUNNING));
+            taskStatisticInfoVO.setSuccessNumber(statusStatisticMap.get(ScriptRunStatus.SUCCESS)==null?0:statusStatisticMap.get(ScriptRunStatus.SUCCESS));
+            taskStatisticInfoVO.setCancelNumber(statusStatisticMap.get(ScriptRunStatus.CANCEL)==null?0:statusStatisticMap.get(ScriptRunStatus.CANCEL));
+            int failCount = statusStatisticMap.get(ScriptRunStatus.FAIL)==null?0:statusStatisticMap.get(ScriptRunStatus.FAIL);
+            int exceptionCount = statusStatisticMap.get(ScriptRunStatus.WARNING)==null?0:statusStatisticMap.get(ScriptRunStatus.WARNING) ;
+            taskStatisticInfoVO.setFailNumber(failCount + exceptionCount);
+            taskDetailInfoVO.setStatisticInfo(taskStatisticInfoVO);
         }
         return taskDetailInfoVO ;
     }
