@@ -169,4 +169,18 @@ public class AutoTestDeviceService {
             return false ;
         }
     }
+
+    public boolean updateDeviceAlive(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) throws AutoTestRunException{
+        ArrayList<Long> ids = new ArrayList<>();
+        ids.add(clientAutoDeviceInfoDO.getId());
+        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(ids);
+        if (clientAutoDeviceInfoDOList.size() > 0 ){
+            for(ClientAutoDeviceInfoDO autoDeviceInfoDO : clientAutoDeviceInfoDOList){
+                autoDeviceInfoDO.setAlive(clientAutoDeviceInfoDO.getAlive());
+                clientAutoDeviceInfoDAO.updateDeviceAlive(autoDeviceInfoDO) ;
+            }
+            return true;
+        }
+        return false;
+    }
 }
