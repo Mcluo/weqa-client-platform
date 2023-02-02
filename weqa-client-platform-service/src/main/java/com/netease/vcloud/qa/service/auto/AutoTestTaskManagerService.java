@@ -316,6 +316,13 @@ public class AutoTestTaskManagerService {
             int failCount = statusStatisticMap.get(ScriptRunStatus.FAIL)==null?0:statusStatisticMap.get(ScriptRunStatus.FAIL);
             int exceptionCount = statusStatisticMap.get(ScriptRunStatus.WARNING)==null?0:statusStatisticMap.get(ScriptRunStatus.WARNING) ;
             taskStatisticInfoVO.setFailNumber(failCount + exceptionCount);
+            taskStatisticInfoVO.setTotal(scriptList.size());
+            if (taskStatisticInfoVO.getWaitingNumber()>0||taskStatisticInfoVO.getRunningNumber()>0||taskStatisticInfoVO.getCancelNumber()>0){
+                taskStatisticInfoVO.setSuccessRate("-");
+            }else {
+                double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / taskStatisticInfoVO.getTotal() ;
+                taskStatisticInfoVO.setSuccessRate(successRate + "%");
+            }
             taskDetailInfoVO.setStatisticInfo(taskStatisticInfoVO);
         }
         return taskDetailInfoVO ;
