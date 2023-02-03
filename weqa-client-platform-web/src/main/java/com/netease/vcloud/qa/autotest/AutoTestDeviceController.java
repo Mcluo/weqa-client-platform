@@ -1,15 +1,15 @@
 package com.netease.vcloud.qa.autotest;
 
+import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
+import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestDeviceService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -92,6 +92,22 @@ public class AutoTestDeviceController {
         try{
             boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner);
             resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+    @RequestMapping("/check")
+    @ResponseBody
+    public ResultVO check(@RequestBody JSONObject jsonObject){
+        ResultVO resultVO = null ;
+        try{
+            List<ClientAutoDeviceInfoDO> list = jsonObject.getJSONArray("listData").toJavaList(ClientAutoDeviceInfoDO.class);
+            for(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : list){
+                autoTestDeviceService.updateDeviceAlive(clientAutoDeviceInfoDO);
+            }
+            resultVO = ResultUtils.build(true) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
         }
