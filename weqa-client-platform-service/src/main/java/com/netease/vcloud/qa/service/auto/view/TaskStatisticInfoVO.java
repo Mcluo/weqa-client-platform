@@ -15,6 +15,10 @@ public class TaskStatisticInfoVO {
 
     private int cancelNumber ;
 
+    private int total ;
+
+    private String successRate ;
+
     public int getWaitingNumber() {
         return waitingNumber;
     }
@@ -53,5 +57,21 @@ public class TaskStatisticInfoVO {
 
     public void setCancelNumber(int cancelNumber) {
         this.cancelNumber = cancelNumber;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public String getSuccessRate() {
+        return successRate;
+    }
+
+    public void setSuccessRate(String successRate) {
+        this.successRate = successRate;
     }
 }
