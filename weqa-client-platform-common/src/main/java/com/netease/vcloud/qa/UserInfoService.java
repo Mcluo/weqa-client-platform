@@ -79,7 +79,6 @@ public class UserInfoService {
         userInfoBO.setUserName(weqaYunxinUserInfoDO.getUserName());
         userInfoBO.setUserNick(weqaYunxinUserInfoDO.getNickName());
         userInfoBO.setEmail(weqaYunxinUserInfoDO.getJobEmail());
-
         return userInfoBO;
     }
 

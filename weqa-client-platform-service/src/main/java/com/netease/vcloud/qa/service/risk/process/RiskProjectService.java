@@ -45,11 +45,27 @@ public class RiskProjectService {
         clientRiskProjectDO.setStartTime(new Date(System.currentTimeMillis()));
         clientRiskProjectDO.setProjectStatus(RiskProjectStatus.PROGRESS.getCode());
         int count = riskProjectDAO.createProject(clientRiskProjectDO) ;
-        if (count>0){
-            return clientRiskProjectDO.getId();
+        Long projectId = clientRiskProjectDO.getId() ;
+        if (count>0 && projectId != null){
+            //创建风险信息
+            riskManagerService.createProjectRiskInfo(projectId,RiskProjectStatus.PROGRESS) ;
+            return projectId;
         }else {
             RISK_LOGGER.error("[RiskProjectService.createNewProject] save project to db fail");
             return null;
+        }
+    }
+
+    public boolean deleteProject(Long projectId) throws RiskCheckException {
+        if (projectId == null){
+            throw  new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        int count = riskProjectDAO.logicDeleteProject(projectId) ;
+        if (count > 0){
+            return true ;
+        }else {
+            RISK_LOGGER.error("[RiskProjectService.deleteProject] delete project from db fail");
+            return false ;
         }
     }
 
@@ -99,6 +115,7 @@ public class RiskProjectService {
             return null ;
         }
         RiskProjectVO riskProjectVO = new RiskProjectVO() ;
+        riskProjectVO.setId(clientRiskProjectDO.getId());
         riskProjectVO.setProjectName(clientRiskProjectDO.getProjectName());
         RiskProjectStatus riskProjectStatus = RiskProjectStatus.getStatusByCode(clientRiskProjectDO.getProjectStatus()) ;
         if (riskProjectStatus!=null){

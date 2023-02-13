@@ -19,6 +19,8 @@ public interface ClientRiskProjectDAO {
 
     int updateProjectStatus(@Param("id") long id , @Param("status")byte status) ;
 
+    int logicDeleteProject(@Param("id") long id) ;
+
     List<ClientRiskProjectDO> queryRiskProject(@Param("start")int start , @Param("limit") int limit) ;
 
     int countRiskProject() ;

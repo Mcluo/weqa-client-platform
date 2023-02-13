@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
  * Created by luqiuwei@corp.netease.com
  * on 2023/2/8 14:49
  */
-public enum RiskTaskStatus {
+public enum RiskTaskStatus implements RiskCheckStatus{
     /**
      * 开发中
      */
@@ -31,5 +31,37 @@ public enum RiskTaskStatus {
         this.code = code;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    @Override
+    public byte getCode() {
+        return code;
+    }
+
+    public static RiskTaskStatus getRiskTaskStatusByCode(Byte code){
+        if (code == null){
+            return null ;
+        }
+        for (RiskTaskStatus riskTaskStatus : RiskTaskStatus.values()){
+            if (code.equals(riskTaskStatus.code)){
+                return riskTaskStatus ;
+            }
+        }
+        return null ;
+    }
+
+    public static RiskTaskStatus getRiskTaskStatusByStatus(String status){
+        if (StringUtils.isBlank(status)){
+            return null ;
+        }
+        for (RiskTaskStatus riskTaskStatus : RiskTaskStatus.values()){
+            if (StringUtils.equals(status,riskTaskStatus.status)){
+                return riskTaskStatus ;
+            }
+        }
+        return null ;
+    }
 
 }

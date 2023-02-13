@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
  * Created by luqiuwei@corp.netease.com
  * on 2023/2/8 14:48
  */
-public enum RiskProjectStatus {
+public enum RiskProjectStatus implements RiskCheckStatus{
 
     /**
      * 进行中
@@ -32,6 +32,7 @@ public enum RiskProjectStatus {
         return status;
     }
 
+    @Override
     public byte getCode() {
         return code;
     }

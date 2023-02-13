@@ -18,4 +18,17 @@ public enum RiskCheckRange {
     RiskCheckRange(byte code) {
         this.code = code;
     }
+
+    public byte getCode() {
+        return code;
+    }
+
+    public static RiskCheckRange getRiskCheckRangeByCode(byte code){
+        for (RiskCheckRange riskCheckRange : RiskCheckRange.values()){
+            if(code == riskCheckRange.getCode() ){
+                return riskCheckRange ;
+            }
+        }
+        return null ;
+    }
 }

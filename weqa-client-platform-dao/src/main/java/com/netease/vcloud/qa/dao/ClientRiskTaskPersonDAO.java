@@ -1,6 +1,12 @@
 package com.netease.vcloud.qa.dao;
 
+import com.netease.vcloud.qa.model.ClientRiskTaskPersonDO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -8,4 +14,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ClientRiskTaskPersonDAO {
+
+    List<ClientRiskTaskPersonDO> getPersonDOByTaskSet(@Param("taskSet") Set<Long> taskIdSet) ;
+
+    int patchInsertTaskPersonInfo(@Param("personSet")Collection<ClientRiskTaskPersonDO> personSet) ;
+
 }

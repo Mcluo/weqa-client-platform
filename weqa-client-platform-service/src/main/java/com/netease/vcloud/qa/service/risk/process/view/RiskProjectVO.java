@@ -6,6 +6,7 @@ package com.netease.vcloud.qa.service.risk.process.view;
  */
 public class RiskProjectVO {
 
+    private long id  ;
     private String projectName ;
 
     private Long startTime  ;
@@ -13,6 +14,15 @@ public class RiskProjectVO {
     private Long finishTime ;
 
     private String status ;
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getProjectName() {
         return projectName;
