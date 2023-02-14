@@ -81,7 +81,11 @@ public class RiskProjectService {
         if (clientRiskProjectDO == null){
             throw new RiskCheckException(RiskCheckException.RISK_PROJECT_IS_NOT_EXIST_EXCEPTION) ;
         }
-        int count = riskProjectDAO.updateProjectStatus(projectId,projectStatus.getCode()) ;
+        Date finishTime = null ;
+        if (RiskProjectStatus.FINISH.equals(projectStatus)){
+            finishTime = new Date(System.currentTimeMillis()) ;
+        }
+        int count = riskProjectDAO.updateProjectStatus(projectId,projectStatus.getCode(),finishTime) ;
         if (count >0){
             return true ;
         }else {
@@ -90,7 +94,7 @@ public class RiskProjectService {
         }
     }
 
-    public RiskProjectListVO geProjectList(int size , int current){
+    public RiskProjectListVO getProjectList(int size , int current){
         RiskProjectListVO riskProjectListVO = new RiskProjectListVO() ;
         int start = (current - 1 ) * size ;
         List<ClientRiskProjectDO> clientRiskProjectDOList = riskProjectDAO.queryRiskProject(start,size) ;

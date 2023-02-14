@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientRiskTaskDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientRiskTaskDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
+        <result column="task_status" jdbcType="TINYINT" property="taskStatus"/>
+        <result column="jira_info" jdbcType="VARCHAR" property="jiraInfo"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,task_name,project_id,task_status,jira_info
+    </sql>
+
+    <select id="getClientRiskTaskListByProjectId" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_task_base_info
+        WHERE project_id = #{project}
+        AND is_delete = 0
+    </select>
+
+    <insert id="insertClientRiskTask" parameterType="com.netease.vcloud.qa.model.ClientRiskTaskDO" keyProperty="task.id" useGeneratedKeys="true">
+        INSERT INTO vcloud_risk_task_base_info (gmt_create,gmt_update,task_name,project_id,task_status,jira_info,is_delete)
+        values(now(),now(),#{task.taskName},#{task.projectId},#{task.taskStatus},#{task.jiraInfo},0)
+    </insert>
+
+    <update id="logicDeleteClientRiskTask">
+        update vcloud_risk_task_base_info
+        set is_delete = 1
+        WHERE id = #{id}
+        <if test="project!=null">
+            AND project_id = #{project}
+        </if>
+    </update>
+
+</mapper>

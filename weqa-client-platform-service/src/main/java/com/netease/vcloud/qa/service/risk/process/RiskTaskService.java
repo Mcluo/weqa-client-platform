@@ -186,13 +186,15 @@ public class RiskTaskService {
             riskTaskBaseVO.setStatus(riskTaskStatus.getStatus());
         }
         List<UserInfoVO> userList = new ArrayList<UserInfoVO>() ;
-        for (ClientRiskTaskPersonDO clientRiskTaskPersonDO : taskPersonDOList){
-            if (clientRiskTaskPersonDO == null){
-                continue;
+        if (taskPersonDOList != null) {
+            for (ClientRiskTaskPersonDO clientRiskTaskPersonDO : taskPersonDOList) {
+                if (clientRiskTaskPersonDO == null) {
+                    continue;
+                }
+                UserInfoBO userInfoBO = userInfoBOMap.get(clientRiskTaskPersonDO.getEmployee());
+                UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO);
+                userList.add(userInfoVO);
             }
-            UserInfoBO userInfoBO = userInfoBOMap.get(clientRiskTaskPersonDO.getEmployee());
-            UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
-            userList.add(userInfoVO) ;
         }
         riskTaskBaseVO.setUserList(userList);
         return riskTaskBaseVO ;
