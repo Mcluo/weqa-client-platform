@@ -183,4 +183,16 @@ public class AutoTestDeviceService {
         }
         return false;
     }
+
+    public boolean updateDeviceRun(List<Long> ids, Byte isRun) throws AutoTestRunException{
+        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(ids);
+        if (clientAutoDeviceInfoDOList.size() > 0 ){
+            for(ClientAutoDeviceInfoDO autoDeviceInfoDO : clientAutoDeviceInfoDOList){
+                autoDeviceInfoDO.setRun(isRun);
+                clientAutoDeviceInfoDAO.updateDeviceAlive(autoDeviceInfoDO) ;
+            }
+            return true;
+        }
+        return false;
+    }
 }

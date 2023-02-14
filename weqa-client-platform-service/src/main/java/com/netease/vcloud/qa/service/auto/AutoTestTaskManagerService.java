@@ -387,4 +387,18 @@ public class AutoTestTaskManagerService {
         return true ;
     }
 
+    public List<Long> getDeviceIds(Long taskId) throws AutoTestRunException{
+        ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        if (clientAutoTaskInfoDO == null){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_TASK_IS_NOT_EXIST) ;
+        }
+        String deviceInfo = clientAutoTaskInfoDO.getDeviceInfo();
+        List<DeviceInfoVO> deviceInfoVOList = JSONArray.parseArray(clientAutoTaskInfoDO.getDeviceInfo(),DeviceInfoVO.class) ;
+        ArrayList<Long> ids = new ArrayList<>();
+        for(DeviceInfoVO deviceInfoVO : deviceInfoVOList){
+            ids.add(deviceInfoVO.getId());
+        }
+        return ids;
+    }
+
 }

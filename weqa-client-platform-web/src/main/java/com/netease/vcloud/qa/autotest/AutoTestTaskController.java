@@ -6,6 +6,7 @@ import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
+import com.netease.vcloud.qa.service.auto.AutoTestDeviceService;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskUrlService;
@@ -36,6 +37,9 @@ public class AutoTestTaskController {
 
     @Autowired
     private AutoTestTaskUrlService autoTestTaskUrlService;
+
+    @Autowired
+    private AutoTestDeviceService autoTestDeviceService;
 
     /**
      * 创建自动化测试任务
@@ -68,6 +72,7 @@ public class AutoTestTaskController {
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         try {
             id = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
+            autoTestDeviceService.updateDeviceRun(deviceList, (byte)1);
             List<AutoTestTaskUrlDTO> deviceArray = JSONArray.parseArray(urls, AutoTestTaskUrlDTO.class);
             if (!CollectionUtils.isEmpty(deviceArray)) {
                 for (AutoTestTaskUrlDTO dto : deviceArray) {
@@ -167,6 +172,8 @@ public class AutoTestTaskController {
         ResultVO resultVO = null ;
         try {
             boolean flag = autoTestTaskManagerService.cancelAutoTask(taskId) ;
+            List<Long> deviceIds = autoTestTaskManagerService.getDeviceIds(taskId);
+            autoTestDeviceService.updateDeviceRun(deviceIds, (byte)0);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.build(false,e.getExceptionInfo()) ;
