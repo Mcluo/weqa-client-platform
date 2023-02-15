@@ -11,9 +11,9 @@ import com.netease.vcloud.qa.service.risk.manager.data.RiskDetailInfoBO;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskRuleInfoBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -41,6 +41,24 @@ public class RiskRuleService {
         }
         return riskRuleInfoBOList ;
     }
+
+    public Map<Long,RiskRuleInfoBO> getRuleByIdSet(Set<Long> ruleIdSet){
+        if (CollectionUtils.isEmpty(ruleIdSet)){
+            return null ;
+        }
+        List<ClientRiskRuleDO> clientRiskRuleDOList = clientRiskRuleDAO.getClientRiskRuleByIdSet(ruleIdSet) ;
+        Map<Long,RiskRuleInfoBO> ruleInfoBOMap = new HashMap<Long,RiskRuleInfoBO>() ;
+        if (clientRiskRuleDOList != null){
+            for (ClientRiskRuleDO clientRiskRuleDO : clientRiskRuleDOList){
+                RiskRuleInfoBO riskRuleInfoBO = this.buildRiskRuleInfoBOByDO(clientRiskRuleDO) ;
+                if (riskRuleInfoBO!=null) {
+                    ruleInfoBOMap.put(clientRiskRuleDO.getId(), riskRuleInfoBO);
+                }
+            }
+        }
+        return ruleInfoBOMap ;
+    }
+
 
     private RiskRuleInfoBO buildRiskRuleInfoBOByDO(ClientRiskRuleDO clientRiskRuleDO){
         if (clientRiskRuleDO == null){

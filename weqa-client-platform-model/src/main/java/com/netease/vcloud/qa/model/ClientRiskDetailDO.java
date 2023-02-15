@@ -17,7 +17,10 @@ public class ClientRiskDetailDO {
 
     private String ruleName ;
 
-    private long taskId ;
+
+    private byte rangeType;
+
+    private long rangeId ;
 
     private String currentResult ;
 
@@ -65,12 +68,20 @@ public class ClientRiskDetailDO {
         this.ruleName = ruleName;
     }
 
-    public long getTaskId() {
-        return taskId;
+    public byte getRangeType() {
+        return rangeType;
     }
 
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
+    public void setRangeType(byte rangeType) {
+        this.rangeType = rangeType;
+    }
+
+    public long getRangeId() {
+        return rangeId;
+    }
+
+    public void setRangeId(long rangeId) {
+        this.rangeId = rangeId;
     }
 
     public String getCurrentResult() {

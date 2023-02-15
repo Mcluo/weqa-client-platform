@@ -12,6 +12,8 @@ public class RiskCheckException extends Exception{
 
     public static String RISK_PROJECT_IS_NOT_EXIST_EXCEPTION = "项目不存在" ;
 
+    public static String RISK_TASK_IS_NOT_EXIST_EXCEPTION = "任务不存在" ;
+
     public static  String RISK_TASK_MANAGER_EXCEPTION = "任务操作异常" ;
 
     private String exceptionInfo ;

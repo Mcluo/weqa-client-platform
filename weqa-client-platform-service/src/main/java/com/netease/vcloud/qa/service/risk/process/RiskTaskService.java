@@ -5,15 +5,21 @@ import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.dao.ClientRiskTaskDAO;
 import com.netease.vcloud.qa.dao.ClientRiskTaskPersonDAO;
+import com.netease.vcloud.qa.model.ClientRiskProjectDO;
 import com.netease.vcloud.qa.model.ClientRiskTaskDO;
 import com.netease.vcloud.qa.model.ClientRiskTaskPersonDO;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+import com.netease.vcloud.qa.risk.RiskCheckStatus;
 import com.netease.vcloud.qa.risk.RiskPersonType;
 import com.netease.vcloud.qa.risk.RiskTaskStatus;
 import com.netease.vcloud.qa.service.risk.RiskCheckException;
 import com.netease.vcloud.qa.service.risk.manager.RiskManagerService;
+import com.netease.vcloud.qa.service.risk.manager.data.RiskDetailInfoBO;
+import com.netease.vcloud.qa.service.risk.manager.view.RiskDetailInfoVO;
+import com.netease.vcloud.qa.service.risk.manager.view.RiskTaskRiskDetailVO;
 import com.netease.vcloud.qa.service.risk.process.dto.RiskTaskDTO;
 import com.netease.vcloud.qa.service.risk.process.view.RiskTaskBaseVO;
+import com.netease.vcloud.qa.service.risk.process.view.RiskTaskDetailVO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +60,8 @@ public class RiskTaskService {
         }
         //1，基础信息落库
         ClientRiskTaskDO clientRiskTaskDO = this.buildClientRiskTaskDOByDTO(riskTaskDTO) ;
+        //设置默认任务状态
+        clientRiskTaskDO.setTaskStatus(RiskTaskStatus.IN_DEVELOP.getCode());
         int count = riskTaskDAO.insertClientRiskTask(clientRiskTaskDO) ;
         Long taskId = clientRiskTaskDO.getId() ;
         if (count < 1 || taskId == null){
@@ -198,6 +206,102 @@ public class RiskTaskService {
         }
         riskTaskBaseVO.setUserList(userList);
         return riskTaskBaseVO ;
+    }
+
+    public RiskTaskDetailVO getTaskDetailByTaskId(Long taskId) throws RiskCheckException{
+        if (taskId == null){
+            RISK_LOGGER.error("[RiskTaskService.getTaskDetailByTaskId] taskId is null") ;
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION);
+        }
+        ClientRiskTaskDO riskTask = riskTaskDAO.getClientRiskTaskByTaskId(taskId) ;
+        if (riskTask==null){
+            RISK_LOGGER.error("[RiskTaskService.getTaskDetailByTaskId] riskTask is null") ;
+            throw new RiskCheckException(RiskCheckException.RISK_TASK_IS_NOT_EXIST_EXCEPTION) ;
+        }
+        ClientRiskProjectDO clientRiskProjectDO = riskProjectService.getProjectDOById(riskTask.getProjectId());
+        if (clientRiskProjectDO == null){
+            RISK_LOGGER.error("[RiskTaskService.getTaskDetailByTaskId] clientRiskProjectDO is null") ;
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        List<ClientRiskTaskPersonDO> clientRiskTaskPersonDOList = riskTaskPersonDAO.getPersonDOByID(taskId) ;
+        RiskTaskDetailVO riskTaskDetailVO = this.buildRiskTaskDetailVOByDO(riskTask,clientRiskProjectDO,clientRiskTaskPersonDOList) ;
+        return riskTaskDetailVO ;
+    }
+
+    private RiskTaskDetailVO buildRiskTaskDetailVOByDO (ClientRiskTaskDO clientRiskTaskDO , ClientRiskProjectDO clientRiskProjectDO,List<ClientRiskTaskPersonDO> clientRiskTaskPersonDOList){
+        if (clientRiskProjectDO == null || clientRiskProjectDO ==null){
+            return null ;
+        }
+        RiskTaskDetailVO riskTaskDetailVO = new RiskTaskDetailVO() ;
+        riskTaskDetailVO.setId(clientRiskTaskDO.getId());
+        riskTaskDetailVO.setTaskName(clientRiskTaskDO.getTaskName());
+        riskTaskDetailVO.setProjectId(clientRiskProjectDO.getId());
+        riskTaskDetailVO.setProjectName(clientRiskProjectDO.getProjectName());
+        riskTaskDetailVO.setLinkUrl(clientRiskTaskDO.getJiraInfo());
+        RiskTaskStatus riskTaskStatus = RiskTaskStatus.getRiskTaskStatusByCode(clientRiskTaskDO.getTaskStatus()) ;
+        if (riskTaskStatus!=null) {
+            riskTaskDetailVO.setStatus(riskTaskStatus.getStatus());
+        }
+        Set<String> personSet = new HashSet<String>() ;
+        for (ClientRiskTaskPersonDO clientRiskTaskPersonDO : clientRiskTaskPersonDOList){
+            if (clientRiskProjectDO != null){
+                personSet.add(clientRiskTaskPersonDO.getEmployee()) ;
+            }
+        }
+        Map<String,UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(personSet) ;
+        List<UserInfoVO> userInfoVOList = new ArrayList<>() ;
+        if (userInfoBOMap!=null){
+            for (Map.Entry<String,UserInfoBO> entry : userInfoBOMap.entrySet()){
+                userInfoVOList.add(CommonUtils.buildUserInfoVOByBO(entry.getValue())) ;
+            }
+        }
+        riskTaskDetailVO.setUserList(userInfoVOList);
+        return riskTaskDetailVO ;
+    }
+
+
+    public RiskTaskRiskDetailVO getTaskRiskDetailInfo(Long taskId) throws RiskCheckException{
+        if (taskId == null){
+            RISK_LOGGER.error("[RiskTaskService.getTaskRiskDetailInfo] taskId is null") ;
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        RiskTaskRiskDetailVO riskTaskRiskDetailVO = new RiskTaskRiskDetailVO() ;
+        Map<String,List<RiskDetailInfoVO>> riskDetailMap = new HashMap<String, List<RiskDetailInfoVO>>() ;
+        riskTaskRiskDetailVO.setRiskDetailInfo(riskDetailMap);
+        List<RiskDetailInfoBO> riskDetailInfoBOList = riskManagerService.getTaskRiskInfo(taskId) ;
+        if (riskDetailInfoBOList == null){
+           return riskTaskRiskDetailVO ;
+        }
+        for (RiskDetailInfoBO riskDetailInfoBO : riskDetailInfoBOList){
+            RiskTaskStatus riskTaskStatus = (RiskTaskStatus) riskDetailInfoBO.getCheckStatus() ;
+            if (riskTaskStatus==null) {
+                continue;
+            }
+            List<RiskDetailInfoVO> riskDetailInfoVOList = riskDetailMap.get(riskTaskStatus.getStatus());
+            if (riskDetailInfoVOList==null){
+                riskDetailInfoVOList = new ArrayList<RiskDetailInfoVO>() ;
+                riskDetailMap.put(riskTaskStatus.getStatus(), riskDetailInfoVOList) ;
+            }
+            RiskDetailInfoVO riskDetailInfoVO = this.buildRiskDetailInfoVOByBO(riskDetailInfoBO) ;
+            if (riskDetailInfoVO!=null) {
+                riskDetailInfoVOList.add(riskDetailInfoVO);
+            }
+        }
+        return riskTaskRiskDetailVO ;
+    }
+
+    private RiskDetailInfoVO buildRiskDetailInfoVOByBO(RiskDetailInfoBO riskDetailInfoBO){
+        if (riskDetailInfoBO == null){
+            return null ;
+        }
+        RiskDetailInfoVO riskDetailInfoVO = new RiskDetailInfoVO() ;
+        riskDetailInfoVO.setRiskId(riskDetailInfoBO.getId());
+        riskDetailInfoVO.setRuleId(riskDetailInfoBO.getRuleId());
+        riskDetailInfoVO.setRiskTitle(riskDetailInfoBO.getRuleName());
+        riskDetailInfoVO.setCurrentValue(riskDetailInfoBO.getCurrentResult());
+        riskDetailInfoVO.setRiskPriority(riskDetailInfoBO.getRiskPriority());
+        riskDetailInfoVO.setPassStander(riskDetailInfoBO.getRiskDetail());
+        return riskDetailInfoVO ;
     }
 
 }

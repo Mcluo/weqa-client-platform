@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.service.risk.manager.data;
 
 import com.netease.vcloud.qa.risk.RiskCheckRange;
+import com.netease.vcloud.qa.risk.RiskCheckStatus;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -15,6 +16,8 @@ public class RiskDetailInfoBO {
     private String ruleName ;
 
     private RiskCheckRange checkRage ;
+
+    private RiskCheckStatus checkStatus;
     /**
      * 任务/项目id
      */
@@ -25,6 +28,8 @@ public class RiskDetailInfoBO {
     private boolean hasRisk ;
 
     private String riskDetail ;
+
+    private String riskPriority ;
 
     public Long getId() {
         return id;
@@ -58,6 +63,14 @@ public class RiskDetailInfoBO {
         this.checkRage = checkRage;
     }
 
+    public RiskCheckStatus getCheckStatus() {
+        return checkStatus;
+    }
+
+    public void setCheckStatus(RiskCheckStatus checkStatus) {
+        this.checkStatus = checkStatus;
+    }
+
     public Long getRangeId() {
         return rangeId;
     }
@@ -88,5 +101,13 @@ public class RiskDetailInfoBO {
 
     public void setRiskDetail(String riskDetail) {
         this.riskDetail = riskDetail;
+    }
+
+    public String getRiskPriority() {
+        return riskPriority;
+    }
+
+    public void setRiskPriority(String riskPriority) {
+        this.riskPriority = riskPriority;
     }
 }

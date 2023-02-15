@@ -4,6 +4,7 @@ import com.netease.vcloud.qa.model.ClientRiskRuleDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,5 +15,7 @@ import java.util.List;
 public interface ClientRiskRuleDAO {
 
     List<ClientRiskRuleDO> getClientRiskRule(@Param("range")byte checkRange , @Param("stage") byte checkStage) ;
+
+    List<ClientRiskRuleDO> getClientRiskRuleByIdSet(@Param("ids")Collection<Long> idSet) ;
 
 }

@@ -22,6 +22,12 @@
         AND is_delete = 0
     </select>
 
+    <select id="getClientRiskTaskByTaskId" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_task_base_info
+        WHERE id = #{task}
+    </select>
+
     <insert id="insertClientRiskTask" parameterType="com.netease.vcloud.qa.model.ClientRiskTaskDO" keyProperty="task.id" useGeneratedKeys="true">
         INSERT INTO vcloud_risk_task_base_info (gmt_create,gmt_update,task_name,project_id,task_status,jira_info,is_delete)
         values(now(),now(),#{task.taskName},#{task.projectId},#{task.taskStatus},#{task.jiraInfo},0)

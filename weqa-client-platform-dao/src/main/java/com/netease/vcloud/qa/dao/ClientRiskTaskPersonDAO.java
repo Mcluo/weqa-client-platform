@@ -17,6 +17,8 @@ public interface ClientRiskTaskPersonDAO {
 
     List<ClientRiskTaskPersonDO> getPersonDOByTaskSet(@Param("taskSet") Set<Long> taskIdSet) ;
 
+    List<ClientRiskTaskPersonDO> getPersonDOByID(@Param("taskId") Long taskId) ;
+
     int patchInsertTaskPersonInfo(@Param("personSet")Collection<ClientRiskTaskPersonDO> personSet) ;
 
 }

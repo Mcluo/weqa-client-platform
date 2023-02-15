@@ -6,4 +6,6 @@ package com.netease.vcloud.qa.risk;
  */
 public interface RiskCheckStatus {
     byte getCode() ;
+
+    String getStatus() ;
 }

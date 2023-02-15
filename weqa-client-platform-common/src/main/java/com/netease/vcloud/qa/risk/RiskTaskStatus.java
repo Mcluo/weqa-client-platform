@@ -31,6 +31,7 @@ public enum RiskTaskStatus implements RiskCheckStatus{
         this.code = code;
     }
 
+    @Override
     public String getStatus() {
         return status;
     }

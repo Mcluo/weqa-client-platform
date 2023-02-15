@@ -28,6 +28,7 @@ public enum RiskProjectStatus implements RiskCheckStatus{
         this.code = code;
     }
 
+    @Override
     public String getStatus() {
         return status;
     }

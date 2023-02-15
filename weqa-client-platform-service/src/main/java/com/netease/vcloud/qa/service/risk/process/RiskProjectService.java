@@ -125,9 +125,23 @@ public class RiskProjectService {
         if (riskProjectStatus!=null){
             riskProjectVO.setStatus(riskProjectStatus.getStatus());
         }
-        riskProjectVO.setStartTime(clientRiskProjectDO.getStartTime() == null?null : clientRiskProjectDO.getStartTime().getTime());
-        riskProjectVO.setFinishTime(clientRiskProjectDO.getFinishTime() == null?null : clientRiskProjectDO.getFinishTime().getTime());
+        riskProjectVO.setStartTime(clientRiskProjectDO.getStartTime() == null ? null : clientRiskProjectDO.getStartTime().getTime());
+        riskProjectVO.setFinishTime(clientRiskProjectDO.getFinishTime() == null ? null : clientRiskProjectDO.getFinishTime().getTime());
         return riskProjectVO ;
     }
+
+    public ClientRiskProjectDO getProjectDOById(Long projectId) throws RiskCheckException{
+        if (projectId == null){
+            RISK_LOGGER.error("[RiskProjectService.getProjectDOById] projectId is null");
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        ClientRiskProjectDO clientRiskProjectDO = riskProjectDAO.getRiskProjectById(projectId) ;
+        if (clientRiskProjectDO == null){
+            RISK_LOGGER.error("[RiskProjectService.getProjectDOById] clientRiskProjectDO is null");
+            throw new RiskCheckException(RiskCheckException.RISK_PROJECT_IS_NOT_EXIST_EXCEPTION) ;
+        }
+        return clientRiskProjectDO ;
+    }
+
 
 }

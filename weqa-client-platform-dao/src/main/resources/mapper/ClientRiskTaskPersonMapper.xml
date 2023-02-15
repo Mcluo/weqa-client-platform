@@ -23,6 +23,12 @@
         </foreach>
     </select>
 
+    <select id="getPersonDOByID" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_task_person_info
+        WHERE task_id = #{taskId}
+    </select>
+
 
     <insert id="patchInsertTaskPersonInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskTaskPersonDO">
         INSERT INTO vcloud_risk_task_person_info (gmt_create,gmt_update,task_id,role,employee)
