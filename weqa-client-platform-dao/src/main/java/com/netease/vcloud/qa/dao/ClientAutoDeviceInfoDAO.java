@@ -23,4 +23,5 @@ public interface ClientAutoDeviceInfoDAO {
     int updateDeviceInfo(@Param("device") ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) ;
     int updateDeviceAlive(@Param("device") ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) ;
 
+    int updateDeviceRun(@Param("device") ClientAutoDeviceInfoDO clientAutoDeviceInfoDO);
 }

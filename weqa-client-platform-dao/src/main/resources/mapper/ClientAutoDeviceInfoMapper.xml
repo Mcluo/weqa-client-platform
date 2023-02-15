@@ -62,4 +62,10 @@
         where id = #{device.id}
     </update>
 
+    <update id="updateDeviceRun" parameterType="com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO">
+        update vcloud_client_auto_device_info
+        set gmt_update=now() ,run=#{device.run}
+        where id = #{device.id}
+    </update>
+
 </mapper>
