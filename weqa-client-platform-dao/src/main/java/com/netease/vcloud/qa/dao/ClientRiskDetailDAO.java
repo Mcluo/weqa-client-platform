@@ -4,6 +4,7 @@ import com.netease.vcloud.qa.model.ClientRiskDetailDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,6 +14,8 @@ import java.util.List;
 @Mapper
 public interface ClientRiskDetailDAO {
 
-    List<ClientRiskDetailDO> buildRiskListByRangeId(@Param("rangeType") byte rangeType , @Param("rangeId") long rangeId) ;
+    List<ClientRiskDetailDO> getRiskListByRangeId(@Param("rangeType") byte rangeType , @Param("rangeId") long rangeId) ;
+
+    int patchInsertClientRiskDetailInfo(@Param("info") Collection<ClientRiskDetailDO> detailSet) ;
 
 }

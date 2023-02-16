@@ -9,6 +9,8 @@ import com.netease.vcloud.qa.risk.RiskTaskStatus;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskDetailInfoBO;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskRuleInfoBO;
 import com.netease.vcloud.qa.service.risk.source.RiskDataService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +23,9 @@ import java.util.*;
  */
 @Service
 public class RiskManagerService {
+
+    private static final Logger RISK_LOGGER = LoggerFactory.getLogger("RiskLog");
+
     @Autowired
     private RiskRuleService riskRuleService ;
 
@@ -47,6 +52,54 @@ public class RiskManagerService {
      * @return
      */
     public boolean createTaskRiskInfo(long taskId, RiskTaskStatus taskStatus){
+        List<RiskRuleInfoBO> riskRuleInfoBOList = riskRuleService.getRuleByTypeAndStage(RiskCheckRange.TASK,taskStatus) ;
+        if (CollectionUtils.isEmpty(riskRuleInfoBOList)){
+            return true ;
+        }
+        boolean flag = true ;
+        List<ClientRiskDetailDO> clientRiskDetailDOList = new ArrayList<ClientRiskDetailDO>() ;
+        for (RiskRuleInfoBO riskRuleInfoBO :riskRuleInfoBOList){
+            if (riskRuleInfoBO == null){
+                continue;
+            }
+            ClientRiskDetailDO clientRiskDetailDO = this.buildRiskByRuleBO(RiskCheckRange.TASK, taskId, riskRuleInfoBO) ;
+            if (clientRiskDetailDO != null){
+                clientRiskDetailDOList.add(clientRiskDetailDO) ;
+            }
+        }
+        if (CollectionUtils.isEmpty(clientRiskDetailDOList)){
+            //这一步为空即为异常
+            return false ;
+        }
+        int count = riskDetailDAO.patchInsertClientRiskDetailInfo(clientRiskDetailDOList) ;
+        if (count < clientRiskDetailDOList.size() ){
+            flag = false ;
+        }
+        //和数据源进行对比，确定风险本身
+        return flag ;
+    }
+
+    private ClientRiskDetailDO buildRiskByRuleBO(RiskCheckRange riskCheckRange, Long riskRangeId, RiskRuleInfoBO riskRuleInfoBO){
+        if (riskRuleInfoBO == null){
+            return null ;
+        }
+        ClientRiskDetailDO clientRiskDetailDO = new ClientRiskDetailDO() ;
+        clientRiskDetailDO.setRuleId(riskRuleInfoBO.getId());
+        clientRiskDetailDO.setRuleName(riskRuleInfoBO.getRuleName());
+        clientRiskDetailDO.setRangeType(riskCheckRange.getCode());
+        clientRiskDetailDO.setRangeId(riskRangeId);
+        clientRiskDetailDO.setHasRisk((byte)0);
+        clientRiskDetailDO.setRiskDetail(null);
+        clientRiskDetailDO.setCurrentResult(null);
+        return clientRiskDetailDO ;
+    }
+
+
+    public boolean checkProjectRiskInfo(long projectId, RiskProjectStatus projectStatus){
+        return true ;
+    }
+
+    public boolean checkTaskRiskInfo(long taskId,RiskTaskStatus taskStatus){
         return false ;
     }
 
@@ -66,7 +119,7 @@ public class RiskManagerService {
      */
     public List<RiskDetailInfoBO> getTaskRiskInfo(long taskId){
         List<RiskDetailInfoBO> riskDetailInfoBOList = new ArrayList<RiskDetailInfoBO>() ;
-        List<ClientRiskDetailDO>  riskDetailInfoDOList = riskDetailDAO.buildRiskListByRangeId(RiskCheckRange.TASK.getCode(), taskId) ;
+        List<ClientRiskDetailDO>  riskDetailInfoDOList = riskDetailDAO.getRiskListByRangeId(RiskCheckRange.TASK.getCode(), taskId) ;
         if (CollectionUtils.isEmpty(riskDetailInfoDOList)){
             return riskDetailInfoBOList ;
         }

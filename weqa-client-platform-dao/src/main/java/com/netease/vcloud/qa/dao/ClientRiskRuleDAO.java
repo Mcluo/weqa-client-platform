@@ -18,4 +18,7 @@ public interface ClientRiskRuleDAO {
 
     List<ClientRiskRuleDO> getClientRiskRuleByIdSet(@Param("ids")Collection<Long> idSet) ;
 
+    int insertRiskRule(@Param("rule") ClientRiskRuleDO clientRiskRuleDO) ;
+
+
 }

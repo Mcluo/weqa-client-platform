@@ -7,16 +7,22 @@
         <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
         <result column="rule_id" jdbcType="BIGINT" property="ruleId"/>
         <result column="rule_name" jdbcType="VARCHAR" property="ruleName"/>
-        <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="range_type" jdbcType="TINYINT" property="rangeType"/>
+        <result column="range_id" jdbcType="BIGINT" property="rangeId"/>
         <result column="current_result" jdbcType="VARCHAR" property="currentResult"/>
         <result column="has_risk" jdbcType="TINYINT" property="hasRisk"/>
         <result column="has_detail" jdbcType="VARCHAR" property="riskDetail"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,rule_id,rule_name,task_id,current_result,has_risk,risk_detail
+        select id,gmt_create,gmt_update,rule_id,rule_name,range_type,range_id,current_result,has_risk,risk_detail
     </sql>
 
-
+    <select id="getRiskListByRangeId" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_detail_info
+        WHERE range_type = #{rangeType}
+        AND range_id = #{rangeId}
+    </select>
 
 </mapper>
