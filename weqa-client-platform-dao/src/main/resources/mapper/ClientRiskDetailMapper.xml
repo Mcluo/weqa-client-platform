@@ -25,4 +25,12 @@
         AND range_id = #{rangeId}
     </select>
 
+    <insert id="patchInsertClientRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">
+        INSERT INTO vcloud_risk_detail_info(gmt_create,gmt_update,rule_id,rule_name,range_type,range_id,current_result,has_risk,risk_detail)
+        values
+        <foreach collection="riskSet" item="risk" separator=",">
+            (now(),now(),#{risk.ruleId},#{risk.ruleName},#{risk.rangeType},#{risk.rangeId},#{risk.currentResult},#{risk.hasRisk},#{risk.riskDetail})
+        </foreach>
+    </insert>
+
 </mapper>

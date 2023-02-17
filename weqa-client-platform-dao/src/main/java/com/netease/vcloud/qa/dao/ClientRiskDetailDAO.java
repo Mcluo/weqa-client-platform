@@ -16,6 +16,6 @@ public interface ClientRiskDetailDAO {
 
     List<ClientRiskDetailDO> getRiskListByRangeId(@Param("rangeType") byte rangeType , @Param("rangeId") long rangeId) ;
 
-    int patchInsertClientRiskDetailInfo(@Param("info") Collection<ClientRiskDetailDO> detailSet) ;
+    int patchInsertClientRiskDetailInfo(@Param("riskSet") Collection<ClientRiskDetailDO> detailSet) ;
 
 }

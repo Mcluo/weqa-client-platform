@@ -100,7 +100,7 @@ public class RiskRuleService {
     }
 
     private  ClientRiskRuleDO buildClientRiskRuleDOByDTO(RiskRuleDTO riskRuleDTO){
-        RiskCheckRange riskCheckRange = RiskCheckRange.getRiskCheckRageByName(riskRuleDTO.getName()) ;
+        RiskCheckRange riskCheckRange = RiskCheckRange.getRiskCheckRageByName(riskRuleDTO.getRange()) ;
         if (riskCheckRange == null){
             return null ;
         }

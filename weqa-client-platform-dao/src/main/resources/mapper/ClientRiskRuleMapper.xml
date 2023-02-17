@@ -9,7 +9,7 @@
         <result column="check_range" jdbcType="TINYINT" property="checkRange"/>
         <result column="check_stage" jdbcType="TINYINT" property="checkStage"/>
         <result column="check_priority" jdbcType="VARCHAR" property="checkPriority"/>
-        <result column="check_info" jdbcType="VARCHAR" property="check_info"/>
+        <result column="check_info" jdbcType="VARCHAR" property="checkInfo"/>
     </resultMap>
 
     <sql id="baseSql">
@@ -22,5 +22,19 @@
         WHERE check_range = #{range}
         AND check_stage = #{stage}
     </select>
+
+    <select id="getClientRiskRuleByIdSet" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_rule_info
+        WHERE id IN
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertRiskRule" parameterType="com.netease.vcloud.qa.model.ClientRiskRuleDO" keyProperty="rule.id" useGeneratedKeys="true">
+        insert into vcloud_risk_rule_info(gmt_create,gmt_update,rule_name,check_range,check_stage,check_priority,check_info)
+        values(now(),now(),#{rule.ruleName},#{rule.checkRange},#{rule.checkStage},#{rule.checkPriority},#{rule.checkInfo})
+    </insert>
 
 </mapper>

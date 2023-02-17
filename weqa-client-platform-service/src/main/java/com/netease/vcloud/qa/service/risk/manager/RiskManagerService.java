@@ -88,9 +88,10 @@ public class RiskManagerService {
         clientRiskDetailDO.setRuleName(riskRuleInfoBO.getRuleName());
         clientRiskDetailDO.setRangeType(riskCheckRange.getCode());
         clientRiskDetailDO.setRangeId(riskRangeId);
+        //fixme 还需要修改
         clientRiskDetailDO.setHasRisk((byte)0);
-        clientRiskDetailDO.setRiskDetail(null);
-        clientRiskDetailDO.setCurrentResult(null);
+        clientRiskDetailDO.setRiskDetail("{}");
+        clientRiskDetailDO.setCurrentResult("");
         return clientRiskDetailDO ;
     }
 

@@ -22,6 +22,15 @@ public class RiskRuleController {
     @Autowired
     private RiskRuleService riskRuleService ;
 
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/rule/add?name=规则1&priority=p2&range=task&status=develop&checkInfo={}
+     * @param ruleName
+     * @param priority
+     * @param range
+     * @param status
+     * @param checkInfo
+     * @return
+     */
     @RequestMapping("/add")
     @ResponseBody
     public ResultVO addOneTaskToProject(@RequestParam(name = "name") String ruleName ,
@@ -51,3 +60,5 @@ public class RiskRuleController {
     }
 
 }
+
+
