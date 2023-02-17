@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.service.risk.manager.data;
 
 import com.netease.vcloud.qa.risk.RiskCheckRange;
+import com.netease.vcloud.qa.service.risk.source.struct.RiskCheckStander;
 
 /**
  * Created by luqiuwei@corp.netease.com

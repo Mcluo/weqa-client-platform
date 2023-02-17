@@ -8,7 +8,7 @@ import com.netease.vcloud.qa.risk.RiskCheckStatus;
 import com.netease.vcloud.qa.risk.RiskProjectStatus;
 import com.netease.vcloud.qa.risk.RiskTaskStatus;
 import com.netease.vcloud.qa.service.risk.RiskCheckException;
-import com.netease.vcloud.qa.service.risk.manager.data.RiskCheckStander;
+import com.netease.vcloud.qa.service.risk.source.struct.RiskCheckStander;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskRuleInfoBO;
 import com.netease.vcloud.qa.service.risk.manager.dto.RiskRuleDTO;
 import org.slf4j.Logger;
