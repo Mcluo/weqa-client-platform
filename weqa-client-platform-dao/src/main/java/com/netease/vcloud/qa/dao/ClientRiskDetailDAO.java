@@ -18,4 +18,7 @@ public interface ClientRiskDetailDAO {
 
     int patchInsertClientRiskDetailInfo(@Param("riskSet") Collection<ClientRiskDetailDO> detailSet) ;
 
+    int deleteRiskByRangeAndRule(@Param("rangeType") byte rangeType , @Param("rangeId") long rangeId , @Param("ruleSet") Collection<Long> ruleId) ;
+
+    int updateRiskDetailInfo(@Param("risk") ClientRiskDetailDO clientRiskDetailDO) ;
 }

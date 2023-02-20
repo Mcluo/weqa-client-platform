@@ -14,7 +14,11 @@ public class RiskRuleDTO {
 
     private String priority ;
 
-    private String checkInfo ;
+    private String ruleType ;
+
+    private String ruleDesc ;
+
+    private String ruleCheckInfo;
 
     public String getRange() {
         return range;
@@ -48,11 +52,27 @@ public class RiskRuleDTO {
         this.priority = priority;
     }
 
-    public String getCheckInfo() {
-        return checkInfo;
+    public String getRuleType() {
+        return ruleType;
     }
 
-    public void setCheckInfo(String checkInfo) {
-        this.checkInfo = checkInfo;
+    public void setRuleType(String ruleType) {
+        this.ruleType = ruleType;
+    }
+
+    public String getRuleDesc() {
+        return ruleDesc;
+    }
+
+    public void setRuleDesc(String ruleDesc) {
+        this.ruleDesc = ruleDesc;
+    }
+
+    public String getRuleCheckInfo() {
+        return ruleCheckInfo;
+    }
+
+    public void setRuleCheckInfo(String ruleCheckInfo) {
+        this.ruleCheckInfo = ruleCheckInfo;
     }
 }

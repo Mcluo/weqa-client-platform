@@ -7,5 +7,4 @@ package com.netease.vcloud.qa.service.risk.source.struct;
 public interface CheckInfoStructInterface {
 
 
-
 }

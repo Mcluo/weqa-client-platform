@@ -16,6 +16,10 @@ public class RiskCheckException extends Exception{
 
     public static  String RISK_TASK_MANAGER_EXCEPTION = "任务操作异常" ;
 
+    public static  String RISK_DATA_IS_NOT_SUPPORT_EXCEPTION = "该数据不被支持" ;
+
+    public static  String RISK_DATA_IS_NULL_EXCEPTION = "当前数据为空" ;
+
     private String exceptionInfo ;
 
     public RiskCheckException() {

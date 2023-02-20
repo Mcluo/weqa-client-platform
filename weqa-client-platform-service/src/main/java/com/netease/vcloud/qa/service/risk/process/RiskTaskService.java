@@ -87,7 +87,7 @@ public class RiskTaskService {
             }
         }
         //3，风险信息创建
-        boolean createRiskFlag = riskManagerService.createTaskRiskInfo(taskId,RiskTaskStatus.IN_DEVELOP) ;
+        boolean createRiskFlag = riskManagerService.createTaskRiskInfo(taskId,null) ;
         if (!createRiskFlag){
             RISK_LOGGER.error("[RiskTaskService.addProjectTask]create task risk exception");
         }
@@ -302,6 +302,21 @@ public class RiskTaskService {
         riskDetailInfoVO.setRiskPriority(riskDetailInfoBO.getRiskPriority());
         riskDetailInfoVO.setPassStander(riskDetailInfoBO.getRiskDetail());
         return riskDetailInfoVO ;
+    }
+
+    public boolean updateRiskTaskStatus(Long task , RiskTaskStatus status) throws RiskCheckException{
+        if (task == null || status == null){
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        return riskManagerService.updateTaskStatus(task,status) ;
+    }
+
+
+    public void startCheckTaskRiskInfoAndData(Long task) throws RiskCheckException{
+        if (task==null){
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        riskManagerService.checkTaskRiskInfoAndData(task);
     }
 
 }

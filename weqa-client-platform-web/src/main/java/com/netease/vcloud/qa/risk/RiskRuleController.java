@@ -37,6 +37,8 @@ public class RiskRuleController {
                                         @RequestParam(name = "priority") String priority ,
                                         @RequestParam(name = "range") String range,
                                         @RequestParam(name = "status") String status,
+                                        @RequestParam(name = "type") String ruleType,
+                                        @RequestParam(name = "desc") String ruleDesc,
                                         @RequestParam(name = "checkInfo") String checkInfo){
 
         RiskRuleDTO riskRuleDTO = new RiskRuleDTO() ;
@@ -44,7 +46,9 @@ public class RiskRuleController {
         riskRuleDTO.setPriority(priority);
         riskRuleDTO.setRange(range);
         riskRuleDTO.setStatus(status);
-        riskRuleDTO.setCheckInfo(checkInfo);
+        riskRuleDTO.setRuleType(ruleType);
+        riskRuleDTO.setRuleDesc(ruleDesc);
+        riskRuleDTO.setRuleCheckInfo(checkInfo);
         ResultVO resultVO = null ;
         try {
             Long id = riskRuleService.insertNewRule(riskRuleDTO);

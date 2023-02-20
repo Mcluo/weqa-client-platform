@@ -33,4 +33,20 @@
         </foreach>
     </insert>
 
+    <delete id="deleteRiskByRangeAndRule">
+        DELETE FROM vcloud_risk_detail_info
+        WHERE range_type = #{rangeType}
+        AND range_id = #{rangeId}
+        AND rule_id IN
+        <foreach collection="ruleSet" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">
+        UPDATE vcloud_risk_detail_info
+        SET gmt_update = now(),rule_id = #{risk.ruleId},rule_name=#{risk.ruleName},range_type=#{risk.rangeType},range_id=#{risk.rangId},current_result=#{risk.currentResult},has_risk=#{risk.hasRisk},risk_detail=#{risk.riskDetail}
+        WHERE id = #{risk.id}
+    </update>
+
 </mapper>

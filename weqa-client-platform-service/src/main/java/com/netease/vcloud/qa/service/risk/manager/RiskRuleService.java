@@ -113,7 +113,11 @@ public class RiskRuleService {
         clientRiskRuleDO.setCheckPriority(riskRuleDTO.getPriority());
         clientRiskRuleDO.setCheckRange(riskCheckRange.getCode());
         clientRiskRuleDO.setCheckStage(riskCheckStatus.getCode());
-        clientRiskRuleDO.setCheckInfo(riskRuleDTO.getCheckInfo());
+        RiskCheckStander riskCheckStander = new RiskCheckStander() ;
+        riskCheckStander.setType(riskRuleDTO.getRuleType());
+        riskCheckStander.setCheckDesc(riskRuleDTO.getRuleDesc());
+        riskCheckStander.setCheckInfoDetail(riskRuleDTO.getRuleCheckInfo());
+        clientRiskRuleDO.setCheckInfo(JSONObject.toJSONString(riskCheckStander));
         return clientRiskRuleDO ;
     }
 

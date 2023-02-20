@@ -1,14 +1,18 @@
 package com.netease.vcloud.qa.service.risk.manager;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.dao.ClientRiskDetailDAO;
 import com.netease.vcloud.qa.model.ClientRiskDetailDO;
 import com.netease.vcloud.qa.risk.RiskCheckRange;
 import com.netease.vcloud.qa.risk.RiskProjectStatus;
 import com.netease.vcloud.qa.risk.RiskTaskStatus;
+import com.netease.vcloud.qa.service.risk.RiskCheckException;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskDetailInfoBO;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskRuleInfoBO;
 import com.netease.vcloud.qa.service.risk.source.RiskDataService;
+import com.netease.vcloud.qa.service.risk.source.struct.RiskCheckStander;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +55,10 @@ public class RiskManagerService {
      * @param taskId
      * @return
      */
-    public boolean createTaskRiskInfo(long taskId, RiskTaskStatus taskStatus){
+    public boolean createTaskRiskInfo(long taskId, RiskTaskStatus taskStatus) throws RiskCheckException{
+        if (taskStatus == null){
+            taskStatus = RiskTaskStatus.IN_DEVELOP ;
+        }
         List<RiskRuleInfoBO> riskRuleInfoBOList = riskRuleService.getRuleByTypeAndStage(RiskCheckRange.TASK,taskStatus) ;
         if (CollectionUtils.isEmpty(riskRuleInfoBOList)){
             return true ;
@@ -76,6 +83,7 @@ public class RiskManagerService {
             flag = false ;
         }
         //和数据源进行对比，确定风险本身
+        this.checkTaskRiskInfoAndData(taskId) ;
         return flag ;
     }
 
@@ -88,21 +96,96 @@ public class RiskManagerService {
         clientRiskDetailDO.setRuleName(riskRuleInfoBO.getRuleName());
         clientRiskDetailDO.setRangeType(riskCheckRange.getCode());
         clientRiskDetailDO.setRangeId(riskRangeId);
-        //fixme 根据读取的数据，进行修改
+        clientRiskDetailDO.setRiskDetail(JSONObject.toJSONString(riskRuleInfoBO.getCheckStander()));
+        //未校验的默认值
         clientRiskDetailDO.setHasRisk((byte)0);
-        clientRiskDetailDO.setRiskDetail("{}");
         clientRiskDetailDO.setCurrentResult("");
         return clientRiskDetailDO ;
     }
 
-
-    public boolean checkProjectRiskInfo(long projectId, RiskProjectStatus projectStatus){
-        return true ;
+    /**
+     * 更新任务数据
+     */
+    public boolean updateTaskStatus(long taskId, RiskTaskStatus taskStatus) throws RiskCheckException{
+        //根据状态变化情况， 新增相关测试用例
+        List<RiskRuleInfoBO> riskRuleInfoBOList = riskRuleService.getRuleByTypeAndStage(RiskCheckRange.TASK,taskStatus) ;
+        if (CollectionUtils.isEmpty(riskRuleInfoBOList)){
+            //没有什么要更新的，返回成功
+            return true ;
+        }
+        //操作风险信息
+        Set<Long> ruleIdSet = new HashSet<Long>() ;
+        //1.将已有风险信息删除
+        for (Long ruleId : ruleIdSet){
+            ruleIdSet.add(ruleId) ;
+        }
+        riskDetailDAO.deleteRiskByRangeAndRule(RiskCheckRange.TASK.getCode(), taskId,ruleIdSet) ;
+        //2.重新新增风险信息并进行校验
+        List<ClientRiskDetailDO> clientRiskDetailDOList = new ArrayList<ClientRiskDetailDO>() ;
+        for (RiskRuleInfoBO riskRuleInfoBO : riskRuleInfoBOList){
+            if (riskRuleInfoBO == null){
+                continue;
+            }
+            ClientRiskDetailDO clientRiskDetailDO = this.buildRiskByRuleBO(RiskCheckRange.TASK, taskId, riskRuleInfoBO) ;
+            if (clientRiskDetailDO != null){
+                clientRiskDetailDOList.add(clientRiskDetailDO) ;
+            }
+        }
+        //不存在就不需要
+        if (CollectionUtils.isEmpty(clientRiskDetailDOList)){
+            //这一步为空即为异常
+            return true ;
+        }
+        boolean flag = true ;
+        int count = riskDetailDAO.patchInsertClientRiskDetailInfo(clientRiskDetailDOList) ;
+        if (count < clientRiskDetailDOList.size() ){
+            flag = false ;
+        }
+        //和数据源进行对比，确定风险本身
+        this.checkTaskRiskInfoAndData(taskId) ;
+        return flag ;
     }
 
-    public boolean checkTaskRiskInfo(long taskId,RiskTaskStatus taskStatus){
-        return false ;
+
+    //为了保证方法，这两步可以做成异步的
+
+    /**
+     * 检测项目是否有风险（异步）
+     * @param projectId
+     * @return
+     */
+    public void checkProjectRiskInfoAndData(long projectId) throws RiskCheckException{
+
     }
+
+    /**
+     * 检测任务是否有风险(异步)
+     * @param taskId
+     * @return
+     */
+    public void checkTaskRiskInfoAndData(Long taskId) throws RiskCheckException {
+        if (taskId == null ){
+            RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] some param is null");
+            return;
+        }
+        //该异步线程
+        List<ClientRiskDetailDO> clientRiskDetailDOList = riskDetailDAO.getRiskListByRangeId(RiskCheckRange.TASK.getCode(), taskId) ;
+        for (ClientRiskDetailDO clientRiskDetailDO : clientRiskDetailDOList){
+            if (clientRiskDetailDO == null || StringUtils.isBlank(clientRiskDetailDO.getRiskDetail())){
+                continue;
+            }
+            RiskCheckStander riskCheckStander = JSONObject.parseObject(clientRiskDetailDO.getRiskDetail() , RiskCheckStander.class);
+            String currentData = riskDataService.getCurrentDate(riskCheckStander.getType(),RiskCheckRange.TASK,taskId) ;
+            boolean flag = riskDataService.hasRisk(riskCheckStander.getType(),riskCheckStander.getCheckInfoDetail(),currentData) ;
+            clientRiskDetailDO.setCurrentResult(currentData);
+            clientRiskDetailDO.setHasRisk(flag ? (byte) 1:(byte) 0);
+            int count = riskDetailDAO.updateRiskDetailInfo(clientRiskDetailDO) ;
+            if (count < 1){
+                RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] update Risk detail fail");
+            }
+         }
+    }
+
 
     /**
      * 获取项目的风险

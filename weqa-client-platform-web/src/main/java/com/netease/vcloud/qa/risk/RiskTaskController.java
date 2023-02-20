@@ -28,13 +28,13 @@ public class RiskTaskController {
     private RiskTaskService riskTaskService ;
 
     /**
-     *  http://127.0.0.1:8788/g2-client/risk/task/detail?taskId=4
+     *  http://127.0.0.1:8788/g2-client/risk/task/detail?task=4
      * @param taskId
      * @return
      */
     @RequestMapping("/detail")
     @ResponseBody
-    public ResultVO getTaskDetailInfo(@RequestParam("taskId") long taskId){
+    public ResultVO getTaskDetailInfo(@RequestParam("task") long taskId){
         ResultVO resultVO = null ;
         try {
             RiskTaskDetailVO riskTaskDetailVO = riskTaskService.getTaskDetailByTaskId(taskId);
@@ -50,13 +50,13 @@ public class RiskTaskController {
     }
 
     /**
-     *  http://127.0.0.1:8788/g2-client/risk/task/risk?taskId=4
+     *  http://127.0.0.1:8788/g2-client/risk/task/risk?task=4
      * @param taskId
      * @return
      */
     @RequestMapping("/risk")
     @ResponseBody
-    public  ResultVO getTaskRiskList(@RequestParam("taskId") long taskId){
+    public  ResultVO getTaskRiskList(@RequestParam("task") long taskId){
         ResultVO resultVO = null ;
         try {
             RiskTaskRiskDetailVO riskTaskRiskDetailVO = riskTaskService.getTaskRiskDetailInfo(taskId);
@@ -70,4 +70,48 @@ public class RiskTaskController {
         }
         return resultVO ;
     }
+
+
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/task/status/update?task=4&status=test
+     * @param taskId
+     * @param status
+     * @return
+     */
+    @RequestMapping("/status/update")
+    @ResponseBody
+    public ResultVO updateTaskStatus(@RequestParam("task") long taskId , @RequestParam("status")String status){
+        ResultVO resultVO = null ;
+        RiskTaskStatus riskTaskStatus = RiskTaskStatus.getRiskTaskStatusByStatus(status) ;
+        try{
+            boolean flag = riskTaskService.updateRiskTaskStatus(taskId,riskTaskStatus) ;
+            if (flag){
+                resultVO = ResultUtils.buildSuccess() ;
+            }else {
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     *http://127.0.0.1:8788/g2-client/risk/task/risk/check?task=4
+     * @param taskId
+     * @return
+     */
+    @RequestMapping("/risk/check")
+    @ResponseBody
+    public ResultVO checkTaskRiskStatus(@RequestParam("task") long taskId){
+        ResultVO resultVO = null ;
+        try{
+            riskTaskService.startCheckTaskRiskInfoAndData(taskId);
+            resultVO = ResultUtils.buildSuccess() ;
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
 }
