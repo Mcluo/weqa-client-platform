@@ -114,4 +114,22 @@ public class RiskTaskController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/task/data/sync?task=4
+     * @param taskId
+     * @return
+     */
+    @RequestMapping("/data/sync")
+    @ResponseBody
+    public ResultVO syncTaskRiskData(@RequestParam("task") long taskId){
+        ResultVO resultVO = null ;
+        try{
+            riskTaskService.startSyncTaskRiskData(taskId);
+            resultVO = ResultUtils.buildSuccess() ;
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
 }

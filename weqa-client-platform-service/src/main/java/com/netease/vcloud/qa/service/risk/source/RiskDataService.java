@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public class RiskDataService {
     @Autowired
     private AutoTestCheckManageService autoTestCheckManageService ;
 
+    @PostConstruct
     public void init(){
         riskTestCheckManageMap = new HashMap<String, RiskTestCheckManageInterface>() ;
         riskTestCheckManageMap.put(AUTO_TEST,autoTestCheckManageService) ;
@@ -59,7 +61,8 @@ public class RiskDataService {
         if (riskTestCheckService == null ){
             throw new RiskCheckException(RiskCheckException.RISK_DATA_IS_NOT_SUPPORT_EXCEPTION) ;
         }
-       return  riskTestCheckService.getCurrentData(rangeType,rangeId) ;
+       String current = riskTestCheckService.getCurrentData(rangeType,rangeId) ;
+        return current == null ? "": current ;
     }
 
     public boolean hasRisk(String dataType, String checkInfoStructStr, String currentDate) throws RiskCheckException{

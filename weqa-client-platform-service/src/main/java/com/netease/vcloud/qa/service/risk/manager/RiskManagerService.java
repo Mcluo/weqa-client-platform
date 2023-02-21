@@ -19,7 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -39,7 +43,13 @@ public class RiskManagerService {
     @Autowired
     private ClientRiskDetailDAO riskDetailDAO ;
 
+    private ThreadPoolExecutor executor ;
 
+    @PostConstruct
+    public void  init(){
+        executor = new ThreadPoolExecutor(5, 10, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+    }
     /**
      * 根据项目ID创建项目的风险列表信息
      * @param projectId
@@ -168,22 +178,30 @@ public class RiskManagerService {
             RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] some param is null");
             return;
         }
-        //该异步线程
-        List<ClientRiskDetailDO> clientRiskDetailDOList = riskDetailDAO.getRiskListByRangeId(RiskCheckRange.TASK.getCode(), taskId) ;
-        for (ClientRiskDetailDO clientRiskDetailDO : clientRiskDetailDOList){
-            if (clientRiskDetailDO == null || StringUtils.isBlank(clientRiskDetailDO.getRiskDetail())){
-                continue;
+        executor.execute(() -> {
+            try{
+                List<ClientRiskDetailDO> clientRiskDetailDOList = riskDetailDAO.getRiskListByRangeId(RiskCheckRange.TASK.getCode(), taskId) ;
+                for (ClientRiskDetailDO clientRiskDetailDO : clientRiskDetailDOList){
+                    if (clientRiskDetailDO == null || StringUtils.isBlank(clientRiskDetailDO.getRiskDetail())){
+                        continue;
+                    }
+                    RiskCheckStander riskCheckStander = JSONObject.parseObject(clientRiskDetailDO.getRiskDetail() , RiskCheckStander.class);
+                    if (riskCheckStander == null || StringUtils.isBlank(riskCheckStander.getType())){
+                        continue;
+                    }
+                    String currentData = riskDataService.getCurrentDate(riskCheckStander.getType(),RiskCheckRange.TASK,taskId) ;
+                    boolean flag = riskDataService.hasRisk(riskCheckStander.getType(),riskCheckStander.getCheckInfoDetail(),currentData) ;
+                    clientRiskDetailDO.setCurrentResult(currentData);
+                    clientRiskDetailDO.setHasRisk(flag ? (byte) 1:(byte) 0);
+                    int count = riskDetailDAO.updateRiskDetailInfo(clientRiskDetailDO) ;
+                    if (count < 1){
+                        RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] update Risk detail fail");
+                    }
+                }
+            }catch (Exception e){
+                RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] update exception",e);
             }
-            RiskCheckStander riskCheckStander = JSONObject.parseObject(clientRiskDetailDO.getRiskDetail() , RiskCheckStander.class);
-            String currentData = riskDataService.getCurrentDate(riskCheckStander.getType(),RiskCheckRange.TASK,taskId) ;
-            boolean flag = riskDataService.hasRisk(riskCheckStander.getType(),riskCheckStander.getCheckInfoDetail(),currentData) ;
-            clientRiskDetailDO.setCurrentResult(currentData);
-            clientRiskDetailDO.setHasRisk(flag ? (byte) 1:(byte) 0);
-            int count = riskDetailDAO.updateRiskDetailInfo(clientRiskDetailDO) ;
-            if (count < 1){
-                RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] update Risk detail fail");
-            }
-         }
+        });
     }
 
 
@@ -234,4 +252,34 @@ public class RiskManagerService {
     }
 
 
+    public void syncProjectRiskInfoData(long projectId) throws RiskCheckException{
+        this.syncRiskInfoData(RiskCheckRange.PROJECT,projectId);
+    }
+
+    public void syncTaskRiskInfoData(long taskId) throws RiskCheckException{
+        this.syncRiskInfoData(RiskCheckRange.TASK,taskId);
+    }
+
+    private void syncRiskInfoData(RiskCheckRange riskCheckRange , long rangeId) throws RiskCheckException{
+        List<ClientRiskDetailDO> clientRiskDetailDOList = riskDetailDAO.getRiskListByRangeId(riskCheckRange.getCode(),rangeId) ;
+        if (CollectionUtils.isEmpty(clientRiskDetailDOList)){
+            return;
+        }
+        executor.execute(()->{
+            try {
+                for (ClientRiskDetailDO clientRiskDetailDO : clientRiskDetailDOList) {
+                    if (clientRiskDetailDO == null || StringUtils.isBlank(clientRiskDetailDO.getRiskDetail())) {
+                        continue;
+                    }
+                    RiskCheckStander riskCheckStander = JSONObject.parseObject(clientRiskDetailDO.getRiskDetail(), RiskCheckStander.class);
+                    if (riskCheckStander == null || StringUtils.isBlank(riskCheckStander.getType())) {
+                        continue;
+                    }
+                    riskDataService.asyncDate(riskCheckStander.getType(), riskCheckRange, rangeId);
+                }
+            }catch (Exception e){
+                RISK_LOGGER.error("[RiskManagerService.asyncRiskInfoData] asyncRiskInfoData exception",e);
+            }
+        });
+    }
 }

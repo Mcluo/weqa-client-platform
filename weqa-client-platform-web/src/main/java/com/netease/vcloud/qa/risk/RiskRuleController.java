@@ -23,7 +23,7 @@ public class RiskRuleController {
     private RiskRuleService riskRuleService ;
 
     /**
-     * http://127.0.0.1:8788/g2-client/risk/rule/add?name=规则1&priority=p2&range=task&status=develop&checkInfo={}
+     * http://127.0.0.1:8788/g2-client/risk/rule/add?name=%E6%B5%8B%E8%AF%95%E8%A7%84%E5%88%991&priority=p2&range=task&status=develop&type=auto_test&desc=%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E9%80%9A%E8%BF%87%E7%8E%87%E9%9C%80%E8%BE%BE%E5%88%B0%E8%A6%81%E6%B1%82&checkInfo=%7B%7D
      * @param ruleName
      * @param priority
      * @param range

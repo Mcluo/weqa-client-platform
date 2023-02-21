@@ -11,7 +11,7 @@
         <result column="range_id" jdbcType="BIGINT" property="rangeId"/>
         <result column="current_result" jdbcType="VARCHAR" property="currentResult"/>
         <result column="has_risk" jdbcType="TINYINT" property="hasRisk"/>
-        <result column="has_detail" jdbcType="VARCHAR" property="riskDetail"/>
+        <result column="risk_detail" jdbcType="VARCHAR" property="riskDetail"/>
     </resultMap>
 
     <sql id="baseSql">
@@ -45,7 +45,7 @@
 
     <update id="updateRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">
         UPDATE vcloud_risk_detail_info
-        SET gmt_update = now(),rule_id = #{risk.ruleId},rule_name=#{risk.ruleName},range_type=#{risk.rangeType},range_id=#{risk.rangId},current_result=#{risk.currentResult},has_risk=#{risk.hasRisk},risk_detail=#{risk.riskDetail}
+        SET gmt_update = now(),rule_id = #{risk.ruleId},rule_name=#{risk.ruleName},range_type=#{risk.rangeType},range_id=#{risk.rangeId},current_result=#{risk.currentResult},has_risk=#{risk.hasRisk},risk_detail=#{risk.riskDetail}
         WHERE id = #{risk.id}
     </update>
 

@@ -319,4 +319,12 @@ public class RiskTaskService {
         riskManagerService.checkTaskRiskInfoAndData(task);
     }
 
+
+    public void startSyncTaskRiskData(Long task) throws  RiskCheckException{
+        if (task == null){
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        riskManagerService.syncTaskRiskInfoData(task);
+    }
+
 }
