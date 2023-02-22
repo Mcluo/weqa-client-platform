@@ -150,7 +150,7 @@ public class RiskTaskService {
         //2，任务-人员拼装
         Map<Long,List<ClientRiskTaskPersonDO>> taskPersonListMap = new HashMap<Long,List<ClientRiskTaskPersonDO>>() ;
         Set<String> employeeSet = new HashSet<String>() ;
-        if (CollectionUtils.isEmpty(riskPersonList)) {
+        if (!CollectionUtils.isEmpty(riskPersonList)) {
             for (ClientRiskTaskPersonDO clientRiskTaskPersonDO : riskPersonList){
                 if (clientRiskTaskPersonDO == null){
                     continue;

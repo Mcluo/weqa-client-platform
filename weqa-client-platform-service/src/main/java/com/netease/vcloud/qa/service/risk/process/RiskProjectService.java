@@ -143,5 +143,12 @@ public class RiskProjectService {
         return clientRiskProjectDO ;
     }
 
-
+    public RiskProjectVO getProjectDetailByID(Long projectId) throws RiskCheckException{
+        if (projectId == null){
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        ClientRiskProjectDO clientRiskProjectDO = this.getProjectDOById(projectId) ;
+        RiskProjectVO riskProjectVO = this.buildRiskProjectVOByDO(clientRiskProjectDO) ;
+        return riskProjectVO ;
+    }
 }

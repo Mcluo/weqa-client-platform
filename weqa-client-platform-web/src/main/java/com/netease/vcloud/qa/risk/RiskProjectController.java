@@ -114,8 +114,26 @@ public class RiskProjectController {
         return  resultVO ;
     }
 
-
-
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/project/get?id=3
+     * @return
+     */
+    @RequestMapping("/get")
+    @ResponseBody
+    public ResultVO getProjectDetail(@RequestParam(name = "id") long projectId){
+        ResultVO resultVO = null ;
+        try {
+            RiskProjectVO riskProjectVO = riskProjectService.getProjectDetailByID(projectId);
+            if (riskProjectVO==null){
+                resultVO = ResultUtils.buildFail() ;
+            }else {
+                resultVO = ResultUtils.buildSuccess(riskProjectVO) ;
+            }
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
 
     /**
      * http://127.0.0.1:8788/g2-client/risk/project/task/query?projectId=2
