@@ -27,6 +27,13 @@ public interface RiskTestCheckManageInterface<T  extends CheckInfoStructInterfac
      * @param t
      * @return
      */
-    boolean hasRisk(T t, String currentData ) ;
+    boolean hasRisk(T t, String currentData );
+
+    /**
+     * 通过标准的文字描述
+     * @param t
+     * @return
+     */
+    String buildPassStandard(T  t) ;
 
 }

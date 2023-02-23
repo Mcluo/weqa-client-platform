@@ -23,6 +23,8 @@ public class RiskDetailInfoVO {
      */
     private String currentValue ;
 
+    private boolean hasRisk ;
+
     public Long getRiskId() {
         return riskId;
     }
@@ -69,5 +71,13 @@ public class RiskDetailInfoVO {
 
     public void setCurrentValue(String currentValue) {
         this.currentValue = currentValue;
+    }
+
+    public boolean isHasRisk() {
+        return hasRisk;
+    }
+
+    public void setHasRisk(boolean hasRisk) {
+        this.hasRisk = hasRisk;
     }
 }

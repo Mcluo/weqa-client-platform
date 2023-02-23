@@ -267,11 +267,11 @@ public class RiskTaskService {
         }
         RiskTaskRiskDetailVO riskTaskRiskDetailVO = new RiskTaskRiskDetailVO() ;
         Map<String,List<RiskDetailInfoVO>> riskDetailMap = new HashMap<String, List<RiskDetailInfoVO>>() ;
-        riskTaskRiskDetailVO.setRiskDetailInfo(riskDetailMap);
         List<RiskDetailInfoBO> riskDetailInfoBOList = riskManagerService.getTaskRiskInfo(taskId) ;
         if (riskDetailInfoBOList == null){
            return riskTaskRiskDetailVO ;
         }
+        riskTaskRiskDetailVO.setRiskDetailInfo(riskDetailMap);
         for (RiskDetailInfoBO riskDetailInfoBO : riskDetailInfoBOList){
             RiskTaskStatus riskTaskStatus = (RiskTaskStatus) riskDetailInfoBO.getCheckStatus() ;
             if (riskTaskStatus==null) {
@@ -301,6 +301,7 @@ public class RiskTaskService {
         riskDetailInfoVO.setCurrentValue(riskDetailInfoBO.getCurrentResult());
         riskDetailInfoVO.setRiskPriority(riskDetailInfoBO.getRiskPriority());
         riskDetailInfoVO.setPassStander(riskDetailInfoBO.getRiskDetail());
+        riskDetailInfoVO.setHasRisk(riskDetailInfoBO.isHasRisk());
         return riskDetailInfoVO ;
     }
 

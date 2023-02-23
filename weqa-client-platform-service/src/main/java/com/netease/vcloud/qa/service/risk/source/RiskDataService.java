@@ -74,6 +74,14 @@ public class RiskDataService {
         return  riskTestCheckService.hasRisk(checkInfoStruct,currentDate) ;
     }
 
+    public String getPassStandard(String dataType, String checkInfoStructStr)  throws RiskCheckException{
+        RiskTestCheckManageInterface riskTestCheckService = riskTestCheckManageMap.get(dataType) ;
+        if (riskTestCheckService == null ){
+            throw new RiskCheckException(RiskCheckException.RISK_DATA_IS_NOT_SUPPORT_EXCEPTION) ;
+        }
+        CheckInfoStructInterface checkInfoStruct = riskTestCheckService.buildCheckInfo(checkInfoStructStr) ;
+        return riskTestCheckService.buildPassStandard(checkInfoStruct) ;
+    }
 
 
 }

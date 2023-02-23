@@ -236,19 +236,40 @@ public class RiskManagerService {
             riskDetailInfoBO.setRuleId(clientRiskDetailDO.getRuleId());
             riskDetailInfoBO.setRuleName(clientRiskDetailDO.getRuleName());
             riskDetailInfoBO.setCheckRage(RiskCheckRange.TASK);
-            RiskTaskStatus riskTaskStatus = RiskTaskStatus.getRiskTaskStatusByCode(clientRiskDetailDO.getRangeType()) ;
-            riskDetailInfoBO.setCheckStatus(riskTaskStatus);
+//            RiskTaskStatus riskTaskStatus = RiskTaskStatus.getRiskTaskStatusByCode(clientRiskDetailDO.getRangeType()) ;
+//            riskDetailInfoBO.setCheckStatus(riskTaskStatus);
             riskDetailInfoBO.setCurrentResult(clientRiskDetailDO.getCurrentResult());
             riskDetailInfoBO.setRangeId(taskId);
             riskDetailInfoBO.setHasRisk(clientRiskDetailDO.getHasRisk()==1?true:false);
             RiskRuleInfoBO riskRuleInfoBO = ruleInfoBOMap.get(riskDetailInfoBO.getRuleId()) ;
             if (riskRuleInfoBO != null){
+                RiskTaskStatus riskTaskStatus = RiskTaskStatus.getRiskTaskStatusByCode(riskRuleInfoBO.getStage()) ;
+                riskDetailInfoBO.setCheckStatus(riskTaskStatus);
                 riskDetailInfoBO.setRiskPriority(riskRuleInfoBO.getPriority());
-                //fixme 这个需要具体修改
-                riskDetailInfoBO.setRiskDetail(JSON.toJSONString(riskRuleInfoBO.getCheckStander()));
+                riskDetailInfoBO.setRiskDetail(this.buildRiskDetail(riskRuleInfoBO.getCheckStander()));
             }
+            riskDetailInfoBOList.add(riskDetailInfoBO) ;
         }
         return riskDetailInfoBOList ;
+    }
+
+    /**
+     * 具体通过标准构建
+     * @param riskCheckStander
+     * @return
+     */
+    private String buildRiskDetail(RiskCheckStander riskCheckStander){
+        if (riskCheckStander == null){
+            return null ;
+        }
+
+       String passStandard = null ;
+        try {
+            passStandard = riskDataService.getPassStandard(riskCheckStander.getType(), riskCheckStander.getCheckInfoDetail());
+        }catch (RiskCheckException e){
+            RISK_LOGGER.error("[RiskManagerService.buildRiskDetail]  build getPassStandard",e);
+        }
+        return passStandard ;
     }
 
 

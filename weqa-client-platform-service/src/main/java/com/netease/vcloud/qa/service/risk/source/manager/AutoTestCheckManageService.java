@@ -59,4 +59,17 @@ public class AutoTestCheckManageService  implements  RiskTestCheckManageInterfac
             return false;
         }
     }
+
+
+    @Override
+    public String buildPassStandard(CheckInfoStructInterface checkInfoStructInterface) {
+        if (checkInfoStructInterface instanceof AutoTestCheckData) {
+            AutoTestCheckData autoTestCheckData = (AutoTestCheckData) checkInfoStructInterface;
+            Double passPercent = autoTestCheckData.getPassPercent();
+            String passStandard = "自动化通过率大于"+passPercent+"%" ;
+            return passStandard ;
+        }else {
+            return null;
+        }
+    }
 }
