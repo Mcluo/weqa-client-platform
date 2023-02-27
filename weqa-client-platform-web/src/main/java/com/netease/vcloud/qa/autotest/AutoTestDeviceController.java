@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.autotest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO;
@@ -8,6 +9,7 @@ import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestDeviceService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
+import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,4 +116,20 @@ public class AutoTestDeviceController {
         return resultVO ;
     }
 
+    @RequestMapping("/addDevices")
+    @ResponseBody
+    public ResultVO addDevices(@RequestBody JSONObject jsonObject){
+        ResultVO resultVO = null ;
+        try {
+            List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList  = jsonObject.getJSONArray("data").toJavaList(ClientAutoDeviceInfoDO.class);
+            boolean flag = true;
+            for(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO : clientAutoDeviceInfoDOList){
+                flag = autoTestDeviceService.addDevice(clientAutoDeviceInfoDO);
+            }
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
 }

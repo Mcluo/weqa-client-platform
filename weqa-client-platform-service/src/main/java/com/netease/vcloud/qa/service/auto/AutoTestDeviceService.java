@@ -96,6 +96,11 @@ public class AutoTestDeviceService {
         return count > 0;
     }
 
+    public boolean addDevice(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) throws AutoTestRunException{
+        int count = clientAutoDeviceInfoDAO.insertNewDeviceInfo(clientAutoDeviceInfoDO) ;
+        return count > 0;
+    }
+
     public List<DeviceInfoVO> getDeviceInfoList(List<Long> deviceIdList){
         List<DeviceInfoVO> deviceInfoVOList = new ArrayList<>() ;
         if (CollectionUtils.isEmpty(deviceIdList)){
