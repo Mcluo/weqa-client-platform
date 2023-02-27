@@ -25,6 +25,13 @@
         AND range_id = #{rangeId}
     </select>
 
+    <select id="getRiskByID" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_detail_info
+        WHERE id = #{id}
+    </select>
+
+
     <insert id="patchInsertClientRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">
         INSERT INTO vcloud_risk_detail_info(gmt_create,gmt_update,rule_id,rule_name,range_type,range_id,current_result,has_risk,risk_detail)
         values
@@ -37,10 +44,12 @@
         DELETE FROM vcloud_risk_detail_info
         WHERE range_type = #{rangeType}
         AND range_id = #{rangeId}
-        AND rule_id IN
-        <foreach collection="ruleSet" item="id" index="index" open="(" close=")" separator=",">
-            #{id}
-        </foreach>
+        <if test="ruleSet!=null and ruleSet.size()>0">
+            AND rule_id IN
+            <foreach collection="ruleSet" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
     </delete>
 
     <update id="updateRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">

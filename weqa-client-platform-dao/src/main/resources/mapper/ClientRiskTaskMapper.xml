@@ -33,9 +33,15 @@
         values(now(),now(),#{task.taskName},#{task.projectId},#{task.taskStatus},#{task.jiraInfo},0)
     </insert>
 
+    <update id="updateClientRiskTask" parameterType="com.netease.vcloud.qa.model.ClientRiskTaskDO">
+        update vcloud_risk_task_base_info
+        set gmt_update=now(),task_name=#{task.taskName},project_id=#{task.projectId},task_status=#{task.taskStatus},jira_info=#{task.jiraInfo}
+        WHERE id = #{task.id}
+    </update>
+
     <update id="logicDeleteClientRiskTask">
         update vcloud_risk_task_base_info
-        set is_delete = 1
+        set gmt_update=now(),is_delete = 1
         WHERE id = #{id}
         <if test="project!=null">
             AND project_id = #{project}

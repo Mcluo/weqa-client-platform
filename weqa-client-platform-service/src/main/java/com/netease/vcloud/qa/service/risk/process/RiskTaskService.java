@@ -251,8 +251,11 @@ public class RiskTaskService {
         Map<String,UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(personSet) ;
         List<UserInfoVO> userInfoVOList = new ArrayList<>() ;
         if (userInfoBOMap!=null){
-            for (Map.Entry<String,UserInfoBO> entry : userInfoBOMap.entrySet()){
-                userInfoVOList.add(CommonUtils.buildUserInfoVOByBO(entry.getValue())) ;
+            for(String person : personSet){
+                UserInfoBO userInfoBO = userInfoBOMap.get(person) ;
+                if (userInfoBO!=null){
+                    userInfoVOList.add(CommonUtils.buildUserInfoVOByBO(userInfoBO)) ;
+                }
             }
         }
         riskTaskDetailVO.setUserList(userInfoVOList);
@@ -302,12 +305,23 @@ public class RiskTaskService {
         riskDetailInfoVO.setRiskPriority(riskDetailInfoBO.getRiskPriority());
         riskDetailInfoVO.setPassStander(riskDetailInfoBO.getRiskDetail());
         riskDetailInfoVO.setHasRisk(riskDetailInfoBO.isHasRisk());
+        riskDetailInfoVO.setRiskType(riskDetailInfoBO.getRiskType());
         return riskDetailInfoVO ;
     }
 
     public boolean updateRiskTaskStatus(Long task , RiskTaskStatus status) throws RiskCheckException{
         if (task == null || status == null){
             throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        ClientRiskTaskDO clientRiskTaskDO = riskTaskDAO.getClientRiskTaskByTaskId(task) ;
+        if (clientRiskTaskDO == null){
+            throw new RiskCheckException(RiskCheckException.RISK_TASK_IS_NOT_EXIST_EXCEPTION) ;
+        }
+        clientRiskTaskDO.setTaskStatus(status.getCode());
+        int count = riskTaskDAO.updateClientRiskTask(clientRiskTaskDO) ;
+        if (count < 1){
+            RISK_LOGGER.error("[RiskTaskService.updateRiskTaskStatus]update status exception");
+            return  false ;
         }
         return riskManagerService.updateTaskStatus(task,status) ;
     }
@@ -327,5 +341,7 @@ public class RiskTaskService {
         }
         riskManagerService.syncTaskRiskInfoData(task);
     }
+
+
 
 }

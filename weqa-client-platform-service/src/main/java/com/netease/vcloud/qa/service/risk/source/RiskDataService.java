@@ -5,6 +5,7 @@ import com.netease.vcloud.qa.service.risk.RiskCheckException;
 import com.netease.vcloud.qa.service.risk.source.manager.AutoTestCheckManageService;
 import com.netease.vcloud.qa.service.risk.source.manager.RiskTestCheckManageInterface;
 import com.netease.vcloud.qa.service.risk.source.struct.CheckInfoStructInterface;
+import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -83,5 +84,12 @@ public class RiskDataService {
         return riskTestCheckService.buildPassStandard(checkInfoStruct) ;
     }
 
+    public CheckDataVOInterface getCheckData(String dataType ,RiskCheckRange rangeType ,Long rangId) throws RiskCheckException{
+        RiskTestCheckManageInterface riskTestCheckService = riskTestCheckManageMap.get(dataType) ;
+        if (riskTestCheckService == null ){
+            throw new RiskCheckException(RiskCheckException.RISK_DATA_IS_NOT_SUPPORT_EXCEPTION) ;
+        }
+        return riskTestCheckService.getCheckData(rangeType,rangId) ;
+    }
 
 }

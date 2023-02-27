@@ -25,6 +25,11 @@ public class RiskDetailInfoVO {
 
     private boolean hasRisk ;
 
+    /**
+     * 风险类型
+     */
+    private String riskType ;
+
     public Long getRiskId() {
         return riskId;
     }
@@ -79,5 +84,13 @@ public class RiskDetailInfoVO {
 
     public void setHasRisk(boolean hasRisk) {
         this.hasRisk = hasRisk;
+    }
+
+    public String getRiskType() {
+        return riskType;
+    }
+
+    public void setRiskType(String riskType) {
+        this.riskType = riskType;
     }
 }

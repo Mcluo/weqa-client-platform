@@ -16,6 +16,8 @@ public interface ClientRiskDetailDAO {
 
     List<ClientRiskDetailDO> getRiskListByRangeId(@Param("rangeType") byte rangeType , @Param("rangeId") long rangeId) ;
 
+    ClientRiskDetailDO getRiskByID(@Param("id") long riskId) ;
+
     int patchInsertClientRiskDetailInfo(@Param("riskSet") Collection<ClientRiskDetailDO> detailSet) ;
 
     int deleteRiskByRangeAndRule(@Param("rangeType") byte rangeType , @Param("rangeId") long rangeId , @Param("ruleSet") Collection<Long> ruleId) ;

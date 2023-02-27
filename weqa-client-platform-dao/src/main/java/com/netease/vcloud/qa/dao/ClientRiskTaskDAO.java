@@ -20,6 +20,8 @@ public interface ClientRiskTaskDAO {
 
     int insertClientRiskTask(@Param("task") ClientRiskTaskDO clientRiskTaskDO) ;
 
+    int updateClientRiskTask(@Param("task") ClientRiskTaskDO clientRiskTaskD) ;
+
     int logicDeleteClientRiskTask(@Param("project") Long projectId,@Param("id") long taskId) ;
 
 }

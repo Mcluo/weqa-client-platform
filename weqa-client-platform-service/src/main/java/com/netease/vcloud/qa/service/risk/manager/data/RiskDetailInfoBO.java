@@ -10,6 +10,10 @@ import com.netease.vcloud.qa.risk.RiskCheckStatus;
 public class RiskDetailInfoBO {
 
     private Long id ;
+    /**
+     * 风险（渲染）类型
+     */
+    private String  riskType ;
 
     private Long ruleId ;
 
@@ -37,6 +41,14 @@ public class RiskDetailInfoBO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRiskType() {
+        return riskType;
+    }
+
+    public void setRiskType(String riskType) {
+        this.riskType = riskType;
     }
 
     public Long getRuleId() {

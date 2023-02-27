@@ -2,6 +2,7 @@ package com.netease.vcloud.qa.service.risk.source.manager;
 
 import com.netease.vcloud.qa.risk.RiskCheckRange;
 import com.netease.vcloud.qa.service.risk.source.struct.CheckInfoStructInterface;
+import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -35,5 +36,7 @@ public interface RiskTestCheckManageInterface<T  extends CheckInfoStructInterfac
      * @return
      */
     String buildPassStandard(T  t) ;
+
+    CheckDataVOInterface getCheckData(RiskCheckRange rangeType , Long rangeId) ;
 
 }

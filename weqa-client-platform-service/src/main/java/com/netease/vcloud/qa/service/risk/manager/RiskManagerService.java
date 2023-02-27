@@ -10,8 +10,11 @@ import com.netease.vcloud.qa.risk.RiskTaskStatus;
 import com.netease.vcloud.qa.service.risk.RiskCheckException;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskDetailInfoBO;
 import com.netease.vcloud.qa.service.risk.manager.data.RiskRuleInfoBO;
+import com.netease.vcloud.qa.service.risk.manager.view.RiskDetailInfoVO;
+import com.netease.vcloud.qa.service.risk.manager.view.RiskDetailWithDataInfoVO;
 import com.netease.vcloud.qa.service.risk.source.RiskDataService;
 import com.netease.vcloud.qa.service.risk.source.struct.RiskCheckStander;
+import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,6 +246,9 @@ public class RiskManagerService {
             riskDetailInfoBO.setHasRisk(clientRiskDetailDO.getHasRisk()==1?true:false);
             RiskRuleInfoBO riskRuleInfoBO = ruleInfoBOMap.get(riskDetailInfoBO.getRuleId()) ;
             if (riskRuleInfoBO != null){
+                if(riskRuleInfoBO.getCheckStander()!=null) {
+                    riskDetailInfoBO.setRiskType(riskRuleInfoBO.getCheckStander().getType());
+                }
                 RiskTaskStatus riskTaskStatus = RiskTaskStatus.getRiskTaskStatusByCode(riskRuleInfoBO.getStage()) ;
                 riskDetailInfoBO.setCheckStatus(riskTaskStatus);
                 riskDetailInfoBO.setRiskPriority(riskRuleInfoBO.getPriority());
@@ -251,6 +257,44 @@ public class RiskManagerService {
             riskDetailInfoBOList.add(riskDetailInfoBO) ;
         }
         return riskDetailInfoBOList ;
+    }
+
+    /**
+     * 根据风险ID,展示风险详情信息
+     * @param riskId
+     */
+    public RiskDetailWithDataInfoVO getRiskDetailInfoVO(Long riskId) throws RiskCheckException{
+        if (riskId == null){
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        ClientRiskDetailDO riskDetailDO = riskDetailDAO.getRiskByID(riskId) ;
+        if (riskDetailDO == null){
+            throw new RiskCheckException(RiskCheckException.RISK_DATA_IS_NULL_EXCEPTION) ;
+        }
+        Set<Long>  ruleIdSet = new HashSet<Long>() ;
+        ruleIdSet.add(riskDetailDO.getRuleId()) ;
+        Map<Long, RiskRuleInfoBO> ruleInfoBOMap = riskRuleService.getRuleByIdSet(ruleIdSet) ;
+        RiskRuleInfoBO riskRuleInfoBO = ruleInfoBOMap.get(riskDetailDO.getRuleId()) ;
+        RiskDetailWithDataInfoVO riskDetailWithDataInfoVO = new RiskDetailWithDataInfoVO() ;
+        RiskDetailInfoVO riskDetailInfoVO = new RiskDetailInfoVO() ;
+        riskDetailInfoVO.setRiskId(riskDetailDO.getId());
+        riskDetailInfoVO.setRuleId(riskDetailDO.getRuleId());
+        riskDetailInfoVO.setCurrentValue(riskDetailDO.getCurrentResult());
+        riskDetailInfoVO.setHasRisk(riskDetailDO.getHasRisk()==(byte)0?false:true);
+        RiskCheckRange riskCheckRange = RiskCheckRange.getRiskCheckRangeByCode(riskDetailDO.getRangeType()) ;
+        if (riskRuleInfoBO != null) {
+            riskDetailInfoVO.setRiskTitle(riskRuleInfoBO.getRuleName());
+            riskDetailInfoVO.setRiskPriority(riskRuleInfoBO.getPriority());
+            riskDetailInfoVO.setRiskType(riskRuleInfoBO.getCheckStander().getType());
+            RiskCheckStander riskCheckStander = JSONObject.parseObject(riskDetailDO.getRiskDetail(),RiskCheckStander.class) ;
+            if (riskCheckStander != null) {
+                riskDetailInfoVO.setPassStander(riskDataService.getPassStandard(riskRuleInfoBO.getCheckStander().getType(),riskCheckStander.getCheckInfoDetail()));
+            }
+            CheckDataVOInterface checkDataVO = riskDataService.getCheckData(riskRuleInfoBO.getCheckStander().getType(),riskCheckRange, riskDetailDO.getRangeId());
+            riskDetailWithDataInfoVO.setCheckData(checkDataVO); ;
+        }
+        riskDetailWithDataInfoVO.setDetailInfo(riskDetailInfoVO);
+        return  riskDetailWithDataInfoVO ;
     }
 
     /**

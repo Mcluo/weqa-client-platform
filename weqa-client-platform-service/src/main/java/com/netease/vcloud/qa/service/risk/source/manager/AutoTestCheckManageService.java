@@ -1,11 +1,15 @@
 package com.netease.vcloud.qa.service.risk.source.manager;
 
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.dao.ClientRiskAutoTaskDAO;
 import com.netease.vcloud.qa.risk.RiskCheckRange;
 import com.netease.vcloud.qa.service.risk.source.manager.data.AutoTestCheckData;
 import com.netease.vcloud.qa.service.risk.source.struct.CheckInfoStructInterface;
+import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +18,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AutoTestCheckManageService  implements  RiskTestCheckManageInterface{
+
+    private static final String DEFAULT_CURRENT_VALUE = "" ;
+
+    @Autowired
+    private ClientRiskAutoTaskDAO clientRiskAutoTaskDAO ;
 
     private static final Logger RISK_LOGGER = LoggerFactory.getLogger("RiskLog");
 
@@ -24,7 +33,7 @@ public class AutoTestCheckManageService  implements  RiskTestCheckManageInterfac
 
     @Override
     public String getCurrentData(RiskCheckRange rangeType , Long rangeId) {
-        return "89.2";
+        return DEFAULT_CURRENT_VALUE;
     }
 
     @Override
@@ -35,6 +44,9 @@ public class AutoTestCheckManageService  implements  RiskTestCheckManageInterfac
 
     @Override
     public boolean hasRisk(CheckInfoStructInterface checkInfoStructInterface, String currentData) {
+        if(StringUtils.equals(DEFAULT_CURRENT_VALUE,currentData)) {
+            return true ;
+        }
         if (checkInfoStructInterface instanceof AutoTestCheckData){
             AutoTestCheckData autoTestCheckData = (AutoTestCheckData) checkInfoStructInterface ;
             Double passPercent = autoTestCheckData.getPassPercent() ;
@@ -72,4 +84,20 @@ public class AutoTestCheckManageService  implements  RiskTestCheckManageInterfac
             return null;
         }
     }
+
+
+    @Override
+    public CheckDataVOInterface getCheckData(RiskCheckRange rangeType, Long rangeId) {
+        return null;
+    }
+
+    public boolean bindRiskTaskAndAutoTask(long riskTask,long autoTask){
+        int count = clientRiskAutoTaskDAO.insertRiskAndAutoTask(riskTask,autoTask) ;
+        if (count > 0) {
+            return true ;
+        }else{
+            return false ;
+        }
+    }
+
 }

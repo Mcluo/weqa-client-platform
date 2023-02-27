@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public class RiskCheckStander implements Serializable {
     /**
-     * 风险类型（用于匹配具体数据结构）
+     * 风险类型（用于匹配具体数据结构和前端渲染）
      */
     private String type ;
     /**
