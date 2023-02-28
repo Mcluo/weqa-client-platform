@@ -1,12 +1,10 @@
-package com.netease.vcloud.qa.service.auto.view;
-
-import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
+package com.netease.vcloud.qa.service.risk.source.struct.view;
 
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2023/2/1 11:49
  */
-public class TaskStatisticInfoVO {
+public class AutoTestCheckDataInfoVO implements CheckDataVOInterface {
 
     private int waitingNumber ;
 
@@ -20,6 +18,10 @@ public class TaskStatisticInfoVO {
     private int total ;
 
     private String successRate ;
+
+    private Long autoTaskId ;
+
+    private String autoTaskName ;
 
     public int getWaitingNumber() {
         return waitingNumber;
@@ -75,5 +77,21 @@ public class TaskStatisticInfoVO {
 
     public void setSuccessRate(String successRate) {
         this.successRate = successRate;
+    }
+
+    public Long getAutoTaskId() {
+        return autoTaskId;
+    }
+
+    public void setAutoTaskId(Long autoTaskId) {
+        this.autoTaskId = autoTaskId;
+    }
+
+    public String getAutoTaskName() {
+        return autoTaskName;
+    }
+
+    public void setAutoTaskName(String autoTaskName) {
+        this.autoTaskName = autoTaskName;
     }
 }

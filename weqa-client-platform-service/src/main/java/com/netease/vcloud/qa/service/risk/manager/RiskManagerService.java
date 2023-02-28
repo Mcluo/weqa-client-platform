@@ -185,20 +185,9 @@ public class RiskManagerService {
             try{
                 List<ClientRiskDetailDO> clientRiskDetailDOList = riskDetailDAO.getRiskListByRangeId(RiskCheckRange.TASK.getCode(), taskId) ;
                 for (ClientRiskDetailDO clientRiskDetailDO : clientRiskDetailDOList){
-                    if (clientRiskDetailDO == null || StringUtils.isBlank(clientRiskDetailDO.getRiskDetail())){
-                        continue;
-                    }
-                    RiskCheckStander riskCheckStander = JSONObject.parseObject(clientRiskDetailDO.getRiskDetail() , RiskCheckStander.class);
-                    if (riskCheckStander == null || StringUtils.isBlank(riskCheckStander.getType())){
-                        continue;
-                    }
-                    String currentData = riskDataService.getCurrentDate(riskCheckStander.getType(),RiskCheckRange.TASK,taskId) ;
-                    boolean flag = riskDataService.hasRisk(riskCheckStander.getType(),riskCheckStander.getCheckInfoDetail(),currentData) ;
-                    clientRiskDetailDO.setCurrentResult(currentData);
-                    clientRiskDetailDO.setHasRisk(flag ? (byte) 1:(byte) 0);
-                    int count = riskDetailDAO.updateRiskDetailInfo(clientRiskDetailDO) ;
-                    if (count < 1){
-                        RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] update Risk detail fail");
+                    boolean flag = checkRiskInfoAndData(clientRiskDetailDO) ;
+                    if (!flag){
+                        RISK_LOGGER.error("[RiskManagerService.checkTaskRiskInfoAndData] check risk false");
                     }
                 }
             }catch (Exception e){
@@ -207,6 +196,36 @@ public class RiskManagerService {
         });
     }
 
+    public boolean checkRiskInfoAndData(Long riskId) throws RiskCheckException {
+        if (riskId == null){
+            throw new RiskCheckException(RiskCheckException.RISK_CHECK_PARAM_EXCEPTION) ;
+        }
+        ClientRiskDetailDO clientRiskDetailDO = riskDetailDAO.getRiskByID(riskId);
+        return this.checkRiskInfoAndData(clientRiskDetailDO);
+    }
+
+    private boolean checkRiskInfoAndData(ClientRiskDetailDO clientRiskDetailDO) throws RiskCheckException{
+
+        if (clientRiskDetailDO == null || StringUtils.isBlank(clientRiskDetailDO.getRiskDetail())) {
+            return false;
+        }
+        RiskCheckStander riskCheckStander = JSONObject.parseObject(clientRiskDetailDO.getRiskDetail(), RiskCheckStander.class);
+        if (riskCheckStander == null || StringUtils.isBlank(riskCheckStander.getType())) {
+            return false;
+        }
+        RiskCheckRange checkRange = RiskCheckRange.getRiskCheckRangeByCode(clientRiskDetailDO.getRangeType()) ;
+        String currentData = riskDataService.getCurrentDate(riskCheckStander.getType(), checkRange, clientRiskDetailDO.getRangeId());
+        boolean flag = riskDataService.hasRisk(riskCheckStander.getType(), riskCheckStander.getCheckInfoDetail(), currentData);
+        clientRiskDetailDO.setCurrentResult(currentData);
+        clientRiskDetailDO.setHasRisk(flag ? (byte) 1 : (byte) 0);
+        int count = riskDetailDAO.updateRiskDetailInfo(clientRiskDetailDO);
+        if (count < 1) {
+            RISK_LOGGER.error("[RiskManagerService.checkRiskInfoAndData] update Risk detail fail");
+            return false ;
+        }else {
+            return true ;
+        }
+    }
 
     /**
      * 获取项目的风险

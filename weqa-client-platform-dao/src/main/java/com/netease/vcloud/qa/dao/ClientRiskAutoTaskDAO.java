@@ -12,8 +12,8 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface ClientRiskAutoTaskDAO {
 
-    int insertRiskAndAutoTask(@Param("riskTask") long riskTaskId , @Param("autoTask") long autoTaskId) ;
+    int insertRiskAndAutoTask(@Param("type") byte rangeType, @Param("riskRange") long riskRangeId , @Param("autoTask") long autoTaskId) ;
 
-    ClientRiskAutoTaskDO getRiskAndAutoTaskByRisk(@Param("riskTask")long riskTaskId) ;
+    ClientRiskAutoTaskDO getRiskAndAutoTaskByRisk(@Param("type") byte rangeType, @Param("riskRange") long riskRangeId) ;
 
 }

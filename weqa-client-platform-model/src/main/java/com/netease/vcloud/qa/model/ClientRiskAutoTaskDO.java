@@ -13,7 +13,9 @@ public class ClientRiskAutoTaskDO {
 
     private Date gmtUpdate ;
 
-    private long riskTaskId;
+    private byte rangeType ;
+
+    private long riskRangeId;
 
     private long autoTaskId ;
 
@@ -41,12 +43,20 @@ public class ClientRiskAutoTaskDO {
         this.gmtUpdate = gmtUpdate;
     }
 
-    public long getRiskTaskId() {
-        return riskTaskId;
+    public byte getRangeType() {
+        return rangeType;
     }
 
-    public void setRiskTaskId(long riskTaskId) {
-        this.riskTaskId = riskTaskId;
+    public void setRangeType(byte rangeType) {
+        this.rangeType = rangeType;
+    }
+
+    public long getRiskRangeId() {
+        return riskRangeId;
+    }
+
+    public void setRiskRangeId(long riskRangeId) {
+        this.riskRangeId = riskRangeId;
     }
 
     public long getAutoTaskId() {

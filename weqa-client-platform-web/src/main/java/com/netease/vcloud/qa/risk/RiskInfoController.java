@@ -43,4 +43,27 @@ public class RiskInfoController {
         }
         return resultVO ;
     }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/risk/check?risk=11
+     * 重新校验风险项目
+     * @param riskId
+     * @return
+     */
+    @RequestMapping("/check")
+    @ResponseBody
+    public ResultVO checkRiskInfo(@RequestParam("risk") long riskId){
+        ResultVO resultVO = null ;
+        try {
+             boolean flag = riskManagerService.checkRiskInfoAndData(riskId);
+             if (flag){
+                 resultVO = ResultUtils.buildSuccess() ;
+             }else {
+                 resultVO = ResultUtils.buildFail() ;
+             }
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
 }
