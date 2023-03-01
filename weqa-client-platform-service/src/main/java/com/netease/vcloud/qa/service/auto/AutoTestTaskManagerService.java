@@ -180,6 +180,7 @@ public class AutoTestTaskManagerService {
             }
             autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(saveDeviceInfoVOList));
         }
+        autoTestTaskInfoBO.setPrivateAddressId(autoTestTaskInfoDTO.getPrivateAddressId());
         return autoTestTaskInfoBO ;
     }
 

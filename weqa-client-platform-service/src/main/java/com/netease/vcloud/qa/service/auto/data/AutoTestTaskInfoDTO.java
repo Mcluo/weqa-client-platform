@@ -29,6 +29,10 @@ public class AutoTestTaskInfoDTO {
      * 传递的时候，至传递id,不传递具体信息
      */
     private List<Long> testCaseScriptId ;
+    /**
+     * 私有地址配置
+     */
+    private Long privateAddressId ;
 
     public String getTaskType() {
         return taskType;
@@ -100,5 +104,13 @@ public class AutoTestTaskInfoDTO {
 
     public void setTestCaseScriptId(List<Long> testCaseScriptId) {
         this.testCaseScriptId = testCaseScriptId;
+    }
+
+    public Long getPrivateAddressId() {
+        return privateAddressId;
+    }
+
+    public void setPrivateAddressId(Long privateAddressId) {
+        this.privateAddressId = privateAddressId;
     }
 }

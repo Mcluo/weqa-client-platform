@@ -32,6 +32,9 @@ public class AutoTestTaskProducer {
     @Autowired
     private ClientAutoScriptRunInfoDAO clientAutoScriptRunInfoDAO ;
 
+    @Autowired
+    private AutoTestPrivateAddressService autoTestPrivateAddressService ;
+
     public Long productNewAutoTestTask(AutoTestTaskInfoBO autoTestTaskInfoBO){
         if (autoTestTaskInfoBO == null || CollectionUtils.isEmpty(autoTestTaskInfoBO.getScriptList())) {
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] some param is null");
@@ -42,6 +45,11 @@ public class AutoTestTaskProducer {
         if (!addTaskResult || autoTestTaskInfoBO.getId() == null){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add a new autotest task fail");
             return null ;
+        }
+        //创建任务扩展信息
+        boolean addExtendInfoFlag = this.addAutoTaskExtendInfo(autoTestTaskInfoBO.getId(),autoTestTaskInfoBO) ;
+        if (!addExtendInfoFlag){
+            AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add autotest extend info error");
         }
         //创建任务下面的脚本
         List<TaskScriptRunInfoBO> taskScriptRunInfoBOList = autoTestTaskInfoBO.getScriptList() ;
@@ -95,6 +103,19 @@ public class AutoTestTaskProducer {
             autoTestTaskInfoBO.setId(clientAutoTaskInfoDO.getId());
             return true ;
         }
+    }
+
+    private  boolean addAutoTaskExtendInfo(Long taskId,AutoTestTaskInfoBO autoTestTaskInfoBO ) {
+        boolean flag = true ;
+        try {
+            if (autoTestTaskInfoBO.getPrivateAddressId() != null) {
+                flag = autoTestPrivateAddressService.runTaskWithPrivateAddress(taskId, autoTestTaskInfoBO.getPrivateAddressId());
+            }
+        }catch (AutoTestRunException e){
+            AUTO_LOGGER.error("[AutoTestTaskProducer.addAutoTaskExtendInfo] runTaskWithPrivateAddress exception");
+            flag = false ;
+        }
+        return flag ;
     }
 
     /**

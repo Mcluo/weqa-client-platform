@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientAutoPrivateAddressInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoPrivateAddressInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="config" jdbcType="VARCHAR" property="config"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,name,config
+    </sql>
+
+    <insert id="insertPrivateAddress" parameterType="com.netease.vcloud.qa.model.ClientAutoPrivateAddressInfoDO">
+        INSERT INTO vcloud_client_auto_private_address_info(gmt_create,gmt_update,name,config)
+        VALUES(now(),now(),#{info.name},#{info.config})
+    </insert>
+
+    <select id="queryPrivateAddress" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FORM vcloud_client_auto_private_address_info
+        LIMIT #{start}, #{limit}
+    </select>
+
+    <select id="countPrivateAddress" resultType="java.lang.Integer">
+        SELECT count(1)
+        FORM vcloud_client_auto_private_address_info
+    </select>
+
+    <select id="getPrivateAddressById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FORM vcloud_client_auto_private_address_info
+        WHERE id = #{id}
+    </select>
+
+    <delete id="deletePrivateAddressById">
+        DELETE FROM vcloud_client_auto_private_address_info
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
