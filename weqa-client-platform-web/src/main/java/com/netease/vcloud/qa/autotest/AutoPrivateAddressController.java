@@ -26,7 +26,7 @@ public class AutoPrivateAddressController {
     private AutoTestPrivateAddressService autoTestPrivateAddressService ;
 
     /**
-     *
+     *http://127.0.0.1:8788/g2-client/auto/private/query
      * @return
      */
     @RequestMapping("/query")
@@ -43,7 +43,7 @@ public class AutoPrivateAddressController {
     }
 
     /**
-     *
+     * http://127.0.0.1:8788/g2-client/auto/private/add?name=移动端配置&config=
      * @param name
      * @param config
      * @return
@@ -66,7 +66,7 @@ public class AutoPrivateAddressController {
     }
 
     /**
-     *
+     * http://127.0.0.1:8788/g2-client/auto/private/delete?id=1
      * @param id
      * @return
      */

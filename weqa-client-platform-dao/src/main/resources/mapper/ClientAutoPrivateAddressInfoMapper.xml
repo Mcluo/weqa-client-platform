@@ -20,7 +20,7 @@
 
     <select id="queryPrivateAddress" resultMap="BaseResultMap">
         <include refid="baseSql"/>
-        FORM vcloud_client_auto_private_address_info
+        FROM vcloud_client_auto_private_address_info
         LIMIT #{start}, #{limit}
     </select>
 
@@ -31,7 +31,7 @@
 
     <select id="getPrivateAddressById" resultMap="BaseResultMap">
         <include refid="baseSql"/>
-        FORM vcloud_client_auto_private_address_info
+        FROM vcloud_client_auto_private_address_info
         WHERE id = #{id}
     </select>
 
