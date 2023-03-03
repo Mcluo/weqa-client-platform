@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientRiskDetailDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientRiskDetailDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="rule_id" jdbcType="BIGINT" property="ruleId"/>
+        <result column="rule_name" jdbcType="VARCHAR" property="ruleName"/>
+        <result column="range_type" jdbcType="TINYINT" property="rangeType"/>
+        <result column="range_id" jdbcType="BIGINT" property="rangeId"/>
+        <result column="current_result" jdbcType="VARCHAR" property="currentResult"/>
+        <result column="has_risk" jdbcType="TINYINT" property="hasRisk"/>
+        <result column="risk_detail" jdbcType="VARCHAR" property="riskDetail"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,rule_id,rule_name,range_type,range_id,current_result,has_risk,risk_detail
+    </sql>
+
+    <select id="getRiskListByRangeId" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_detail_info
+        WHERE range_type = #{rangeType}
+        AND range_id = #{rangeId}
+    </select>
+
+    <select id="getRiskByID" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_detail_info
+        WHERE id = #{id}
+    </select>
+
+
+    <insert id="patchInsertClientRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">
+        INSERT INTO vcloud_risk_detail_info(gmt_create,gmt_update,rule_id,rule_name,range_type,range_id,current_result,has_risk,risk_detail)
+        values
+        <foreach collection="riskSet" item="risk" separator=",">
+            (now(),now(),#{risk.ruleId},#{risk.ruleName},#{risk.rangeType},#{risk.rangeId},#{risk.currentResult},#{risk.hasRisk},#{risk.riskDetail})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRiskByRangeAndRule">
+        DELETE FROM vcloud_risk_detail_info
+        WHERE range_type = #{rangeType}
+        AND range_id = #{rangeId}
+        <if test="ruleSet!=null and ruleSet.size()>0">
+            AND rule_id IN
+            <foreach collection="ruleSet" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <update id="updateRiskDetailInfo" parameterType="com.netease.vcloud.qa.model.ClientRiskDetailDO">
+        UPDATE vcloud_risk_detail_info
+        SET gmt_update = now(),rule_id = #{risk.ruleId},rule_name=#{risk.ruleName},range_type=#{risk.rangeType},range_id=#{risk.rangeId},current_result=#{risk.currentResult},has_risk=#{risk.hasRisk},risk_detail=#{risk.riskDetail}
+        WHERE id = #{risk.id}
+    </update>
+
+</mapper>

@@ -185,7 +185,7 @@ public class AutoTestSuitController {
 
     @RequestMapping("/script/patch/add")
     @ResponseBody
-    public ResultVO patchAddAutoScriptToSuit(@RequestParam("suit") String suitName, @RequestParam(name = "tc" ,required = false) String tcArray, @RequestParam("operator") String operator){
+    public ResultVO patchAddAutoScriptToSuit(@RequestParam("suit") String suitName, @RequestParam(name = "tc" ,required = false,defaultValue = "") String tcArray, @RequestParam("operator") String operator){
         if(StringUtils.isBlank(tcArray)){
             return this.addNewTestSuit(suitName,operator) ;
         }

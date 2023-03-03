@@ -37,4 +37,15 @@
   </select>
 
 
+  <select id="queryUserInfoByKey" resultMap="BaseResultMap">
+    <include refid="baseSql"/>
+    from weqa_yunxin_userInfo
+    where  is_deleted = 0
+    AND ( user_name LIKE CONCAT ("%",#{key},"%")
+    OR nick_name LIKE CONCAT ("%",#{key},"%")
+    OR job_email LIKE CONCAT ("%",#{key},"%")
+    )
+    LIMIT 10
+  </select>
+
 </mapper>

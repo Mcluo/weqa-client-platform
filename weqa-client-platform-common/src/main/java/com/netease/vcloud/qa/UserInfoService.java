@@ -2,15 +2,13 @@ package com.netease.vcloud.qa;
 
 import com.netease.vcloud.qa.dao.WeqaYunxinUserinfoDAO;
 import com.netease.vcloud.qa.model.WeqaYunxinUserInfoDO;
+import com.netease.vcloud.qa.result.view.UserInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -79,8 +77,23 @@ public class UserInfoService {
         userInfoBO.setUserName(weqaYunxinUserInfoDO.getUserName());
         userInfoBO.setUserNick(weqaYunxinUserInfoDO.getNickName());
         userInfoBO.setEmail(weqaYunxinUserInfoDO.getJobEmail());
-
         return userInfoBO;
     }
 
+
+    public List<UserInfoVO> queryUserInfoByKey(String queryKey){
+        List<UserInfoVO> userInfoVOList = new ArrayList<UserInfoVO>() ;
+        if (StringUtils.isBlank(queryKey)){
+            return userInfoVOList ;
+        }
+        List<WeqaYunxinUserInfoDO> userInfoDOList = weqaYunxinUserinfoDAO.queryUserInfoByKey(queryKey) ;
+        if (!CollectionUtils.isEmpty(userInfoDOList)){
+            for (WeqaYunxinUserInfoDO userInfoDO : userInfoDOList){
+                UserInfoBO userInfoBO = this.buildUserInfoBOByDO(userInfoDO) ;
+                UserInfoVO  userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
+                userInfoVOList.add(userInfoVO) ;
+            }
+        }
+        return userInfoVOList ;
+    }
 }

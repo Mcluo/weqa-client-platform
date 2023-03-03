@@ -18,4 +18,7 @@ public interface WeqaYunxinUserinfoDAO {
 
     WeqaYunxinUserInfoDO getUserInfoByEmail(@Param("email")String email) ;
 
+
+    List<WeqaYunxinUserInfoDO> queryUserInfoByKey(@Param("key") String key) ;
+
 }
