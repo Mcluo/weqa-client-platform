@@ -1,4 +1,4 @@
-package com.netease.vcloud.qa.autotest;
+package com.netease.vcloud.qa.perf;
 
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.model.VcloudClientAutoAndroidPrefInfoDO;
@@ -7,7 +7,7 @@ import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefMemoryInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
-import com.netease.vcloud.qa.service.auto.AutoPerfService;
+import com.netease.vcloud.qa.service.perf.AutoPerfReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +22,14 @@ import java.util.List;
 public class AutoReportController {
 
     @Autowired
-    private AutoPerfService autoPerfService;
+    private AutoPerfReportService autoPerfReportService;
     @RequestMapping("/addIosMemoryInfo")
     @ResponseBody
     public ResultVO addIosMemoryInfo(@RequestBody JSONObject jsonObject ) {
         List<VcloudClientAutoIosPrefMemoryInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefMemoryInfoDO.class);
         for(VcloudClientAutoIosPrefMemoryInfoDO clientAutoIosPrefMemoryInfoDO : list){
             clientAutoIosPrefMemoryInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
-            autoPerfService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
+            autoPerfReportService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
         }
         return ResultUtils.build(true);
     }
@@ -40,7 +40,7 @@ public class AutoReportController {
         List<VcloudClientAutoIosPrefInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefInfoDO.class);
         for(VcloudClientAutoIosPrefInfoDO clientAutoIosPrefInfoDO : list){
             clientAutoIosPrefInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
-            autoPerfService.insertIosInfo(clientAutoIosPrefInfoDO);
+            autoPerfReportService.insertIosInfo(clientAutoIosPrefInfoDO);
         }
         return ResultUtils.build(true);
     }
@@ -51,7 +51,7 @@ public class AutoReportController {
         List<VcloudClientAutoAndroidPrefInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoAndroidPrefInfoDO.class);
         for (VcloudClientAutoAndroidPrefInfoDO clientAutoAndroidPrefInfoDO: list){
             clientAutoAndroidPrefInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
-            autoPerfService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);
+            autoPerfReportService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);
         }
         return ResultUtils.build(true);
     }
@@ -76,7 +76,7 @@ public class AutoReportController {
         clientAutoPerfTaskDO.setSdkinfo(sdkInfo);
         clientAutoPerfTaskDO.setSdkversion(sdkVersion);
         clientAutoPerfTaskDO.setUser(user);
-        autoPerfService.insertPerfTask(clientAutoPerfTaskDO);
+        autoPerfReportService.insertPerfTask(clientAutoPerfTaskDO);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("taskId", clientAutoPerfTaskDO.getId());
         return ResultUtils.build(true,jsonObject);
