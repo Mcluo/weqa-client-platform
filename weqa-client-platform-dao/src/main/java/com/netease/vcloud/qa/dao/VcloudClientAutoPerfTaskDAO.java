@@ -3,6 +3,9 @@ package com.netease.vcloud.qa.dao;
 import com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
 @Mapper
 public interface VcloudClientAutoPerfTaskDAO {
 
@@ -21,4 +24,8 @@ public interface VcloudClientAutoPerfTaskDAO {
     int updateByPrimaryKeySelective(VcloudClientAutoPerfTaskDO record);
 
     int updateByPrimaryKey(VcloudClientAutoPerfTaskDO record);
+
+    List<VcloudClientAutoPerfTaskDO> queryAutoPerfTaskList(@Param("start") int start , @Param("size") int size);
+
+    int countAUtoPerfTask() ;
 }

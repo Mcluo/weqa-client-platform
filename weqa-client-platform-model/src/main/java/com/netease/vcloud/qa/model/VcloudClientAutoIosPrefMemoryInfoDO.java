@@ -37,7 +37,7 @@ public class VcloudClientAutoIosPrefMemoryInfoDO implements Serializable {
      *
      * @mbg.generated
      */
-    private Integer times;
+    private Long times;
 
     /**
      * 绑定taskId
@@ -82,11 +82,11 @@ public class VcloudClientAutoIosPrefMemoryInfoDO implements Serializable {
         this.sysCpu = sysCpu;
     }
 
-    public Integer getTimes() {
+    public Long getTimes() {
         return times;
     }
 
-    public void setTimes(Integer times) {
+    public void setTimes(Long times) {
         this.times = times;
     }
 

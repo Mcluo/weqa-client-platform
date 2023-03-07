@@ -9,7 +9,7 @@
     <result column="instantAmperage" jdbcType="REAL" property="instantamperage" />
     <result column="power" jdbcType="REAL" property="power" />
     <result column="level" jdbcType="REAL" property="level" />
-    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="times" jdbcType="BIGINT" property="times" />
     <result column="taskId" jdbcType="INTEGER" property="taskid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -94,7 +94,7 @@
       )
     values (#{memory,jdbcType=REAL}, #{voltage,jdbcType=REAL}, #{temperature,jdbcType=REAL}, 
       #{instantamperage,jdbcType=REAL}, #{power,jdbcType=REAL}, #{level,jdbcType=REAL}, 
-      #{times,jdbcType=INTEGER}, #{taskid,jdbcType=INTEGER},now()
+      #{times,jdbcType=BIGINT}, #{taskid,jdbcType=INTEGER},now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.netease.vcloud.qa.model.VcloudClientAutoAndroidPrefInfoDO">
@@ -261,4 +261,13 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="queryAndroidPrefInfoDOByTaskId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vcloud_client_auto_android_pref_info
+    where taskId = #{taskId,jdbcType=INTEGER}
+    ORDER BY times ASC
+  </select>
 </mapper>

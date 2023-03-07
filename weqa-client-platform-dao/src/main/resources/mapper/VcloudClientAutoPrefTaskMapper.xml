@@ -262,4 +262,17 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="queryAutoPerfTaskList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM vcloud_client_auto_pref_task
+    ORDER BY id DESC
+    LIMIT #{start},#{size}
+  </select>
+
+  <select id="countAUtoPerfTask" resultType="java.lang.Integer">
+    SELECT count(1)
+    FROM vcloud_client_auto_pref_task
+  </select>
 </mapper>
