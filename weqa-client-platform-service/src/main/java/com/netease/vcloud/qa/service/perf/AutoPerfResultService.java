@@ -48,15 +48,15 @@ public class AutoPerfResultService {
      * @param size
      * @return
      */
-    public PerfTaskInfoListVO getPerfTaskInfoList(int current, int size){
+    public PerfTaskInfoListVO getPerfTaskInfoList(String userInfo,int current, int size){
         int start = (current - 1) * size ;
         PerfTaskInfoListVO perfTaskInfoListVO = new PerfTaskInfoListVO() ;
         List<PerfTaskInfoVO> taskInfoVOList = new ArrayList<PerfTaskInfoVO>() ;
         perfTaskInfoListVO.setList(taskInfoVOList);
         perfTaskInfoListVO.setPage(current);
         perfTaskInfoListVO.setSize(size);
-        List<VcloudClientAutoPerfTaskDO> autoPerfTaskDOList = clientAutoPerfTaskDAO.queryAutoPerfTaskList(start,size) ;
-        int total = clientAutoPerfTaskDAO.countAUtoPerfTask() ;
+        List<VcloudClientAutoPerfTaskDO> autoPerfTaskDOList = clientAutoPerfTaskDAO.queryAutoPerfTaskList(userInfo,start,size) ;
+        int total = clientAutoPerfTaskDAO.countAUtoPerfTask(userInfo) ;
         perfTaskInfoListVO.setTotal(total);
         if (CollectionUtils.isEmpty(autoPerfTaskDOList)){
             return perfTaskInfoListVO ;

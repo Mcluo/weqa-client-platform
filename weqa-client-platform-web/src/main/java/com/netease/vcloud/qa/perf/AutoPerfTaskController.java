@@ -30,9 +30,11 @@ public class AutoPerfTaskController {
      */
     @RequestMapping("/list")
     @ResponseBody
-    public ResultVO getPerfTaskList(@RequestParam(name = "current",required = false,defaultValue = "1") int current , @RequestParam(name = "size",required = false,defaultValue = "20") int size){
+    public ResultVO getPerfTaskList(@RequestParam(name = "user",required = false ,defaultValue = "") String userInfo ,
+                                    @RequestParam(name = "page",required = false,defaultValue = "1") int current ,
+                                    @RequestParam(name = "size",required = false,defaultValue = "20") int size){
         ResultVO resultVO = null ;
-        PerfTaskInfoListVO perfTaskInfoListVO = autoPerfResultService.getPerfTaskInfoList(current, size) ;
+        PerfTaskInfoListVO perfTaskInfoListVO = autoPerfResultService.getPerfTaskInfoList(userInfo,current, size) ;
         if (perfTaskInfoListVO!=null){
             resultVO = ResultUtils.buildSuccess(perfTaskInfoListVO) ;
         }else {

@@ -25,7 +25,7 @@ public interface VcloudClientAutoPerfTaskDAO {
 
     int updateByPrimaryKey(VcloudClientAutoPerfTaskDO record);
 
-    List<VcloudClientAutoPerfTaskDO> queryAutoPerfTaskList(@Param("start") int start , @Param("size") int size);
+    List<VcloudClientAutoPerfTaskDO> queryAutoPerfTaskList(@Param("user") String userInfo ,@Param("start") int start , @Param("size") int size);
 
-    int countAUtoPerfTask() ;
+    int countAUtoPerfTask(@Param("user") String userInfo) ;
 }
