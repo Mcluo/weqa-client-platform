@@ -14,6 +14,10 @@ public class PerfTaskIOSDetailVO implements PerfTaskDetailInterface{
 
     private PerfTaskStatisticVO memory ;
 
+    private PerfTaskStatisticVO appCPU ;
+
+    private PerfTaskStatisticVO sysCPU ;
+
     private PerfTaskStatisticVO voltage ;
 
     private PerfTaskStatisticVO temperature ;
@@ -46,6 +50,22 @@ public class PerfTaskIOSDetailVO implements PerfTaskDetailInterface{
 
     public void setMemory(PerfTaskStatisticVO memory) {
         this.memory = memory;
+    }
+
+    public PerfTaskStatisticVO getAppCPU() {
+        return appCPU;
+    }
+
+    public void setAppCPU(PerfTaskStatisticVO appCPU) {
+        this.appCPU = appCPU;
+    }
+
+    public PerfTaskStatisticVO getSysCPU() {
+        return sysCPU;
+    }
+
+    public void setSysCPU(PerfTaskStatisticVO sysCPU) {
+        this.sysCPU = sysCPU;
     }
 
     public PerfTaskStatisticVO getVoltage() {

@@ -9,6 +9,8 @@ import com.netease.vcloud.qa.dao.VcloudClientAutoIosPrefInfoDAO;
 import com.netease.vcloud.qa.dao.VcloudClientAutoIosPrefMemoryInfoDAO;
 import com.netease.vcloud.qa.dao.VcloudClientAutoPerfTaskDAO;
 import com.netease.vcloud.qa.model.VcloudClientAutoAndroidPrefInfoDO;
+import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO;
+import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefMemoryInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.perf.view.*;
@@ -180,8 +182,66 @@ public class AutoPerfResultService {
 
 
     private PerfTaskIOSDetailVO buildIOSDetailInfo(long taskId){
-
-        return null ;
+        List<VcloudClientAutoIosPrefInfoDO> autoIosPrefInfoDOList= vcloudClientAutoIosPrefInfoDAO.queryIOSPrefInfoDOByTaskId((int)taskId) ;
+        List<VcloudClientAutoIosPrefMemoryInfoDO> autoIosPrefMemoryInfoDOList = vcloudClientAutoIosPrefMemoryInfoDAO.queryIOSPrefMemoryInfoDOByTaskId((int)taskId) ;
+        PerfTaskIOSDetailVO perfTaskIOSDetailVO = new PerfTaskIOSDetailVO() ;
+        List<PerfTaskIOSDetailListVO> perfTaskIOSDetailListVOList = new ArrayList<PerfTaskIOSDetailListVO>() ;
+        perfTaskIOSDetailVO.setDetailList(perfTaskIOSDetailListVOList);
+        List<PerfTaskIOSDetailMemoryListVO> perfTaskIOSDetailMemoryListVOList = new ArrayList<PerfTaskIOSDetailMemoryListVO>() ;
+        perfTaskIOSDetailVO.setMemoryDetailList(perfTaskIOSDetailMemoryListVOList);
+        PerfTaskStatisticBuild memoryStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild userCpuStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild sysCpuStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild temperatureStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild voltageStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild instantAmperageStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild powerStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild levelStatistic = new PerfTaskStatisticBuild() ;
+        if (!CollectionUtils.isEmpty(autoIosPrefInfoDOList)){
+            for (VcloudClientAutoIosPrefInfoDO vcloudClientAutoIosPrefInfoDO : autoIosPrefInfoDOList){
+                if (vcloudClientAutoIosPrefInfoDO == null){
+                    continue;
+                }
+                PerfTaskIOSDetailListVO perfTaskIOSDetailListVO = new PerfTaskIOSDetailListVO() ;
+                perfTaskIOSDetailListVO.setInstantamperage(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
+                instantAmperageStatistic.add(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
+                perfTaskIOSDetailListVO.setLevel(vcloudClientAutoIosPrefInfoDO.getLevel());
+                levelStatistic.add(vcloudClientAutoIosPrefInfoDO.getLevel());
+                perfTaskIOSDetailListVO.setTemperature(vcloudClientAutoIosPrefInfoDO.getTemperature());
+                temperatureStatistic.add(vcloudClientAutoIosPrefInfoDO.getTemperature());
+                perfTaskIOSDetailListVO.setPower(vcloudClientAutoIosPrefInfoDO.getPower());
+                powerStatistic.add(vcloudClientAutoIosPrefInfoDO.getPower());
+                perfTaskIOSDetailListVO.setVoltage(vcloudClientAutoIosPrefInfoDO.getVoltage());
+                voltageStatistic.add(vcloudClientAutoIosPrefInfoDO.getVoltage());
+                perfTaskIOSDetailListVO.setTimes(vcloudClientAutoIosPrefInfoDO.getTimes());
+                perfTaskIOSDetailListVOList.add(perfTaskIOSDetailListVO) ;
+            }
+        }
+        if (!CollectionUtils.isEmpty(autoIosPrefMemoryInfoDOList)){
+            for (VcloudClientAutoIosPrefMemoryInfoDO vcloudClientAutoIosPrefMemoryInfoDO : autoIosPrefMemoryInfoDOList){
+                if (vcloudClientAutoIosPrefMemoryInfoDO == null){
+                    continue;
+                }
+                PerfTaskIOSDetailMemoryListVO perfTaskIOSDetailMemoryListVO = new PerfTaskIOSDetailMemoryListVO() ;
+                perfTaskIOSDetailMemoryListVO.setTimes(vcloudClientAutoIosPrefMemoryInfoDO.getTimes());
+                perfTaskIOSDetailMemoryListVO.setMemory(vcloudClientAutoIosPrefMemoryInfoDO.getMemory());
+                memoryStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getMemory());
+                perfTaskIOSDetailMemoryListVO.setAppCpu(vcloudClientAutoIosPrefMemoryInfoDO.getAppCpu());
+                userCpuStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getAppCpu());
+                perfTaskIOSDetailMemoryListVO.setSysCpu(vcloudClientAutoIosPrefMemoryInfoDO.getSysCpu());
+                sysCpuStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getSysCpu());
+                perfTaskIOSDetailMemoryListVOList.add(perfTaskIOSDetailMemoryListVO);
+            }
+        }
+        perfTaskIOSDetailVO.setAppCPU(userCpuStatistic.build());
+        perfTaskIOSDetailVO.setSysCPU(sysCpuStatistic.build());
+        perfTaskIOSDetailVO.setMemory(memoryStatistic.build());
+        perfTaskIOSDetailVO.setTemperature(temperatureStatistic.build());
+        perfTaskIOSDetailVO.setVoltage(voltageStatistic.build());
+        perfTaskIOSDetailVO.setInstantAmperage(voltageStatistic.build());
+        perfTaskIOSDetailVO.setPower(powerStatistic.build());
+        perfTaskIOSDetailVO.setLevel(levelStatistic.build());
+        return perfTaskIOSDetailVO ;
     }
 
 }

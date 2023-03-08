@@ -8,9 +8,9 @@ import com.netease.vcloud.qa.service.perf.view.PerfTaskStatisticVO;
  */
 public class PerfTaskStatisticBuild {
 
-    private Number max = Double.MIN_VALUE;
+    private Number max = Integer.MIN_VALUE;
 
-    private Number min = Double.MAX_VALUE;
+    private Number min = Integer.MAX_VALUE;
 
     private Number total = 0;
 
