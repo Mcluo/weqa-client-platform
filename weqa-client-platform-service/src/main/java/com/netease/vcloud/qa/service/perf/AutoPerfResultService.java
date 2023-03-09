@@ -203,7 +203,7 @@ public class AutoPerfResultService {
                     continue;
                 }
                 PerfTaskIOSDetailListVO perfTaskIOSDetailListVO = new PerfTaskIOSDetailListVO() ;
-                perfTaskIOSDetailListVO.setInstantamperage(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
+                perfTaskIOSDetailListVO.setInstantAmperage(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
                 instantAmperageStatistic.add(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
                 perfTaskIOSDetailListVO.setLevel(vcloudClientAutoIosPrefInfoDO.getLevel());
                 levelStatistic.add(vcloudClientAutoIosPrefInfoDO.getLevel());

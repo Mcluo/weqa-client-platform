@@ -24,7 +24,7 @@ public class PerfTaskIOSDetailListVO {
      *
      * @mbg.generated
      */
-    private Float instantamperage;
+    private Float instantAmperage;
 
     /**
      * 电量
@@ -63,12 +63,12 @@ public class PerfTaskIOSDetailListVO {
         this.temperature = temperature;
     }
 
-    public Float getInstantamperage() {
-        return instantamperage;
+    public Float getInstantAmperage() {
+        return instantAmperage;
     }
 
-    public void setInstantamperage(Float instantamperage) {
-        this.instantamperage = instantamperage;
+    public void setInstantAmperage(Float instantAmperage) {
+        this.instantAmperage = instantAmperage;
     }
 
     public Float getPower() {
