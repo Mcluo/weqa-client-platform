@@ -180,6 +180,7 @@ public class AutoTestTaskManagerService {
             }
             autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(saveDeviceInfoVOList));
         }
+        autoTestTaskInfoBO.setPrivateAddressId(autoTestTaskInfoDTO.getPrivateAddressId());
         return autoTestTaskInfoBO ;
     }
 
@@ -317,10 +318,11 @@ public class AutoTestTaskManagerService {
             int exceptionCount = statusStatisticMap.get(ScriptRunStatus.WARNING)==null?0:statusStatisticMap.get(ScriptRunStatus.WARNING) ;
             taskStatisticInfoVO.setFailNumber(failCount + exceptionCount);
             taskStatisticInfoVO.setTotal(scriptList.size());
-            if (taskStatisticInfoVO.getWaitingNumber()>0||taskStatisticInfoVO.getRunningNumber()>0||taskStatisticInfoVO.getCancelNumber()>0){
+            if (taskStatisticInfoVO.getWaitingNumber()>0){
                 taskStatisticInfoVO.setSuccessRate("-");
             }else {
-                double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / taskStatisticInfoVO.getTotal() ;
+//                double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / taskStatisticInfoVO.getTotal() ;
+                double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / (taskStatisticInfoVO.getSuccessNumber()+ taskStatisticInfoVO.getFailNumber());
                 taskStatisticInfoVO.setSuccessRate(successRate + "%");
             }
             taskDetailInfoVO.setStatisticInfo(taskStatisticInfoVO);

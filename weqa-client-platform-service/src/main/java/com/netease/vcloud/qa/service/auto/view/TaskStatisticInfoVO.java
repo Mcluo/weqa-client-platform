@@ -1,5 +1,7 @@
 package com.netease.vcloud.qa.service.auto.view;
 
+import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
+
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2023/2/1 11:49

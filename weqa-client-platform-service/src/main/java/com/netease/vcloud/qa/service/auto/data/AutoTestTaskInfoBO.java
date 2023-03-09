@@ -31,6 +31,8 @@ public class AutoTestTaskInfoBO {
 
     private List<TaskScriptRunInfoBO> scriptList ;
 
+    private Long privateAddressId ;
+
     public Long getId() {
         return id;
     }
@@ -117,5 +119,13 @@ public class AutoTestTaskInfoBO {
 
     public void setScriptList(List<TaskScriptRunInfoBO> scriptList) {
         this.scriptList = scriptList;
+    }
+
+    public Long getPrivateAddressId() {
+        return privateAddressId;
+    }
+
+    public void setPrivateAddressId(Long privateAddressId) {
+        this.privateAddressId = privateAddressId;
     }
 }

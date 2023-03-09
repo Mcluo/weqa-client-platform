@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientRiskProjectDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientRiskProjectDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="project_status" jdbcType="TINYINT" property="projectStatus"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,project_name,creator,project_status,start_time,finish_time
+    </sql>
+
+    <insert id="createProject" parameterType="com.netease.vcloud.qa.model.ClientRiskProjectDO" keyProperty="info.id" useGeneratedKeys="true">
+        INSERT INTO vcloud_risk_project_info (gmt_create,gmt_update,project_name,creator,project_status,start_time,finish_time ,is_delete)
+        values(now(),now(),#{info.projectName},#{info.creator},#{info.projectStatus},#{info.startTime},#{info.finishTime},0)
+    </insert>
+
+    <select id="getRiskProjectById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        from vcloud_risk_project_info
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateProjectStatus">
+        UPDATE vcloud_risk_project_info
+        SET project_status = #{status}
+        <if test="finish!=null">
+            , finish_time=#{finish}
+        </if>
+        WHERE id = #{id}
+    </update>
+
+    <update id="logicDeleteProject">
+        UPDATE vcloud_risk_project_info
+        SET is_delete = 1
+        WHERE id = #{id}
+    </update>
+
+    <select id="queryRiskProject" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        from vcloud_risk_project_info
+        WHERE is_delete = 0
+        ORDER BY id DESC
+        LIMIT #{start}, #{size}
+    </select>
+
+    <select id="countRiskProject" resultType="java.lang.Integer">
+        SELECT count(1)
+        from vcloud_risk_project_info
+        WHERE is_delete = 0
+    </select>
+
+</mapper>

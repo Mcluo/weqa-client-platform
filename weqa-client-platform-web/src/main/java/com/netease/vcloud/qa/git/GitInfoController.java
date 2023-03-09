@@ -6,6 +6,7 @@ import com.netease.vcloud.qa.service.git.GitInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class GitInfoController {
      * @return
      */
     @RequestMapping("/branch/query")
+    @ResponseBody
     public ResultVO queryGitBranchList(@RequestParam(name = "id",required = false ,defaultValue = "49837") Long projectId,
                                        @RequestParam(name = "key",required = false,defaultValue = "") String queryKey){
         ResultVO resultVO = null ;
