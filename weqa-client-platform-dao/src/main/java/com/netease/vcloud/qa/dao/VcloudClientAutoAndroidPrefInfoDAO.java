@@ -3,6 +3,9 @@ package com.netease.vcloud.qa.dao;
 import com.netease.vcloud.qa.model.VcloudClientAutoAndroidPrefInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
 @Mapper
 public interface VcloudClientAutoAndroidPrefInfoDAO {
     int insert(VcloudClientAutoAndroidPrefInfoDO record);
@@ -18,4 +21,7 @@ public interface VcloudClientAutoAndroidPrefInfoDAO {
     int updateByPrimaryKeySelective(VcloudClientAutoAndroidPrefInfoDO record);
 
     int updateByPrimaryKey(VcloudClientAutoAndroidPrefInfoDO record);
+
+    List<VcloudClientAutoAndroidPrefInfoDO> queryAndroidPrefInfoDOByTaskId(@Param("taskId") int taskId) ;
+
 }

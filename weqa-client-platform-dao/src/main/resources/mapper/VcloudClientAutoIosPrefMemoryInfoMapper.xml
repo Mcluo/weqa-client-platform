@@ -6,7 +6,7 @@
     <result column="memory" jdbcType="REAL" property="memory" />
     <result column="app_cpu" jdbcType="REAL" property="appCpu" />
     <result column="sys_cpu" jdbcType="REAL" property="sysCpu" />
-    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="times" jdbcType="BIGINT" property="times" />
     <result column="taskId" jdbcType="INTEGER" property="taskid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -89,7 +89,7 @@
       times, taskId, create_time
       )
     values (#{memory,jdbcType=REAL}, #{appCpu,jdbcType=REAL}, #{sysCpu,jdbcType=REAL}, 
-      #{times,jdbcType=INTEGER}, #{taskid,jdbcType=INTEGER}, now()
+      #{times,jdbcType=BIGINT}, #{taskid,jdbcType=INTEGER}, now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.netease.vcloud.qa.model.VcloudClientAutoIosPrefMemoryInfoDO">
@@ -214,4 +214,12 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="queryIOSPrefMemoryInfoDOByTaskId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vcloud_client_auto_ios_pref_memory_info
+    where taskId = #{taskId,jdbcType=INTEGER}
+    ORDER BY times ASC
+  </select>
 </mapper>

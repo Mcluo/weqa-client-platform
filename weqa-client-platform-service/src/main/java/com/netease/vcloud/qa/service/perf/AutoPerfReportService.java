@@ -1,4 +1,4 @@
-package com.netease.vcloud.qa.service.auto;
+package com.netease.vcloud.qa.service.perf;
 
 import com.netease.vcloud.qa.dao.VcloudClientAutoAndroidPrefInfoDAO;
 import com.netease.vcloud.qa.dao.VcloudClientAutoIosPrefInfoDAO;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  * on 2022/10/31 16:46
  */
 @Service
-public class AutoPerfService {
+public class AutoPerfReportService {
 
     private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
 

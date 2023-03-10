@@ -51,7 +51,7 @@ public class VcloudClientAutoIosPrefInfoDO implements Serializable {
      *
      * @mbg.generated
      */
-    private Integer times;
+    private Long times;
 
     /**
      * 绑定taskId
@@ -112,11 +112,11 @@ public class VcloudClientAutoIosPrefInfoDO implements Serializable {
         this.level = level;
     }
 
-    public Integer getTimes() {
+    public Long getTimes() {
         return times;
     }
 
-    public void setTimes(Integer times) {
+    public void setTimes(Long times) {
         this.times = times;
     }
 
