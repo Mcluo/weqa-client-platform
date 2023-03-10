@@ -172,9 +172,9 @@ public class AutoPerfResultService {
             detailList.add(perfTaskAndroidDetailListVO);
         }
         perfTaskAndroidDetailVO.setMemory(memoryStatistic.build());
-        perfTaskAndroidDetailVO.setTemperature(memoryStatistic.build());
+        perfTaskAndroidDetailVO.setTemperature(temperatureStatistic.build());
         perfTaskAndroidDetailVO.setVoltage(voltageStatistic.build());
-        perfTaskAndroidDetailVO.setInstantAmperage(voltageStatistic.build());
+        perfTaskAndroidDetailVO.setInstantAmperage(instantAmperageStatistic.build());
         perfTaskAndroidDetailVO.setPower(powerStatistic.build());
         perfTaskAndroidDetailVO.setLevel(levelStatistic.build());
         return perfTaskAndroidDetailVO ;
@@ -238,7 +238,7 @@ public class AutoPerfResultService {
         perfTaskIOSDetailVO.setMemory(memoryStatistic.build());
         perfTaskIOSDetailVO.setTemperature(temperatureStatistic.build());
         perfTaskIOSDetailVO.setVoltage(voltageStatistic.build());
-        perfTaskIOSDetailVO.setInstantAmperage(voltageStatistic.build());
+        perfTaskIOSDetailVO.setInstantAmperage(instantAmperageStatistic.build());
         perfTaskIOSDetailVO.setPower(powerStatistic.build());
         perfTaskIOSDetailVO.setLevel(levelStatistic.build());
         return perfTaskIOSDetailVO ;
