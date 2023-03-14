@@ -37,6 +37,12 @@ public interface RiskTestCheckManageInterface<T  extends CheckInfoStructInterfac
      */
     String buildPassStandard(T  t) ;
 
+    /**
+     * 根据阶段和id获取数据
+     * @param rangeType
+     * @param rangeId
+     * @return
+     */
     CheckDataVOInterface getCheckData(RiskCheckRange rangeType , Long rangeId) ;
 
 }
