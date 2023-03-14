@@ -6,6 +6,9 @@ import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.tc.TCExecManagerService;
+import com.netease.vcloud.qa.service.tc.data.ClientExecData;
+import com.netease.vcloud.qa.service.tc.data.ClientExecResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +27,8 @@ public class TestController {
     @Autowired
     private AutoTestTaskManagerService autoTestTaskManagerService;
 
+    @Autowired
+    private TCExecManagerService tcExecManagerService ;
     /**
      * http://127.0.0.1:8788/g2-client/test/test
      * @return
@@ -73,6 +78,21 @@ public class TestController {
         return resultVO ;
     }
 
-
+    /**
+     * http://127.0.0.1:8788/g2-client/test/test/exec?tv=111867
+     * @param tvId
+     * @return
+     */
+    @RequestMapping("/test/exec")
+    public ResultVO getTcExeInfo(@RequestParam("tv") Long tvId){
+        ResultVO resultVO = null ;
+        List<ClientExecResultData> clientExecResultDataList = tcExecManagerService.getClientExecDataList(tvId) ;
+        if (clientExecResultDataList!=null) {
+            resultVO = ResultUtils.buildSuccess(clientExecResultDataList);
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
 
 }
