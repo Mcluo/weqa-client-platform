@@ -8,6 +8,7 @@ import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.tc.TCExecManagerService;
 import com.netease.vcloud.qa.service.tc.data.ClientExecData;
+import com.netease.vcloud.qa.service.tc.data.ClientExecDataBO;
 import com.netease.vcloud.qa.service.tc.data.ClientExecResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +90,40 @@ public class TestController {
         List<ClientExecResultData> clientExecResultDataList = tcExecManagerService.getClientExecDataList(tvId) ;
         if (clientExecResultDataList!=null) {
             resultVO = ResultUtils.buildSuccess(clientExecResultDataList);
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/test/test/add?tv=111867
+     * @param tvId
+     * @return
+     */
+    @RequestMapping("/test/add")
+    public ResultVO addOrUpdateTVDetailInfo(@RequestParam("tv") Long tvId){
+        ResultVO resultVO = null ;
+        boolean flag = tcExecManagerService.addOrUpdateTVDetailInfo(tvId) ;
+        if (flag){
+            resultVO = ResultUtils.buildSuccess() ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/test/test/get?tv=111867
+     * @param tvId
+     * @return
+     */
+    @RequestMapping("/test/get")
+    public ResultVO getTVStatisticInfo(@RequestParam("tv") Long tvId){
+        ResultVO resultVO = null ;
+        ClientExecDataBO clientExecDataBO = tcExecManagerService.getTVDetailInfo(tvId) ;
+        if (clientExecDataBO != null){
+            resultVO = ResultUtils.buildSuccess(clientExecDataBO) ;
         }else {
             resultVO = ResultUtils.buildFail() ;
         }

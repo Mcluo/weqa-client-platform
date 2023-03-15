@@ -3,7 +3,7 @@ package com.netease.vcloud.qa.model;
 import java.util.Date;
 
 /**
- * 冒烟测试执行情况
+ * 冒烟测试执行和测试用例占比
  * Created by luqiuwei@corp.netease.com
  * on 2023/3/14 11:56
  */
@@ -20,6 +20,7 @@ public class ClientRiskSmokeExecDO {
     private long riskRangeId;
 
     private long developTVId ;
+
 
     public long getId() {
         return id;
@@ -68,4 +69,5 @@ public class ClientRiskSmokeExecDO {
     public void setDevelopTVId(long developTVId) {
         this.developTVId = developTVId;
     }
+
 }

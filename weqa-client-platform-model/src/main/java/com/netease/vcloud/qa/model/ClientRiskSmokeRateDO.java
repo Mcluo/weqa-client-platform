@@ -3,7 +3,7 @@ package com.netease.vcloud.qa.model;
 import java.util.Date;
 
 /**
- * 冒烟测试占比
+ * 冒烟测试执行情况
  * Created by luqiuwei@corp.netease.com
  * on 2023/3/14 11:57
  */

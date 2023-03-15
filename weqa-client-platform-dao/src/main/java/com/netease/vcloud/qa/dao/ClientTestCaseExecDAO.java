@@ -2,6 +2,7 @@ package com.netease.vcloud.qa.dao;
 
 import com.netease.vcloud.qa.model.ClientTestCaseExecDO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -10,9 +11,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ClientTestCaseExecDAO {
 
-    int insertOrUpdateTestExec(ClientTestCaseExecDO clientTestCaseExecDO) ;
+    int insertOrUpdateTestExec(@Param("execInfo") ClientTestCaseExecDO clientTestCaseExecDO) ;
 
-
-    ClientTestCaseExecDO getClientTestCaseExecDO(long tvId) ;
+    ClientTestCaseExecDO getClientTestCaseExecDO(@Param("tvID") long tvId) ;
 
 }

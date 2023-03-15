@@ -79,6 +79,11 @@ public class TCExecManagerService {
         return result ;
     }
 
+    /**
+     * 添加/更新 执行集信息和数据
+     * @param tvID
+     * @return
+     */
     public boolean addOrUpdateTVDetailInfo(Long tvID){
         if (tvID == null){
             return false ;
@@ -128,6 +133,11 @@ public class TCExecManagerService {
         return flag ;
     }
 
+    /**
+     * 从数据库读取执行集相关执行信息
+     * @param tvID
+     * @return
+     */
     public ClientExecDataBO getTVDetailInfo(Long tvID){
         ClientTestCaseExecDO clientTestCaseExecDO = clientTestCaseExecDAO.getClientTestCaseExecDO(tvID) ;
         if (clientTestCaseExecDO == null) {
