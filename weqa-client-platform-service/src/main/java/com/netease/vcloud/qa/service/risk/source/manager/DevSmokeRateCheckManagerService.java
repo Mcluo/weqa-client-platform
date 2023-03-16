@@ -80,7 +80,7 @@ public class DevSmokeRateCheckManagerService implements RiskTestCheckManageInter
             return "0" ;
         }else {
             Double devTCRate = (double)(devTestTotal * 100) / (double) qaTestTotal ;
-            return devTCRate+"";
+            return devTCRate+"%";
         }
     }
 
@@ -95,6 +95,9 @@ public class DevSmokeRateCheckManagerService implements RiskTestCheckManageInter
 
     @Override
     public boolean hasRisk(CheckInfoStructInterface checkInfoStructInterface, String currentData) {
+        if (StringUtils.isBlank(currentData)){
+            return true ;
+        }
         DevSmokeRateCheckData devSmokeRateCheckData = null ;
         if (checkInfoStructInterface !=null && checkInfoStructInterface instanceof DevSmokeRateCheckData){
             devSmokeRateCheckData = (DevSmokeRateCheckData) checkInfoStructInterface ;
@@ -103,6 +106,7 @@ public class DevSmokeRateCheckManagerService implements RiskTestCheckManageInter
             return false ;
         }
         Double passPercent = devSmokeRateCheckData.getPassPercent() ;
+        currentData = currentData.split("%")[0] ;
         Double currentPercent = Double.parseDouble(currentData) ;
         if (passPercent == null){
             return false ;
@@ -145,16 +149,18 @@ public class DevSmokeRateCheckManagerService implements RiskTestCheckManageInter
         ClientExecDataBO qaClientExecDataBO =tcExecManagerService.getTVDetailInfo(qaTVId) ;
 
         DevSmokeRateCheckDataInfoVO devSmokeRateCheckDataInfoVO = new DevSmokeRateCheckDataInfoVO() ;
+        devSmokeRateCheckDataInfoVO.setDevTvId(developTVId);
+        devSmokeRateCheckDataInfoVO.setTestTvId(qaTVId);
         if (devClientExecDataBO != null) {
             devSmokeRateCheckDataInfoVO.setDevTvCount(devClientExecDataBO.getTotal());
         }
         if (qaClientExecDataBO != null){
-            devSmokeRateCheckDataInfoVO.setTestTvCount(devClientExecDataBO.getTotal());
+            devSmokeRateCheckDataInfoVO.setTestTvCount(qaClientExecDataBO.getTotal());
         }
         if (devClientExecDataBO != null && qaClientExecDataBO != null){
             if (qaClientExecDataBO.getTotal() > 0) {
                 int qaTestTotal = qaClientExecDataBO.getTotal() ;
-                int devTestTotal = qaClientExecDataBO.getTotal() ;
+                int devTestTotal = devClientExecDataBO.getTotal() ;
                 Double devTCRate = (double)(devTestTotal * 100) / (double) qaTestTotal ;
                 devSmokeRateCheckDataInfoVO.setCurrentTvRate(devTCRate);
             }else {

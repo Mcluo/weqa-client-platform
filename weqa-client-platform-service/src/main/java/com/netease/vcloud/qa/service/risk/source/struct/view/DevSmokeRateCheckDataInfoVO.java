@@ -6,7 +6,10 @@ package com.netease.vcloud.qa.service.risk.source.struct.view;
  */
 public class DevSmokeRateCheckDataInfoVO implements CheckDataVOInterface{
 
+    private long devTvId ;
     private int devTvCount ;
+
+    private long testTvId ;
 
     private int testTvCount ;
 
@@ -34,5 +37,21 @@ public class DevSmokeRateCheckDataInfoVO implements CheckDataVOInterface{
 
     public void setCurrentTvRate(double currentTvRate) {
         this.currentTvRate = currentTvRate;
+    }
+
+    public long getDevTvId() {
+        return devTvId;
+    }
+
+    public void setDevTvId(long devTvId) {
+        this.devTvId = devTvId;
+    }
+
+    public long getTestTvId() {
+        return testTvId;
+    }
+
+    public void setTestTvId(long testTvId) {
+        this.testTvId = testTvId;
     }
 }

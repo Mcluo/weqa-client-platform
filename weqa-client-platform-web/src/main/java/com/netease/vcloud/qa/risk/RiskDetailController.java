@@ -42,6 +42,12 @@ public class RiskDetailController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/detail/dev/exec/bind?task=12&tvId=119833
+     * @param taskId
+     * @param tvId
+     * @return
+     */
     @RequestMapping("/dev/exec/bind")
     public ResultVO devExecTCIdBind(@RequestParam("task")long taskId , @RequestParam("tvId") long tvId){
         ResultVO resultVO = null ;
@@ -54,6 +60,13 @@ public class RiskDetailController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/risk/detail/dev/rate/bind?task=12&devTvId=119833&qaTvId=111867
+     * @param taskId
+     * @param devTvId
+     * @param qaTvId
+     * @return
+     */
     @RequestMapping("/dev/rate/bind")
     public ResultVO devRateTcIdBind(@RequestParam("task")long taskId , @RequestParam("devTvId") long devTvId,@RequestParam("qaTvId") long qaTvId){
         ResultVO resultVO = null ;

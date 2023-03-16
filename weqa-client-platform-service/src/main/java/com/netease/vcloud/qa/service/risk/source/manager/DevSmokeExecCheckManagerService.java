@@ -68,7 +68,7 @@ public class DevSmokeExecCheckManagerService implements RiskTestCheckManageInter
             return null ;
         }
         double execRate = (double) (clientExecDataBO.getAccept() * 10000 / clientExecDataBO.getTotal()) / 100 ;
-        return execRate+"" ;
+        return execRate+"%" ;
     }
 
     @Override
@@ -82,6 +82,9 @@ public class DevSmokeExecCheckManagerService implements RiskTestCheckManageInter
 
     @Override
     public boolean hasRisk(CheckInfoStructInterface checkInfoStructInterface, String currentData) {
+        if (StringUtils.isBlank(currentData)){
+            return true ;
+        }
         DevSmokeExecCheckData devSmokeExecCheckData = null ;
         if (checkInfoStructInterface != null && checkInfoStructInterface instanceof DevSmokeExecCheckData){
             devSmokeExecCheckData = (DevSmokeExecCheckData) checkInfoStructInterface ;
@@ -90,6 +93,7 @@ public class DevSmokeExecCheckManagerService implements RiskTestCheckManageInter
             return false ;
         }
         Double passPercent = devSmokeExecCheckData.getPassPercent() ;
+        currentData = currentData.split("%")[0] ;
         Double currentPercent = Double.parseDouble(currentData) ;
         if (passPercent == null){
             return false ;

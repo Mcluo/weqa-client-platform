@@ -140,17 +140,24 @@ public class TCExecManagerService {
      */
     public ClientExecDataBO getTVDetailInfo(Long tvID){
         ClientTestCaseExecDO clientTestCaseExecDO = clientTestCaseExecDAO.getClientTestCaseExecDO(tvID) ;
-        if (clientTestCaseExecDO == null) {
-            return null;
+        if (clientTestCaseExecDO == null){
+            boolean flag = this.addOrUpdateTVDetailInfo(tvID) ;
+            if (flag){
+                clientTestCaseExecDO = clientTestCaseExecDAO.getClientTestCaseExecDO(tvID);
+            }
         }
-        ClientExecDataBO clientExecDataBO = new ClientExecDataBO() ;
-        clientExecDataBO.setTvID(tvID);
-        clientExecDataBO.setAccept(clientTestCaseExecDO.getAccept());
-        clientExecDataBO.setFail(clientTestCaseExecDO.getFail());
-        clientExecDataBO.setUnCarryOut(clientTestCaseExecDO.getUnCarryOut());
-        clientExecDataBO.setIgnore(clientExecDataBO.getIgnore());
-        clientExecDataBO.setTotal(clientExecDataBO.getTotal());
-        return clientExecDataBO ;
+        if (clientTestCaseExecDO != null) {
+            ClientExecDataBO clientExecDataBO = new ClientExecDataBO();
+            clientExecDataBO.setTvID(tvID);
+            clientExecDataBO.setAccept(clientTestCaseExecDO.getAccept());
+            clientExecDataBO.setFail(clientTestCaseExecDO.getFail());
+            clientExecDataBO.setUnCarryOut(clientTestCaseExecDO.getUnCarryOut());
+            clientExecDataBO.setIgnore(clientTestCaseExecDO.getIgnore());
+            clientExecDataBO.setTotal(clientTestCaseExecDO.getTotal());
+            return clientExecDataBO;
+        }else{
+            return null ;
+        }
     }
 
 }
