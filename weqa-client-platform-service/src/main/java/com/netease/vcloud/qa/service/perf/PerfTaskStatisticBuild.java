@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.perf;
 
+import com.netease.vcloud.qa.CommonData;
 import com.netease.vcloud.qa.service.perf.view.PerfTaskStatisticVO;
 
 /**
@@ -50,7 +51,8 @@ public class PerfTaskStatisticBuild {
         if (count <= 0){
             return 0 ;
         }else {
-            return total.doubleValue() / (double)count ;
+            double avg = total.doubleValue() / (double)count ;
+            return Double.parseDouble(CommonData.NUMBER_FORMAT.format(avg)) ;
         }
     }
 

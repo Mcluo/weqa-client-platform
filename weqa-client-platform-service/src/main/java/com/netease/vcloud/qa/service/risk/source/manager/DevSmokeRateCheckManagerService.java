@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.service.risk.source.manager;
 
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.CommonData;
 import com.netease.vcloud.qa.dao.ClientRiskSmokeExecDAO;
 import com.netease.vcloud.qa.dao.ClientRiskSmokeRateDAO;
 import com.netease.vcloud.qa.model.ClientRiskSmokeRateDO;
@@ -79,8 +80,9 @@ public class DevSmokeRateCheckManagerService implements RiskTestCheckManageInter
         if (qaTestTotal == 0){
             return "0" ;
         }else {
-            Double devTCRate = (double)(devTestTotal * 100) / (double) qaTestTotal ;
-            return devTCRate+"%";
+            double devTCRate = (double)(devTestTotal * 100) / (double) qaTestTotal ;
+//            return String.format("%.2f"+devTCRate)+"%" ;
+            return CommonData.NUMBER_FORMAT.format(devTCRate) + "%";
         }
     }
 

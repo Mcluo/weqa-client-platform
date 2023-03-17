@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.service.risk.source.manager;
 
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.CommonData;
 import com.netease.vcloud.qa.dao.ClientRiskSmokeExecDAO;
 import com.netease.vcloud.qa.model.ClientRiskSmokeExecDO;
 import com.netease.vcloud.qa.risk.RiskCheckRange;
@@ -67,8 +68,9 @@ public class DevSmokeExecCheckManagerService implements RiskTestCheckManageInter
         if (clientExecDataBO == null){
             return null ;
         }
-        double execRate = (double) (clientExecDataBO.getAccept() * 10000 / clientExecDataBO.getTotal()) / 100 ;
-        return execRate+"%" ;
+        double execRate =  (double)(clientExecDataBO.getAccept() * 100) / (double)clientExecDataBO.getTotal() ;
+        return CommonData.NUMBER_FORMAT.format(execRate) + "%";
+//        return String.format("%.2f"+execRate)+"%" ;
     }
 
     @Override
