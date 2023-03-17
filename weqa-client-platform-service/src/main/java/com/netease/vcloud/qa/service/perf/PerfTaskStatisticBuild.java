@@ -51,8 +51,10 @@ public class PerfTaskStatisticBuild {
         if (count <= 0){
             return 0 ;
         }else {
-            double avg = total.doubleValue() / (double)count ;
-            return Double.parseDouble(CommonData.NUMBER_FORMAT.format(avg)) ;
+            int avg = (int)(total.doubleValue() * 100 / count) ;
+//            return Double.parseDouble(CommonData.NUMBER_FORMAT.format(avg)) ;
+            double avgDouble = (double) avg / (double)100 ;
+            return avgDouble ;
         }
     }
 
