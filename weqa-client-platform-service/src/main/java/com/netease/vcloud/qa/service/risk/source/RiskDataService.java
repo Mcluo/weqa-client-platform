@@ -3,6 +3,8 @@ package com.netease.vcloud.qa.service.risk.source;
 import com.netease.vcloud.qa.risk.RiskCheckRange;
 import com.netease.vcloud.qa.service.risk.RiskCheckException;
 import com.netease.vcloud.qa.service.risk.source.manager.AutoTestCheckManageService;
+import com.netease.vcloud.qa.service.risk.source.manager.DevSmokeExecCheckManagerService;
+import com.netease.vcloud.qa.service.risk.source.manager.DevSmokeRateCheckManagerService;
 import com.netease.vcloud.qa.service.risk.source.manager.RiskTestCheckManageInterface;
 import com.netease.vcloud.qa.service.risk.source.struct.CheckInfoStructInterface;
 import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
@@ -25,11 +27,11 @@ public class RiskDataService {
      */
     private static final String AUTO_TEST = "auto_test" ;
     /**
-     * 开发自测
+     * 开发自测执行情况
      */
     private static final String DEVELOP_TEST = "develop_test" ;
     /**
-     * 冒烟测试
+     * 冒烟测试占比
      */
     private static final String SMOKE_TEST = "smoke_test" ;
     /**
@@ -42,10 +44,18 @@ public class RiskDataService {
     @Autowired
     private AutoTestCheckManageService autoTestCheckManageService ;
 
+    @Autowired
+    private DevSmokeExecCheckManagerService devSmokeExecCheckManagerService ;
+
+    @Autowired
+    private DevSmokeRateCheckManagerService devSmokeRateCheckManagerService ;
+
     @PostConstruct
     public void init(){
         riskTestCheckManageMap = new HashMap<String, RiskTestCheckManageInterface>() ;
         riskTestCheckManageMap.put(AUTO_TEST,autoTestCheckManageService) ;
+        riskTestCheckManageMap.put(DEVELOP_TEST,devSmokeExecCheckManagerService) ;
+        riskTestCheckManageMap.put(SMOKE_TEST,devSmokeRateCheckManagerService) ;
     }
 
 

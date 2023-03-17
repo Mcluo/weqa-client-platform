@@ -28,9 +28,9 @@ public class TCManagerService {
 
     private static final String TC_URL = "https://tc.hz.netease.com/api/sa/cases/cases_list" ;
 
-    private static final String TC_TOKEN = "a56%34xeg_qe568sei2" ;
+    private static final String TC_TOKEN = TCCommonData.TC_TOKEN ;
 
-    private static final String TOKEN_ARGS = "token" ;
+    private static final String TOKEN_ARGS = TCCommonData.TOKEN_ARGS ;
 
     private static final String PROJECT_ARGS = "projectId" ;
 
