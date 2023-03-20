@@ -3,15 +3,14 @@ package com.netease.vcloud.qa.autotest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.common.HttpUtils;
+import com.netease.vcloud.qa.model.VcloudClientScheduledTaskInfoDO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
-import com.netease.vcloud.qa.service.auto.AutoTestDeviceService;
-import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
-import com.netease.vcloud.qa.service.auto.AutoTestRunException;
-import com.netease.vcloud.qa.service.auto.AutoTestTaskUrlService;
+import com.netease.vcloud.qa.service.auto.*;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
+import com.netease.vcloud.qa.service.auto.view.AutoTestScheduledVO;
 import com.netease.vcloud.qa.service.auto.view.ScriptRunLogVO;
 import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
@@ -34,6 +33,9 @@ public class AutoTestTaskController {
 
     @Autowired
     private AutoTestTaskManagerService autoTestTaskManagerService;
+
+    @Autowired
+    private AutoTestScheduledService scheduledService;
 
     @Autowired
     private AutoTestTaskUrlService autoTestTaskUrlService;
@@ -135,7 +137,7 @@ public class AutoTestTaskController {
         try {
             TaskDetailInfoVO taskDetailInfoVO = autoTestTaskManagerService.getTaskDetailInfo(taskId) ;
             if (taskDetailInfoVO != null){
-                resultVO = ResultUtils.buildSuccess(taskDetailInfoVO) ;
+                resultVO = ResultUtils.buildSuccess(taskDetailInfoVO);
             }else {
                 resultVO = ResultUtils.buildFail() ;
             }
@@ -179,6 +181,70 @@ public class AutoTestTaskController {
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.build(false,e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+    @RequestMapping("/scheduled/create")
+    public ResultVO createScheduledTask(@RequestParam("taskName") String taskName,
+                                        @RequestParam("cron") String cron,
+                                        @RequestParam(name = "gitInfo", required = false) String gitInfo,
+                                        @RequestParam("gitBranch") String gitBranch,
+                                        @RequestParam("operator") String operator,
+                                        @RequestParam(name = "deviceType", required = false, defaultValue = "0") byte deviceType,
+                                        @RequestParam("ids") List<Long> idSet,
+                                        @RequestParam(name = "private", required = false) Long privateAddressId) {
+        ResultVO resultVO = null;
+        Long id = null ;
+        VcloudClientScheduledTaskInfoDO taskInfoDO = new VcloudClientScheduledTaskInfoDO() ;
+        taskInfoDO.setTaskName(taskName);
+        taskInfoDO.setGitInfo(gitInfo);
+        taskInfoDO.setGitBranch(gitBranch);
+        taskInfoDO.setOperator(operator);
+        taskInfoDO.setCron(cron);
+        taskInfoDO.setTaskStatus((byte)1);
+        taskInfoDO.setScriptIds(idSet.toString());
+        taskInfoDO.setPrivateId(String.valueOf(privateAddressId));
+        id = scheduledService.createScheduledTask(taskInfoDO);
+        if (id!=null){
+            resultVO = ResultUtils.buildSuccess(id) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    @RequestMapping("/scheduled/query")
+    public ResultVO queryScheduledTask(@RequestParam(name = "owner",required = false) String owner,
+                                        @RequestParam(name = "size" , required = false , defaultValue = "20")int size ,
+                                        @RequestParam(name = "page" , required = false , defaultValue = "1") int pageNo){
+        ResultVO resultVO = null ;
+        List<VcloudClientScheduledTaskInfoDO> scheduledServiceList = scheduledService.getList(owner,size, pageNo);
+        resultVO = ResultUtils.buildSuccess( scheduledServiceList) ;
+        return resultVO ;
+    }
+
+    @RequestMapping("/scheduled/get")
+    public ResultVO  queryAutoScheduledTaskDetail(@RequestParam("id") Long taskId){
+        ResultVO resultVO = null ;
+        AutoTestScheduledVO scheduledVO = scheduledService.getId(taskId);
+        if (scheduledVO != null){
+            resultVO = ResultUtils.buildSuccess(scheduledVO) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    @RequestMapping("/scheduled/update/status")
+    public ResultVO scheduledUpdateStatus(@RequestParam("id") Long taskId,
+                                          @RequestParam("status") int status){
+        ResultVO resultVO = null ;
+        long id = scheduledService.updateScheduledStatus(taskId,status);
+        if (id != 0){
+            resultVO = ResultUtils.buildSuccess(id) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
         }
         return resultVO ;
     }

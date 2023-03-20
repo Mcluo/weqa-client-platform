@@ -38,7 +38,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.netease.vcloud.qa.dao"
                              targetProject="src/main/java"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="vcloud_client_auto_task_url">
+        <table tableName="vcloud_client_auto_test_scheduled_relation_info">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>
