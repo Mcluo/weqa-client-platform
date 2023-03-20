@@ -23,7 +23,7 @@ spring:
         min-idle: 0
   servlet:
     multipart:
-      location: E:\\
+#      location: E:\\
       max-file-size: 500MB
       max-request-size: 500MB
 
