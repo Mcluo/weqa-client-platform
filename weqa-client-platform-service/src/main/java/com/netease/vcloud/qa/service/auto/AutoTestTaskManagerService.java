@@ -12,6 +12,7 @@ import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
+import com.netease.vcloud.qa.model.ClientAutoTaskExtendInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
 import com.netease.vcloud.qa.nos.NosService;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
@@ -70,6 +71,9 @@ public class AutoTestTaskManagerService {
 
     @Autowired
     private AutoTestTaskUrlService autoTestTaskUrlService ;
+
+    @Autowired
+    private AutoTestPrivateAddressService autoTestPrivateAddressService ;
 
     @Autowired
     private NosService nosService ;
@@ -267,6 +271,7 @@ public class AutoTestTaskManagerService {
     }
 
     public TaskDetailInfoVO getTaskDetailInfo(Long taskId) throws AutoTestRunException{
+        //基础信息
         TaskDetailInfoVO taskDetailInfoVO = new TaskDetailInfoVO() ;
         ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
         List<TaskUrlInfoVO> taskUrlInfoVOList = autoTestTaskUrlService.getTaskUrlInfoList(taskId) ;
@@ -274,6 +279,19 @@ public class AutoTestTaskManagerService {
         UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientAutoTaskInfoDO.getOperator()) ;
         TaskBaseInfoVO taskBaseInfoVO = this.buildTaskBaseInfoVOByDO(clientAutoTaskInfoDO,userInfoBO) ;
         taskDetailInfoVO.setBaseInfo(taskBaseInfoVO) ;
+        //扩展信息
+        List<TaskExtendConfigVO> taskExtendConfigVOList = new ArrayList<>() ;
+        taskDetailInfoVO.setExtendList(taskExtendConfigVOList);
+        ClientAutoTaskExtendInfoDO clientAutoTaskExtendInfoDO = autoTestPrivateAddressService.getTaskPrivateAddress(taskId) ;
+        if (clientAutoTaskExtendInfoDO!=null){
+            //私有地址
+            TaskExtendConfigVO taskExtendConfigVO = new TaskExtendConfigVO() ;
+            taskExtendConfigVO.setType("privateAddress");
+            taskExtendConfigVO.setExId(clientAutoTaskExtendInfoDO.getPrivateAddressId());
+            taskExtendConfigVO.setExConfig(clientAutoTaskExtendInfoDO.getPrivateAddress());
+            taskExtendConfigVOList.add(taskExtendConfigVO) ;
+        }
+        //脚本以及运行统计
         List<ClientAutoScriptRunInfoDO> clientAutoScriptRunInfoDOList = clientAutoScriptRunInfoDAO.getClientAutoScriptRunInfoByTaskId(taskId) ;
         Map<ScriptRunStatus,Integer> statusStatisticMap = new HashMap<ScriptRunStatus,Integer>() ;
         if (!CollectionUtils.isEmpty(clientAutoScriptRunInfoDOList)) {
@@ -322,8 +340,12 @@ public class AutoTestTaskManagerService {
                 taskStatisticInfoVO.setSuccessRate("-");
             }else {
 //                double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / taskStatisticInfoVO.getTotal() ;
-                double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / (taskStatisticInfoVO.getSuccessNumber()+ taskStatisticInfoVO.getFailNumber());
-                taskStatisticInfoVO.setSuccessRate(successRate + "%");
+                if (taskStatisticInfoVO.getSuccessNumber() == 0 && taskStatisticInfoVO.getFailNumber() == 0){
+                    taskStatisticInfoVO.setSuccessRate( "0%");
+                }else {
+                    double successRate = taskStatisticInfoVO.getSuccessNumber() * 100 / (taskStatisticInfoVO.getSuccessNumber() + taskStatisticInfoVO.getFailNumber());
+                    taskStatisticInfoVO.setSuccessRate(successRate + "%");
+                }
             }
             taskDetailInfoVO.setStatisticInfo(taskStatisticInfoVO);
         }

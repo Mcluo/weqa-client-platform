@@ -29,6 +29,10 @@ public class ClientAutoTaskExtendInfoDO {
     private  long taskId ;
 
     /**
+     * 私有地址ID,用于任务重跑
+     */
+    private Long privateAddressId ;
+    /**
      * 私有化地址
      */
     private String privateAddress ;
@@ -64,6 +68,14 @@ public class ClientAutoTaskExtendInfoDO {
 
     public void setTaskId(long taskId) {
         this.taskId = taskId;
+    }
+
+    public Long getPrivateAddressId() {
+        return privateAddressId;
+    }
+
+    public void setPrivateAddressId(Long privateAddressId) {
+        this.privateAddressId = privateAddressId;
     }
 
     public String getPrivateAddress() {
