@@ -87,6 +87,7 @@ public class AutoTestPrivateAddressService {
         }
         ClientAutoTaskExtendInfoDO clientAutoTaskExtendInfoDO = new ClientAutoTaskExtendInfoDO() ;
         clientAutoTaskExtendInfoDO.setTaskId(taskId);
+        clientAutoTaskExtendInfoDO.setPrivateAddressId(privateId);
         clientAutoTaskExtendInfoDO.setPrivateAddress(clientAutoPrivateAddressInfoDO.getConfig()) ;
         //插入扩展信息列
         int count = clientAutoTaskExtendInfoDAO.insertClientAutoTask(clientAutoTaskExtendInfoDO) ;
@@ -95,5 +96,23 @@ public class AutoTestPrivateAddressService {
         }else {
             return false ;
         }
+    }
+
+    /**
+     * 读取私有地址配置
+     * @param taskId
+     * @return
+     * @throws AutoTestRunException
+     */
+    public ClientAutoTaskExtendInfoDO getTaskPrivateAddress(Long taskId) throws AutoTestRunException{
+        if (taskId == null){
+            return null ;
+        }
+        ClientAutoTaskExtendInfoDO clientAutoTaskExtendInfoDO = clientAutoTaskExtendInfoDAO.getClientAutoTaskExtendInfByTaskId(taskId) ;
+        if (clientAutoTaskExtendInfoDO == null){
+            AUTO_LOGGER.info("[AutoTestPrivateAddressService.getTaskPrivateAddress]  clientAutoTaskExtendInfoDO is null");
+//            return null ;
+        }
+        return clientAutoTaskExtendInfoDO ;
     }
 }

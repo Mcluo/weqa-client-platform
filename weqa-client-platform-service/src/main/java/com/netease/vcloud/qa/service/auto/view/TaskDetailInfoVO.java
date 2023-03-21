@@ -14,6 +14,8 @@ public class TaskDetailInfoVO {
 
     private List<TaskRunScriptInfoVO> scriptList ;
 
+    private List<TaskExtendConfigVO> extendList ;
+
     private TaskStatisticInfoVO statisticInfo ;
 
     public TaskBaseInfoVO getBaseInfo() {
@@ -46,5 +48,13 @@ public class TaskDetailInfoVO {
 
     public void setStatisticInfo(TaskStatisticInfoVO statisticInfo) {
         this.statisticInfo = statisticInfo;
+    }
+
+    public List<TaskExtendConfigVO> getExtendList() {
+        return extendList;
+    }
+
+    public void setExtendList(List<TaskExtendConfigVO> extendList) {
+        this.extendList = extendList;
     }
 }

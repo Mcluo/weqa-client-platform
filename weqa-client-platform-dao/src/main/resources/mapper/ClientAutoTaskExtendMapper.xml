@@ -6,11 +6,12 @@
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
         <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="private_address_id" jdbcType="BIGINT" property="privateAddressId"/>
         <result column="private_address" jdbcType="VARCHAR" property="privateAddress"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_id,private_address
+        select id,gmt_create,gmt_update,task_id,private_address_id,private_address
     </sql>
 
     <select id="getClientAutoTaskExtendInfByTaskId" resultMap="BaseResultMap">
@@ -20,8 +21,8 @@
     </select>
 
     <insert id="insertClientAutoTask" parameterType="com.netease.vcloud.qa.model.ClientAutoTaskExtendInfoDO">
-        INSERT INTO vcloud_client_auto_task_extend_info(gmt_create,gmt_update,task_id,private_address)
-        VALUES(now(),now(),#{info.taskId},#{info.privateAddress})
+        INSERT INTO vcloud_client_auto_task_extend_info(gmt_create,gmt_update,task_id,private_address_id,private_address)
+        VALUES(now(),now(),#{info.taskId},#{info.privateAddressId},#{info.privateAddress})
     </insert>
 
 </mapper>
