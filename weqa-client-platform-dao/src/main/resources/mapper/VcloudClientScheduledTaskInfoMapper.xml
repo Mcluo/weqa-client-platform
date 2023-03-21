@@ -93,7 +93,12 @@
     select
     *
     from vcloud_client_scheduled_task_info
-    where task_status  = #{status}
+    where task_status = #{status}
+    and gmt_update &lt; #{curTime}
+    <if test="timeDiff!=null">
+      and ABS(TIME_TO_SEC(TIMEDIFF(gmt_update, #{curTime}))) > 60
+    </if>
+    LIMIT 1
   </select>
   <select id="queryAutoTaskInfo" resultMap="ResultMapWithBLOBs">
     select
@@ -118,7 +123,7 @@
       git_info, git_branch, operator, 
       private_id, task_status, cron, 
       script_ids)
-    values (now(), now(), #{taskName,jdbcType=VARCHAR},
+    values (now(), #{gmtUpdate,jdbcType=TIMESTAMP}, #{taskName,jdbcType=VARCHAR},
       #{gitInfo,jdbcType=VARCHAR}, #{gitBranch,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
       #{privateId,jdbcType=CHAR}, #{taskStatus,jdbcType=TINYINT}, #{cron,jdbcType=VARCHAR}, 
       #{scriptIds,jdbcType=LONGVARCHAR})
