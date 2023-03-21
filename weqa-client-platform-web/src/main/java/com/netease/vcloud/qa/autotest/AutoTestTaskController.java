@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -193,7 +194,7 @@ public class AutoTestTaskController {
                                         @RequestParam("operator") String operator,
                                         @RequestParam(name = "deviceType", required = false, defaultValue = "0") byte deviceType,
                                         @RequestParam("ids") List<Long> idSet,
-                                        @RequestParam(name = "private", required = false) Long privateAddressId) {
+                                        @RequestParam(name = "private", required = false) Long privateAddressId) throws ParseException {
         ResultVO resultVO = null;
         Long id = null ;
         VcloudClientScheduledTaskInfoDO taskInfoDO = new VcloudClientScheduledTaskInfoDO() ;
@@ -240,7 +241,12 @@ public class AutoTestTaskController {
     public ResultVO scheduledUpdateStatus(@RequestParam("id") Long taskId,
                                           @RequestParam("status") int status){
         ResultVO resultVO = null ;
-        long id = scheduledService.updateScheduledStatus(taskId,status);
+        long id = 0;
+        try {
+            id = scheduledService.updateScheduledStatus(taskId,status);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         if (id != 0){
             resultVO = ResultUtils.buildSuccess(id) ;
         }else {

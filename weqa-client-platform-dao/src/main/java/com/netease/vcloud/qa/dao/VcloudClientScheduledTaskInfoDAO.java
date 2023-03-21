@@ -4,6 +4,7 @@ import com.netease.vcloud.qa.model.VcloudClientScheduledTaskInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 @Mapper
 public interface VcloudClientScheduledTaskInfoDAO {
@@ -18,7 +19,7 @@ public interface VcloudClientScheduledTaskInfoDAO {
 
     VcloudClientScheduledTaskInfoDO selectByPrimaryKey(Long id);
 
-    List<VcloudClientScheduledTaskInfoDO> queryAutoTaskRunInfo( @Param("status") byte status);
+    List<VcloudClientScheduledTaskInfoDO> queryAutoTaskRunInfo( @Param("status") byte status, @Param("curTime") Date curTime, @Param("timeDiff") Date timeDiff);
 
 
     int updateByPrimaryKeySelective(VcloudClientScheduledTaskInfoDO record);
