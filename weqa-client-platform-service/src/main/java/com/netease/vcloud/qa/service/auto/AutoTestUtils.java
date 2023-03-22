@@ -64,7 +64,7 @@ public class AutoTestUtils {
         }
         ClientAutoScriptRunInfoDO clientAutoScriptRunInfoDO = new ClientAutoScriptRunInfoDO() ;
         if (taskScriptRunInfoBO.getScriptId()!=null) {
-            clientAutoScriptRunInfoDO.setId(taskScriptRunInfoBO.getScriptId());
+            clientAutoScriptRunInfoDO.setScriptTcId(taskScriptRunInfoBO.getScriptId());
         }
         if (taskScriptRunInfoBO.getTaskId()!=null){
             clientAutoScriptRunInfoDO.setTaskId(taskScriptRunInfoBO.getTaskId());

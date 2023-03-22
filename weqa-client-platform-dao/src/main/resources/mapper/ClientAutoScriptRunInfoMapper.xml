@@ -6,6 +6,7 @@
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
         <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="script_tc_id" jdbcType="BIGINT" property="scriptTcId"/>
         <result column="script_name" jdbcType="VARCHAR" property="scriptName"/>
         <result column="script_detail" jdbcType="VARCHAR" property="scriptDetail"/>
         <result column="exec_class" jdbcType="VARCHAR" property="execClass"/>
@@ -18,7 +19,7 @@
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,run_time,error_info,log_info
+        select id,gmt_create,gmt_update,task_id,script_tc_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,run_time,error_info,log_info
     </sql>
 
     <update id="updateStatus">
@@ -28,10 +29,10 @@
     </update>
 
     <insert id="patchInsertAutoScript" parameterType="com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO">
-        insert into vcloud_client_auto_script_run_info (gmt_create,gmt_update,task_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,log_info)
+        insert into vcloud_client_auto_script_run_info (gmt_create,gmt_update,task_id,script_tc_id,script_name,script_detail,exec_class,exec_method,exec_param,exec_status,log_info)
         values
         <foreach collection="scriptList" item="script" separator=",">
-            (now(),now(),#{script.taskId},#{script.scriptName},#{script.scriptDetail},#{script.execClass},#{script.execMethod},#{script.execParam},#{script.execStatus},#{script.logInfo})
+            (now(),now(),#{script.taskId},#{script.scriptTcId},#{script.scriptName},#{script.scriptDetail},#{script.execClass},#{script.execMethod},#{script.execParam},#{script.execStatus},#{script.logInfo})
         </foreach>
     </insert>
 

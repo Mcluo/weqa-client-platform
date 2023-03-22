@@ -7,6 +7,7 @@ package com.netease.vcloud.qa.service.auto.view;
 public class TaskRunScriptInfoVO {
     private long taskId ;
 
+    private Long tcId ;
     private String name ;
 
     private String detail ;
@@ -33,6 +34,14 @@ public class TaskRunScriptInfoVO {
 
     public void setTaskId(long taskId) {
         this.taskId = taskId;
+    }
+
+    public Long getTcId() {
+        return tcId;
+    }
+
+    public void setTcId(Long tcId) {
+        this.tcId = tcId;
     }
 
     public String getName() {

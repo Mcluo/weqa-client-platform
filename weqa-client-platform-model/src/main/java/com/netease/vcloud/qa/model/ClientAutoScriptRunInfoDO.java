@@ -24,6 +24,7 @@ public class ClientAutoScriptRunInfoDO {
 
     private long taskId ;
 
+    private Long  scriptTcId ;
     private String scriptName ;
 
     private String scriptDetail ;
@@ -72,6 +73,14 @@ public class ClientAutoScriptRunInfoDO {
 
     public void setTaskId(long taskId) {
         this.taskId = taskId;
+    }
+
+    public Long getScriptTcId() {
+        return scriptTcId;
+    }
+
+    public void setScriptTcId(Long scriptTcId) {
+        this.scriptTcId = scriptTcId;
     }
 
     public String getScriptName() {
