@@ -137,7 +137,7 @@ public class AutoTestScheduledService {
         ArrayList<Long> deviceList = new ArrayList<>();
         ArrayList<String> platformList = new ArrayList<>();
         for (ClientAutoDeviceInfoDO deviceInfoDO : clientAutoDeviceInfoDOList) {
-            if (deviceInfoDO.getRun() == 0) {
+            if (deviceInfoDO.getRun() == (byte)0 && deviceInfoDO.getAlive() == (byte)1) {
                 if (deviceList.size() < 2) {
                     deviceList.add(deviceInfoDO.getId());
                     DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(deviceInfoDO.getPlatform());
