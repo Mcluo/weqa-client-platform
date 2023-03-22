@@ -299,6 +299,7 @@ public class AutoTestTaskManagerService {
             List<TaskRunScriptInfoVO> scriptList = new ArrayList<TaskRunScriptInfoVO>() ;
             for (ClientAutoScriptRunInfoDO clientAutoScriptRunInfoDO : clientAutoScriptRunInfoDOList) {
                 TaskRunScriptInfoVO taskRunScriptInfoVO = new TaskRunScriptInfoVO() ;
+                taskRunScriptInfoVO.setTcId(clientAutoScriptRunInfoDO.getScriptTcId());
                 taskRunScriptInfoVO.setTaskId(clientAutoScriptRunInfoDO.getTaskId());
                 taskRunScriptInfoVO.setName(clientAutoScriptRunInfoDO.getScriptName());
                 taskRunScriptInfoVO.setDetail(clientAutoScriptRunInfoDO.getScriptDetail());
