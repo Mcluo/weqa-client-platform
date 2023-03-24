@@ -152,7 +152,9 @@ public class AutoTestScheduledService {
         autoTestTaskInfoDTO.setDeviceList(deviceList);
         List<Long> ScriptIds = JSONArray.parseArray(taskInfoDO.getScriptIds(), Long.class);
         autoTestTaskInfoDTO.setTestCaseScriptId(ScriptIds);
-        autoTestTaskInfoDTO.setPrivateAddressId(Long.valueOf(taskInfoDO.getPrivateId()));
+        if(!taskInfoDO.getPrivateId().equals("null")){
+            autoTestTaskInfoDTO.setPrivateAddressId(Long.valueOf(taskInfoDO.getPrivateId()));
+        }
         try {
             Long taskId = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
 //                            getJenkinsURL(platformList, autoTestTaskInfoDTO.getGitBranch(),taskId);
@@ -178,7 +180,7 @@ public class AutoTestScheduledService {
         List<VcloudClientScheduledTaskInfoDO> taskInfoDOList = scheduledTaskInfoDAO.queryAutoTaskRunInfo(start, new Date(), null);
         if(taskInfoDOList.size() == 0){
             taskInfoDOList = scheduledTaskInfoDAO.queryAutoTaskRunInfo(running, new Date(),new Date());
-            System.out.println("定时任务执行running： " + taskInfoDOList.size());
+//            System.out.println("定时任务执行running： " + taskInfoDOList.size());
             if(taskInfoDOList.size() == 0){
                 return null;
             }
