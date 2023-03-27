@@ -30,6 +30,12 @@ public class ClientAutoTestSuitBaseInfoDO {
      */
     private String suitOwner ;
 
+    /**
+     * 标记字段，按照位进行 与 操作，可以得到具体的值
+     */
+    private Long tag ;
+
+
     public long getId() {
         return id;
     }
@@ -68,5 +74,13 @@ public class ClientAutoTestSuitBaseInfoDO {
 
     public void setSuitOwner(String suitOwner) {
         this.suitOwner = suitOwner;
+    }
+
+    public Long getTag() {
+        return tag;
+    }
+
+    public void setTag(Long tag) {
+        this.tag = tag;
     }
 }

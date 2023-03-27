@@ -7,15 +7,16 @@
         <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
         <result column="suit_name" jdbcType="VARCHAR" property="suitName"/>
         <result column="suit_owner" jdbcType="VARCHAR" property="suitOwner"/>
+        <result column="suit_tag" jdbcType="BIGINT" property="tag"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,suit_name,suit_owner
+        select id,gmt_create,gmt_update,suit_name,suit_owner,suit_tag
     </sql>
 
     <insert id="addNewAutoTestSuit" parameterType="com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO" keyProperty="info.id" useGeneratedKeys="true" >
-        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suit_name,suit_owner,is_delete)
-        value(now(),now(),#{info.suitName},#{info.suitOwner},0)
+        insert into vcloud_client_auto_test_suit_base_info (gmt_create,gmt_update,suit_name,suit_owner,is_delete,suit_tag)
+        value(now(),now(),#{info.suitName},#{info.suitOwner},0,0)
     </insert>
 
 
@@ -48,9 +49,15 @@
         ORDER BY id DESC
     </select>
 
-    <update id="deleteAUtoTestSuit" >
+    <update id="deleteAutoTestSuit" >
         UPDATE vcloud_client_auto_test_suit_base_info
-        SET is_delete=1
+        SET gmt_update=now(),is_delete=1
         WHERE id = #{id}
+    </update>
+
+    <update id="updateAutoTestSuit" >
+        UPDATE vcloud_client_auto_test_suit_base_info
+        SET gmt_update=now() ,suit_name=#{info.suitName},suit_owner=#{info.suitOwner},suit_tag=#{info.tag}
+        WHERE id = #{info.id}
     </update>
 </mapper>
