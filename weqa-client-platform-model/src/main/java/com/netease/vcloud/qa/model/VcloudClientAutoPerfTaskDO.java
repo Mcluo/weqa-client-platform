@@ -69,6 +69,8 @@ public class VcloudClientAutoPerfTaskDO implements Serializable {
 
     private Date createTime;
 
+    private Long autoTaskId ;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -149,6 +151,14 @@ public class VcloudClientAutoPerfTaskDO implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getAutoTaskId() {
+        return autoTaskId;
+    }
+
+    public void setAutoTaskId(Long autoTaskId) {
+        this.autoTaskId = autoTaskId;
     }
 
     @Override

@@ -12,6 +12,7 @@
     <result column="sdkInfo" jdbcType="VARCHAR" property="sdkinfo" />
     <result column="sdkVersion" jdbcType="VARCHAR" property="sdkversion" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="auto_task_id" jdbcType="BIGINT" property="autoTaskId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,7 +74,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, user, devicesPlatform, devicesModel, devicesVersion, cpuInfo, sdkInfo, 
-    sdkVersion, create_time
+    sdkVersion, create_time, auto_task_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -91,11 +92,11 @@
     </selectKey>
     insert into vcloud_client_auto_pref_task (name, user, devicesPlatform, 
       devicesModel, devicesVersion, cpuInfo, 
-      sdkInfo, sdkVersion, create_time
+      sdkInfo, sdkVersion, create_time, auto_task_id
       )
     values (#{name,jdbcType=VARCHAR}, #{user,jdbcType=VARCHAR}, #{devicesplatform,jdbcType=VARCHAR}, 
       #{devicesmodel,jdbcType=VARCHAR}, #{devicesversion,jdbcType=VARCHAR}, #{cpuinfo,jdbcType=VARCHAR}, 
-      #{sdkinfo,jdbcType=VARCHAR}, #{sdkversion,jdbcType=VARCHAR}, now()
+      #{sdkinfo,jdbcType=VARCHAR}, #{sdkversion,jdbcType=VARCHAR}, now(),#{autoTaskId,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO">
@@ -131,6 +132,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="autoTaskId != null">
+        auto_task_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -159,6 +163,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="autoTaskId != null">
+        #{autoTaskId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -195,6 +202,9 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.autoTaskId != null">
+        auto_task_id = #{record.autoTaskId,jdbcType=BIGINT},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -212,6 +222,7 @@
       sdkInfo = #{record.sdkinfo,jdbcType=VARCHAR},
       sdkVersion = #{record.sdkversion,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
+      auto_task_id = #{record.autoTaskId,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -246,6 +257,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="autoTaskId != null">
+        auto_task_id = #{autoTaskId,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -260,6 +274,7 @@
       sdkInfo = #{sdkinfo,jdbcType=VARCHAR},
       sdkVersion = #{sdkversion,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP}
+      auto_task_id = #{autoTaskId,jdbcType=BIGINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -283,4 +298,10 @@
       AND user = #{user}
     </if>
   </select>
+
+  <update id="updatePerfTestAutoCase" >
+    update vcloud_client_auto_pref_task
+    SET auto_task_id = #{auto,jdbcType=BIGINT}
+    where id = #{perf,jdbcType=INTEGER}
+  </update>
 </mapper>

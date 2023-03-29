@@ -58,10 +58,13 @@ public class AutoPerfRunService {
             return  null ;
         }
         //创建自动化任务
-
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = this.buildAutoTestTaskInfoDTOByAutoPerfTest(autoPerfTaskDTO,operator) ;
-        autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO) ;
+        Long autoTaskID = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO) ;
         Integer id = clientAutoPerfTaskDO.getId() ;
+        count = clientAutoPerfTaskDAO.updatePerfTestAutoCase(id,autoTaskID) ;
+        if (count <= 0){
+            TC_LOGGER.error("[AutoPerfRunService.createNewPerfTest] bind auto and perf fail");
+        }
         return id.longValue() ;
     }
 
@@ -74,7 +77,7 @@ public class AutoPerfRunService {
         List<ClientAutoTestSuitRelationDO> clientAutoTestSuitRelationDOList = clientAutoTestSuitRelationDAO.getAutoTestSuitRelationListBySuit(suit) ;
         if (CollectionUtils.isEmpty(clientAutoTestSuitRelationDOList)){
             TC_LOGGER.error("[AutoPerfRunService.buildAutoTestTaskInfoDTOByAutoPerfTest] create testSuit is empty ");
-            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SUIT_IS_NOT_EXIST) ;
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SCRIPT_ID_EMPTY) ;
         }
         List<Long> scriptIdList = new ArrayList<Long>() ;
         for (ClientAutoTestSuitRelationDO clientAutoTestSuitRelationDO :clientAutoTestSuitRelationDOList ){

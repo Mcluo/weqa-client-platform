@@ -70,6 +70,24 @@ public class AutoPerfTaskController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/perf/task/create
+     * 创建性能任务的同时，触发自动化运行
+     * @param name
+     * @param cpuInfo
+     * @param devicesModel
+     * @param devicesVersion
+     * @param devicesPlatform
+     * @param sdkInfo
+     * @param sdkVersion
+     * @param user
+     * @param suitId
+     * @param gitInfo
+     * @param gitBranch
+     * @param deviceList
+     * @param operator
+     * @return
+     */
     @RequestMapping("/create")
     @ResponseBody
     public ResultVO createReportTask(
@@ -83,8 +101,8 @@ public class AutoPerfTaskController {
             @RequestParam(name = "user") String user,
             @RequestParam(name = "suit") Long suitId,
             @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
-            @RequestParam("gitBranch") String gitBranch,
-            @RequestParam("device") List<Long> deviceList,
+            @RequestParam(name = "gitBranch") String gitBranch,
+            @RequestParam(name = "device") List<Long> deviceList,
             @RequestParam(name = "operator") String operator){
         AutoPerfTaskDTO autoPerfTaskDTO = new AutoPerfTaskDTO()  ;
         autoPerfTaskDTO.setName(name);
