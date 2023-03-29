@@ -60,6 +60,10 @@ public class AutoPerfRunService {
         //创建自动化任务
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = this.buildAutoTestTaskInfoDTOByAutoPerfTest(autoPerfTaskDTO,operator) ;
         Long autoTaskID = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO) ;
+        if (autoTaskID !=null){
+            //直接置为ready触发调度
+            autoTestTaskManagerService.setTaskReadySuccess(autoTaskID,true);
+        }
         Integer id = clientAutoPerfTaskDO.getId() ;
         count = clientAutoPerfTaskDAO.updatePerfTestAutoCase(id,autoTaskID) ;
         if (count <= 0){
