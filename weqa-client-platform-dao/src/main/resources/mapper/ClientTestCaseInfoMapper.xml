@@ -35,4 +35,13 @@
         set is_auto_covered = #{isCovered},gmt_update=now()
         where case_id = #{tcId}
     </update>
+
+    <update id="patchUpdateTestCaseCoveredStatus">
+        update vcloud_client_test_case_info
+        set is_auto_covered = #{isCovered},gmt_update=now()
+        where case_id IN
+        <foreach collection="tcSet" item="tc" index="index" open="(" close=")" separator="," >
+            #{tc}
+        </foreach>
+    </update>
 </mapper>

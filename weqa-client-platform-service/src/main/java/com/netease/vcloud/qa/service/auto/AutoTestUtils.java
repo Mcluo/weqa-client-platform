@@ -93,6 +93,7 @@ public class AutoTestUtils {
         taskScriptRunInfoBO.setExecClass(clientScriptTcInfoDO.getExecClass());
         taskScriptRunInfoBO.setExecMethod(clientScriptTcInfoDO.getExecMethod());
         taskScriptRunInfoBO.setExecParam(clientScriptTcInfoDO.getExecParam());
+        taskScriptRunInfoBO.setTcId(clientScriptTcInfoDO.getTcId());
         return taskScriptRunInfoBO ;
     }
 

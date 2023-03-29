@@ -28,6 +28,8 @@ public class TaskScriptRunInfoBO {
 
     private ScriptRunStatus execStatus ;
 
+    private Long tcId ;
+
     public Long getScriptId() {
         return scriptId;
     }
@@ -98,5 +100,13 @@ public class TaskScriptRunInfoBO {
 
     public void setExecStatus(ScriptRunStatus execStatus) {
         this.execStatus = execStatus;
+    }
+
+    public Long getTcId() {
+        return tcId;
+    }
+
+    public void setTcId(Long tcId) {
+        this.tcId = tcId;
     }
 }

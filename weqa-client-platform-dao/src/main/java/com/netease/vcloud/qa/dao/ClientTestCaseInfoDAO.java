@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -20,4 +21,6 @@ public interface ClientTestCaseInfoDAO {
     int patchInsertIntoTestCaseInfo(@Param("list")List<ClientTestCaseInfoDO> clientTestCaseInfoDOList) ;
 
     int updateTestCaseCoveredStatus(@Param("tcId") long testCaseId , @Param("isCovered") byte isCovered) ;
+
+    int patchUpdateTestCaseCoveredStatus(@Param("tcSet") Set<Long> testCaseSet , @Param("isCovered") byte isCovered) ;
 }

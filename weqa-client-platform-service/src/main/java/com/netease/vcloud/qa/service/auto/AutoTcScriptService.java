@@ -55,8 +55,10 @@ public class AutoTcScriptService {
                 taskScriptRunInfoBOList.add(taskScriptRunInfoBO) ;
             }
         }
+
         return taskScriptRunInfoBOList ;
     }
+
 
     /**
      * 根据批量设置脚本信息
