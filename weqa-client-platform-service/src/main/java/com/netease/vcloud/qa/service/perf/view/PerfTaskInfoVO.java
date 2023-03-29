@@ -68,7 +68,20 @@ public class PerfTaskInfoVO {
      */
     private String sdkVersion;
 
+    /**
+     * 任务时间
+     */
     private long taskTime ;
+
+    /***自动化相关**/
+    /**
+     * 自动化任务ID
+     */
+    private Long autoId ;
+    /**
+     * 自动任务状态
+     */
+    private String autoStatus ;
 
     public Long getId() {
         return id;
@@ -148,5 +161,21 @@ public class PerfTaskInfoVO {
 
     public void setTaskTime(long taskTime) {
         this.taskTime = taskTime;
+    }
+
+    public Long getAutoId() {
+        return autoId;
+    }
+
+    public void setAutoId(Long autoId) {
+        this.autoId = autoId;
+    }
+
+    public String getAutoStatus() {
+        return autoStatus;
+    }
+
+    public void setAutoStatus(String autoStatus) {
+        this.autoStatus = autoStatus;
     }
 }

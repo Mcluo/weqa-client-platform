@@ -4,14 +4,9 @@ import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.auto.DevicePlatform;
-import com.netease.vcloud.qa.dao.VcloudClientAutoAndroidPrefInfoDAO;
-import com.netease.vcloud.qa.dao.VcloudClientAutoIosPrefInfoDAO;
-import com.netease.vcloud.qa.dao.VcloudClientAutoIosPrefMemoryInfoDAO;
-import com.netease.vcloud.qa.dao.VcloudClientAutoPerfTaskDAO;
-import com.netease.vcloud.qa.model.VcloudClientAutoAndroidPrefInfoDO;
-import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO;
-import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefMemoryInfoDO;
-import com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO;
+import com.netease.vcloud.qa.auto.TaskRunStatus;
+import com.netease.vcloud.qa.dao.*;
+import com.netease.vcloud.qa.model.*;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.perf.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +34,8 @@ public class AutoPerfResultService {
     @Autowired
     private VcloudClientAutoIosPrefMemoryInfoDAO vcloudClientAutoIosPrefMemoryInfoDAO ;
 
+    @Autowired
+    private ClientAutoTaskInfoDAO clientAutoTaskInfoDAO ;
 
     @Autowired
     private UserInfoService userInfoService ;
@@ -99,6 +96,7 @@ public class AutoPerfResultService {
                 perfTaskInfoVO.setUser(CommonUtils.buildUserInfoVOByBO(userInfoBO));
             }
         }
+        perfTaskInfoVO.setAutoId(clientAutoPerfTaskDO.getAutoTaskId());
         return perfTaskInfoVO ;
     }
 
@@ -119,6 +117,16 @@ public class AutoPerfResultService {
             return null ;
         }
         perfTaskInfoVO.setUser(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        //添加和查找自动化测试信息
+        if (vcloudClientAutoPerfTaskDO.getAutoTaskId() != null){
+            ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(vcloudClientAutoPerfTaskDO.getAutoTaskId()) ;
+            if (clientAutoTaskInfoDO != null){
+                TaskRunStatus taskRunStatus = TaskRunStatus.getTaskRunStatusByCode(clientAutoTaskInfoDO.getTaskStatus()) ;
+                if (taskRunStatus != null){
+                    perfTaskInfoVO.setAutoStatus(taskRunStatus.getStatus());
+                }
+            }
+        }
         perfTaskDetailVO.setPerfTaskInfo(perfTaskInfoVO);
         String devicePlatformStr = vcloudClientAutoPerfTaskDO.getDevicesplatform() ;
         DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(devicePlatformStr) ;
@@ -232,6 +240,9 @@ public class AutoPerfResultService {
                 sysCpuStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getSysCpu());
                 perfTaskIOSDetailMemoryListVOList.add(perfTaskIOSDetailMemoryListVO);
             }
+        }
+        if (CollectionUtils.isEmpty(autoIosPrefInfoDOList) && CollectionUtils.isEmpty(autoIosPrefMemoryInfoDOList)){
+            return perfTaskIOSDetailVO;
         }
         perfTaskIOSDetailVO.setAppCPU(userCpuStatistic.build());
         perfTaskIOSDetailVO.setSysCPU(sysCpuStatistic.build());

@@ -3,6 +3,7 @@ package com.netease.vcloud.qa.service.auto;
 import com.netease.vcloud.qa.auto.TaskRunStatus;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
+import com.netease.vcloud.qa.dao.ClientTestCaseInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 自动化测试生产者
@@ -35,6 +38,9 @@ public class AutoTestTaskProducer {
     @Autowired
     private AutoTestPrivateAddressService autoTestPrivateAddressService ;
 
+    @Autowired
+    private ClientTestCaseInfoDAO clientTestCaseInfoDAO ;
+
     public Long productNewAutoTestTask(AutoTestTaskInfoBO autoTestTaskInfoBO){
         if (autoTestTaskInfoBO == null || CollectionUtils.isEmpty(autoTestTaskInfoBO.getScriptList())) {
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] some param is null");
@@ -52,11 +58,16 @@ public class AutoTestTaskProducer {
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add autotest extend info error");
         }
         //创建任务下面的脚本
+        Set<Long> caseIdSet = new HashSet<Long>() ;
         List<TaskScriptRunInfoBO> taskScriptRunInfoBOList = autoTestTaskInfoBO.getScriptList() ;
         for (TaskScriptRunInfoBO taskScriptRunInfoBO : taskScriptRunInfoBOList){
             taskScriptRunInfoBO.setTaskId(autoTestTaskInfoBO.getId());
+            if ( taskScriptRunInfoBO.getTcId()!=null){
+                caseIdSet.add(taskScriptRunInfoBO.getTcId()) ;
+            }
         }
         boolean addTaskScriptFlag = this.addTaskScript(taskScriptRunInfoBOList) ;
+        this.updateTcScript(caseIdSet) ;
         if (!addTaskScriptFlag){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add task script list fail");
             return null ;
@@ -141,6 +152,18 @@ public class AutoTestTaskProducer {
             return false ;
         }else {
             return true ;
+        }
+    }
+
+    private  boolean updateTcScript(Set<Long> tcSet){
+        if (CollectionUtils.isEmpty(tcSet)){
+            return true ;
+        }
+        int count = clientTestCaseInfoDAO.patchUpdateTestCaseCoveredStatus(tcSet,(byte)1) ;
+        if (count >= tcSet.size() ){
+            return true ;
+        }else{
+            return false ;
         }
     }
 }

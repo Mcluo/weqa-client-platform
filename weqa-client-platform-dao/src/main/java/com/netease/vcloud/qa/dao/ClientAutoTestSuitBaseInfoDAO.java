@@ -22,5 +22,7 @@ public interface ClientAutoTestSuitBaseInfoDAO {
 
     List<ClientAutoTestSuitBaseInfoDO> queryAutoTestSuitByName(@Param("owner")String owner,@Param("name")String name) ;
 
-    int deleteAUtoTestSuit(@Param("id") long id);
+    int deleteAutoTestSuit(@Param("id") long id);
+
+    int updateAutoTestSuit(@Param("info") ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO) ;
 }

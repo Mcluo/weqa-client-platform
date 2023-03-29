@@ -28,4 +28,6 @@ public interface VcloudClientAutoPerfTaskDAO {
     List<VcloudClientAutoPerfTaskDO> queryAutoPerfTaskList(@Param("user") String userInfo ,@Param("start") int start , @Param("size") int size);
 
     int countAUtoPerfTask(@Param("user") String userInfo) ;
+
+    int updatePerfTestAutoCase(@Param("perf") int perfId ,@Param("auto") Long autoTaskId) ;
 }

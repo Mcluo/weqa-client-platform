@@ -61,7 +61,7 @@ public class AutoTestTestSuitService {
     }
 
     public boolean deleteTestSuitById(long id) {
-        int count = clientAutoTestSuitBaseInfoDAO.deleteAUtoTestSuit(id) ;
+        int count = clientAutoTestSuitBaseInfoDAO.deleteAutoTestSuit(id) ;
         if (count>0){
             return true ;
         }else{
