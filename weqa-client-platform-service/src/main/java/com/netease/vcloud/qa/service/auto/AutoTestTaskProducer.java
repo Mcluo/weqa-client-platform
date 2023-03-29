@@ -67,7 +67,11 @@ public class AutoTestTaskProducer {
             }
         }
         boolean addTaskScriptFlag = this.addTaskScript(taskScriptRunInfoBOList) ;
-        this.updateTcScript(caseIdSet) ;
+        try {
+            this.updateTcScript(caseIdSet);
+        }catch (Exception e){
+            AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] update tc script info exception ",e);
+        }
         if (!addTaskScriptFlag){
             AUTO_LOGGER.error("[AutoTestTaskProducer.productNewAutoTestTask] add task script list fail");
             return null ;
