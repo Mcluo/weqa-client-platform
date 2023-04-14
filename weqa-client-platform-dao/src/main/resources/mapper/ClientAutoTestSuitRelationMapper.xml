@@ -19,6 +19,8 @@
         <foreach collection="relationList" item="relation" separator=",">
             (now(),now(),#{relation.suitId},#{relation.scriptId})
         </foreach>
+        ON DUPLICATE KEY UPDATE
+        gmt_update = now()
     </insert>
 
     <delete id="deleteClientTestRelationBySuit">

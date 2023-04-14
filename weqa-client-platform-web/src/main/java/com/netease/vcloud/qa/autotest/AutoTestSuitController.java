@@ -117,7 +117,7 @@ public class AutoTestSuitController {
     }
 
     /**
-     *http://127.0.0.1:8788/g2-client/auto/suit/script/add?suit=2&script=1
+     *http://127.0.0.1:8788/g2-client/auto/suit/script/add?suit=2&scriptList=1
      * @param suitId
      * @param scriptIds
      * @return
