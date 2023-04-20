@@ -19,6 +19,8 @@ public enum DevicePlatform {
     LINUX("linux",(byte)5),
 
     ELECTRON("electron",(byte)6),
+
+    FLUTTER("flutter",(byte) 7),
     ;
 
     private String platform ;
