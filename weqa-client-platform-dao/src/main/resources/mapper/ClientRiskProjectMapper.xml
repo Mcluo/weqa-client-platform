@@ -56,4 +56,13 @@
         WHERE is_delete = 0
     </select>
 
+    <select id="searchRiskProject" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        from vcloud_risk_project_info
+        WHERE is_delete = 0
+        AND project_name LIKE concat('%', #{key}, '%')
+        ORDER BY id DESC
+        LIMIT 0, #{size}
+    </select>
+
 </mapper>
