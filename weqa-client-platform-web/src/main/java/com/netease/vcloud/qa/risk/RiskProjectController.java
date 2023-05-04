@@ -78,7 +78,7 @@ public class RiskProjectController {
     }
 
     /**
-     *http://127.0.0.1:8788/g2-client/risk/project/query?key="测试"
+     *http://127.0.0.1:8788/g2-client/risk/project/search?key=测试
      * @param key
      * @param size
      * @return
