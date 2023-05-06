@@ -62,7 +62,8 @@ public class AutoTestTaskController {
                                   @RequestParam("device") List<Long> deviceList,
                                   @RequestParam("ids") List<Long> idSet,
                                    @RequestParam(name = "urls" ,required = false ) String urls,
-                                   @RequestParam(name ="private",required = false)Long privateAddressId){
+                                   @RequestParam(name ="private",required = false)Long privateAddressId,
+                                   @RequestParam(name = "projectId",required = false)Long projectId){
         ResultVO resultVO = null ;
         Long id = null ;
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
@@ -75,6 +76,7 @@ public class AutoTestTaskController {
         autoTestTaskInfoDTO.setDeviceList(deviceList);
         autoTestTaskInfoDTO.setTestCaseScriptId(idSet);
         autoTestTaskInfoDTO.setPrivateAddressId(privateAddressId);
+        autoTestTaskInfoDTO.setProjectId(projectId);
         try {
             id = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO);
             autoTestDeviceService.updateDeviceRun(deviceList, (byte)1);

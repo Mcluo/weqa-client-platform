@@ -33,6 +33,10 @@ public class AutoTestTaskInfoDTO {
      * 私有地址配置
      */
     private Long privateAddressId ;
+    /**
+     * 关联项目ID
+     */
+    private Long projectId ;
 
     public String getTaskType() {
         return taskType;
@@ -112,5 +116,13 @@ public class AutoTestTaskInfoDTO {
 
     public void setPrivateAddressId(Long privateAddressId) {
         this.privateAddressId = privateAddressId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

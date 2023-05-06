@@ -39,6 +39,8 @@ public class ClientAutoTaskInfoDO {
 
     private Byte taskStatus ;
 
+    private Long projectId ;
+
     public long getId() {
         return id;
     }
@@ -133,5 +135,13 @@ public class ClientAutoTaskInfoDO {
 
     public void setTaskType(String taskType) {
         this.taskType = taskType;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

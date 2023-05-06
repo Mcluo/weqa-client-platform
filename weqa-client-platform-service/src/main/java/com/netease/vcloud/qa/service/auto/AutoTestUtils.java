@@ -55,6 +55,9 @@ public class AutoTestUtils {
         }else {
             clientAutoTaskInfoDO.setTaskStatus(autoTestTaskInfoBO.getTaskStatus().getCode());
         }
+        if (autoTestTaskInfoBO.getProjectId()!=null) {
+            clientAutoTaskInfoDO.setProjectId(autoTestTaskInfoBO.getProjectId());
+        }
         return clientAutoTaskInfoDO ;
     }
 
