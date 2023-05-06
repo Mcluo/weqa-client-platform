@@ -33,6 +33,8 @@ public class AutoTestTaskInfoBO {
 
     private Long privateAddressId ;
 
+    private Long projectId ;
+
     public Long getId() {
         return id;
     }
@@ -127,5 +129,13 @@ public class AutoTestTaskInfoBO {
 
     public void setPrivateAddressId(Long privateAddressId) {
         this.privateAddressId = privateAddressId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

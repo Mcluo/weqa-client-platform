@@ -27,6 +27,8 @@ public class ClientAutoDeviceInfoDO {
 
     private String owner;
 
+    private String alias ;
+
     private Byte run;
 
     private Byte alive;
@@ -47,6 +49,14 @@ public class ClientAutoDeviceInfoDO {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public Byte getRun() {

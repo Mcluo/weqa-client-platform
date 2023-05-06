@@ -14,10 +14,11 @@
         <result column="git_info" jdbcType="VARCHAR" property="gitInfo"/>
         <result column="git_branch" jdbcType="VARCHAR" property="gitBranch"/>
         <result column="task_status" jdbcType="TINYINT" property="taskStatus"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status
+        select id,gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status,project_id
     </sql>
 
     <select id="getClientAutoTaskInfoById" resultMap="BaseResultMap">
@@ -39,8 +40,8 @@
     </select>
 
     <insert id="insertNewClientAutoTask" parameterType="com.netease.vcloud.qa.model.ClientAutoTaskInfoDO" keyProperty="taskInfo.id" useGeneratedKeys="true">
-        insert into vcloud_client_auto_task_info (gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status)
-        value(now(),now(),#{taskInfo.taskType},#{taskInfo.taskName},#{taskInfo.testSuitId},#{taskInfo.operator},#{taskInfo.deviceType},#{taskInfo.deviceInfo},#{taskInfo.gitInfo},#{taskInfo.gitBranch},#{taskInfo.taskStatus})
+        insert into vcloud_client_auto_task_info (gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status,project_id)
+        value(now(),now(),#{taskInfo.taskType},#{taskInfo.taskName},#{taskInfo.testSuitId},#{taskInfo.operator},#{taskInfo.deviceType},#{taskInfo.deviceInfo},#{taskInfo.gitInfo},#{taskInfo.gitBranch},#{taskInfo.taskStatus},#{taskInfo.projectId})
     </insert>
 
     <select id="queryAutoTaskInfo" resultMap="BaseResultMap">

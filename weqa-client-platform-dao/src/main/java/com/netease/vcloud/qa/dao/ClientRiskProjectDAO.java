@@ -24,6 +24,8 @@ public interface ClientRiskProjectDAO {
 
     List<ClientRiskProjectDO> queryRiskProject(@Param("start")int start , @Param("size") int size) ;
 
+    List<ClientRiskProjectDO> searchRiskProject(@Param("key")String key ,@Param("size")int  size ) ;
+
     int countRiskProject() ;
 
 }

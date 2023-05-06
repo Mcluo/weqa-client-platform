@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.service.risk.process;
 
 import com.netease.vcloud.qa.dao.ClientRiskProjectDAO;
+import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
 import com.netease.vcloud.qa.model.ClientRiskProjectDO;
 import com.netease.vcloud.qa.risk.RiskProjectStatus;
 import com.netease.vcloud.qa.risk.RiskTaskStatus;
@@ -114,6 +115,34 @@ public class RiskProjectService {
         return riskProjectListVO ;
     }
 
+    /**
+     * 根据关键字，查找符合条件的项目名
+     * @param queryKey
+     * @return
+     */
+    public  List<RiskProjectVO> queryProjectList(String queryKey, Integer size){
+        if (size ==null){
+            size = 10 ;
+        }
+        List<RiskProjectVO> riskProjectVOList = new ArrayList<RiskProjectVO>() ;
+        List<ClientRiskProjectDO> clientRiskProjectDOList = riskProjectDAO.searchRiskProject(queryKey,size) ;
+        if (clientRiskProjectDOList.isEmpty()){
+            return riskProjectVOList ;
+        }
+        for (ClientRiskProjectDO clientRiskProjectDO : clientRiskProjectDOList){
+            RiskProjectVO riskProjectVO = this.buildRiskProjectVOByDO(clientRiskProjectDO) ;
+            if (riskProjectVO != null){
+               riskProjectVOList.add(riskProjectVO) ;
+           }
+        }
+        return riskProjectVOList ;
+    }
+
+    /**
+     *
+     * @param clientRiskProjectDO
+     * @return
+     */
     private RiskProjectVO buildRiskProjectVOByDO(ClientRiskProjectDO clientRiskProjectDO){
         if (clientRiskProjectDO == null){
             return null ;

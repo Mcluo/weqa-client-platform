@@ -78,6 +78,26 @@ public class RiskProjectController {
     }
 
     /**
+     *http://127.0.0.1:8788/g2-client/risk/project/search?key=测试
+     * @param key
+     * @param size
+     * @return
+     */
+    @RequestMapping("/search")
+    @ResponseBody
+    public ResultVO searchProjectList(@RequestParam(name = "key" , required = false ,defaultValue = "") String key ,
+                                   @RequestParam(name = "size" , required = false ,defaultValue = "10") int size){
+        List<RiskProjectVO> riskProjectListVOList = riskProjectService.queryProjectList(key,size) ;
+        ResultVO resultVO = null ;
+        if (riskProjectListVOList == null){
+            resultVO = ResultUtils.buildFail() ;
+        }else {
+            resultVO = ResultUtils.buildSuccess(riskProjectListVOList) ;
+        }
+        return resultVO ;
+    }
+
+    /**
      * http://127.0.0.1:8788/g2-client/risk/project/delete?id=1
      * @param projectId
      * @return

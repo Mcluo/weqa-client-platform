@@ -18,6 +18,9 @@ public class DeviceInfoVO {
     private String cpu ;
 
     private String owner ;
+
+    private String alias;
+
     private UserInfoVO operator;
 
     private boolean run;
@@ -98,6 +101,13 @@ public class DeviceInfoVO {
         this.cpu = cpu;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
     public boolean isRun() {
         return run;

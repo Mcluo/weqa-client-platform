@@ -14,6 +14,7 @@ import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskExtendInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.model.ClientRiskProjectDO;
 import com.netease.vcloud.qa.nos.NosService;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
@@ -21,6 +22,8 @@ import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
 import com.netease.vcloud.qa.service.auto.view.*;
+import com.netease.vcloud.qa.service.risk.RiskCheckException;
+import com.netease.vcloud.qa.service.risk.process.RiskProjectService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +80,9 @@ public class AutoTestTaskManagerService {
 
     @Autowired
     private NosService nosService ;
+
+    @Autowired
+    private RiskProjectService riskProjectService ;
 
     @PostConstruct
     public void init(){
@@ -185,6 +191,7 @@ public class AutoTestTaskManagerService {
             autoTestTaskInfoBO.setDeviceInfo(JSONArray.toJSONString(saveDeviceInfoVOList));
         }
         autoTestTaskInfoBO.setPrivateAddressId(autoTestTaskInfoDTO.getPrivateAddressId());
+        autoTestTaskInfoBO.setProjectId(autoTestTaskInfoDTO.getProjectId());
         return autoTestTaskInfoBO ;
     }
 
@@ -265,6 +272,17 @@ public class AutoTestTaskManagerService {
                 }
             }catch (Exception e){
                 AUTO_LOGGER.error("[AutoTestTaskManagerService.buildTaskBaseInfoVOByDO] parse device object exception",e);
+            }
+        }
+        if (clientAutoTaskInfoDO.getProjectId()!=null){
+            try {
+                ClientRiskProjectDO clientRiskProjectDO = riskProjectService.getProjectDOById(clientAutoTaskInfoDO.getProjectId());
+                if (clientRiskProjectDO != null){
+                    taskBaseInfoVO.setProjectId(clientRiskProjectDO.getId());
+                    taskBaseInfoVO.setProjectName(clientRiskProjectDO.getProjectName());
+                }
+            }catch (RiskCheckException e){
+                AUTO_LOGGER.error("[AutoTestTaskManagerService.buildTaskBaseInfoVOByDO] get risk Project id",e);
             }
         }
         return taskBaseInfoVO ;

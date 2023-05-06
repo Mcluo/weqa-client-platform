@@ -31,6 +31,10 @@ public class TaskBaseInfoVO {
 
     private List<DeviceInfoVO> deviceList ;
 
+    private Long projectId ;
+
+    private String projectName ;
+
     public Long getId() {
         return id;
     }
@@ -110,5 +114,21 @@ public class TaskBaseInfoVO {
 
     public void setDeviceList(List<DeviceInfoVO> deviceList) {
         this.deviceList = deviceList;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }
