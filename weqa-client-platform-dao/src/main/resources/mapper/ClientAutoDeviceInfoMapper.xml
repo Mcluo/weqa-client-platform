@@ -23,7 +23,7 @@
 
     <insert id="insertNewDeviceInfo" parameterType="com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO">
         insert into vcloud_client_auto_device_info (gmt_create,gmt_update,device_ip,device_port,platform,user_id,cpu_info,owner,device_alias,run,alive,device_id)
-        value(now(),now(),#{device.deviceIp},#{device.devicePort},#{device.platform},#{device.userId},#{device.cpuInfo},#{device.owner},{device.alias},#{device.run},#{device.alive},#{device.deviceId}) ;
+        value(now(),now(),#{device.deviceIp},#{device.devicePort},#{device.platform},#{device.userId},#{device.cpuInfo},#{device.owner},#{device.alias},#{device.run},#{device.alive},#{device.deviceId}) ;
     </insert>
 
     <select id="getAllClientAutoDevice" resultMap="BaseResultMap">
