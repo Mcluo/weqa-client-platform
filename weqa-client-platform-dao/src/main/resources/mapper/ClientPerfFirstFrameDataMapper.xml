@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientPerfFirstFrameDataDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientPerfFirstFrameDataDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="data_type" jdbcType="TINYINT" property="type"/>
+        <result column="first_frame_data" jdbcType="BIGINT" property="firstFrameData"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,task_id,data_type,first_frame_data
+    </sql>
+
+    <insert id="patchInsertFirstFrameData" parameterType="com.netease.vcloud.qa.model.ClientPerfFirstFrameDataDO">
+        insert into vcloud_client_perf_first_frame_data_info(gmt_create,gmt_update,task_id,data_type,first_frame_data)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (now(),now(),#{info.taskId},#{info.type},#{info.firstFrameData})
+        </foreach>
+    </insert>
+    
+</mapper>

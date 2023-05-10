@@ -30,7 +30,7 @@ import java.util.List;
 @Service
 public class AutoPerfRunService {
 
-    private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
+    private static final Logger TC_LOGGER = LoggerFactory.getLogger("perfLog");
 
     @Autowired
     private AutoTestTaskManagerService autoTestTaskManagerService ;
