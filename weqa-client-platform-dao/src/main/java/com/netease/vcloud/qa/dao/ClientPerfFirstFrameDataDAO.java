@@ -15,4 +15,6 @@ public interface ClientPerfFirstFrameDataDAO {
 
     int patchInsertFirstFrameData(@Param("list") List<ClientPerfFirstFrameDataDO> dataDOList) ;
 
+    List<ClientPerfFirstFrameDataDO> getTaskFirstFrameData(@Param("taskId")Long taskId) ;
+
 }

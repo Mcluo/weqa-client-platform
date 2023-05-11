@@ -20,4 +20,6 @@ public interface ClientPerfFirstFrameTaskDAO {
 
     int getClientPerfFirstFrameTaskCount() ;
 
+    ClientPerfFirstFrameTaskDO getClientPerfFirstFrameTaskById(@Param("id")Long id) ;
+
 }

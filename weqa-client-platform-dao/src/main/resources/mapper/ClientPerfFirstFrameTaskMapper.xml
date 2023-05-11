@@ -29,4 +29,10 @@
         SELECT count(*)
         FROM vcloud_client_perf_first_frame_task_info
     </select>
+
+    <select id="getClientPerfFirstFrameTaskById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_first_frame_task_info
+        WHERE id = #{id}
+    </select>
 </mapper>

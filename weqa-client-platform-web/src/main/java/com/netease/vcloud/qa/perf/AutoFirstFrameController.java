@@ -6,6 +6,7 @@ import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.perf.AutoPerfFirstFrameService;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameDataDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameTaskDTO;
+import com.netease.vcloud.qa.service.perf.view.FirstFrameDetailInfoVO;
 import com.netease.vcloud.qa.service.perf.view.FirstFrameListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,6 +68,24 @@ public class AutoFirstFrameController {
         FirstFrameListVO firstFrameListVO = autoPerfFirstFrameService.queryFirstFrame(current, size) ;
         if (firstFrameListVO != null){
             resultVO = ResultUtils.buildSuccess(firstFrameListVO) ;
+        }else{
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     *  http://127.0.0.1:8788/g2-client/perf/first/task/get?id=3
+     * @param id
+     * @return
+     */
+    @RequestMapping("/task/get")
+    @ResponseBody
+    public ResultVO getFirstFrameTaskDetail(@RequestParam(name="id") Long id){
+        ResultVO resultVO = null ;
+        FirstFrameDetailInfoVO firstFrameDetailInfoVO = autoPerfFirstFrameService.getFirstFrameDetailInfoVO(id) ;
+        if (firstFrameDetailInfoVO != null){
+            resultVO = ResultUtils.buildSuccess(firstFrameDetailInfoVO) ;
         }else{
             resultVO = ResultUtils.buildFail() ;
         }

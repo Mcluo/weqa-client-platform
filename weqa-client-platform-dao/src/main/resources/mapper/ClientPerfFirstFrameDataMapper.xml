@@ -21,5 +21,10 @@
             (now(),now(),#{info.taskId},#{info.type},#{info.firstFrameData})
         </foreach>
     </insert>
-    
+
+    <select id="getTaskFirstFrameData" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_first_frame_data_info
+        WHERE task_id = #{taskId}
+    </select>
 </mapper>

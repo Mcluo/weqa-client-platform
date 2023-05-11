@@ -12,7 +12,10 @@ import com.netease.vcloud.qa.service.perf.data.FirstFrameDataDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameTaskDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameType;
 import com.netease.vcloud.qa.service.perf.view.FirstFrameBaseInfoVO;
+import com.netease.vcloud.qa.service.perf.view.FirstFrameDataInfoVO;
+import com.netease.vcloud.qa.service.perf.view.FirstFrameDetailInfoVO;
 import com.netease.vcloud.qa.service.perf.view.FirstFrameListVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +107,7 @@ public class AutoPerfFirstFrameService {
 
     private FirstFrameBaseInfoVO buildFirstFrameBaseInfoVOByDO(ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO , Map<String, UserInfoBO> userInfoBOMap){
         if(clientPerfFirstFrameTaskDO == null) {
+            PERF_LOGGER.error("[AutoPerfFirstFrameService.buildFirstFrameBaseInfoVOByDO]clientPerfFirstFrameTaskDO is null");
             return null;
         }
         FirstFrameBaseInfoVO firstFrameBaseInfoVO = new FirstFrameBaseInfoVO() ;
@@ -113,10 +117,74 @@ public class AutoPerfFirstFrameService {
         }
         firstFrameBaseInfoVO.setTaskName(clientPerfFirstFrameTaskDO.getTaskName());
         firstFrameBaseInfoVO.setDeviceInfo(clientPerfFirstFrameTaskDO.getDeviceInfo());
-        UserInfoBO userInfoBO = userInfoBOMap.get(clientPerfFirstFrameTaskDO.getOwner()) ;
-        UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
-        firstFrameBaseInfoVO.setOwner(userInfoVO);
+        if (userInfoBOMap != null) {
+            UserInfoBO userInfoBO = userInfoBOMap.get(clientPerfFirstFrameTaskDO.getOwner());
+            UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO);
+            firstFrameBaseInfoVO.setOwner(userInfoVO);
+        }
         return firstFrameBaseInfoVO ;
+    }
+
+
+    /**
+     * 获取详情
+     * @param id
+     * @return
+     */
+    public FirstFrameDetailInfoVO getFirstFrameDetailInfoVO(Long id){
+        ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO = clientPerfFirstFrameTaskDAO.getClientPerfFirstFrameTaskById(id) ;
+        if (clientPerfFirstFrameTaskDO == null){
+            PERF_LOGGER.error("[AutoPerfFirstFrameService.getFirstFrameDetailInfoVO]clientPerfFirstFrameTaskDO is null");
+            return null ;
+        }
+        FirstFrameDetailInfoVO firstFrameDetailInfoVO = new FirstFrameDetailInfoVO() ;
+        //基础信息
+        FirstFrameBaseInfoVO firstFrameBaseInfoVO = this.buildFirstFrameBaseInfoVOByDO(clientPerfFirstFrameTaskDO , null) ;
+        UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientPerfFirstFrameTaskDO.getOwner()) ;
+        if (userInfoBO != null){
+            UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
+            firstFrameBaseInfoVO.setOwner(userInfoVO);
+        }
+        firstFrameDetailInfoVO.setBaseInfo(firstFrameBaseInfoVO);
+        //数据信息
+        List<ClientPerfFirstFrameDataDO> clientPerfFirstFrameDataDOList = clientPerfFirstFrameDataDAO.getTaskFirstFrameData(id) ;
+        List<FirstFrameDataInfoVO> firstFrameDataInfoVOList = this.buildFirstFrameDataInfoVOByDO(clientPerfFirstFrameDataDOList) ;
+        firstFrameDetailInfoVO.setDataInfo(firstFrameDataInfoVOList);
+        return  firstFrameDetailInfoVO ;
+    }
+
+    private  List<FirstFrameDataInfoVO> buildFirstFrameDataInfoVOByDO( List<ClientPerfFirstFrameDataDO> clientPerfFirstFrameDataDOList){
+        List<FirstFrameDataInfoVO> firstFrameDataInfoVOList = new ArrayList<FirstFrameDataInfoVO>() ;
+        if (CollectionUtils.isEmpty(clientPerfFirstFrameDataDOList)) {
+            return  firstFrameDataInfoVOList ;
+        }
+        Map<FirstFrameType,List<Long>> firstFrameMap = new HashMap<FirstFrameType, List<Long>>() ;
+        for (ClientPerfFirstFrameDataDO clientPerfFirstFrameDataDO : clientPerfFirstFrameDataDOList){
+            FirstFrameType  firstFrameType = FirstFrameType.getFirstFrameByCode(clientPerfFirstFrameDataDO.getType()) ;
+            List<Long> dataList = firstFrameMap.get(firstFrameType) ;
+            if (dataList == null){
+                dataList = new ArrayList<Long>() ;
+                firstFrameMap.put(firstFrameType,dataList) ;
+            }
+            dataList.add(clientPerfFirstFrameDataDO.getFirstFrameData()) ;
+        }
+        for (Map.Entry<FirstFrameType,List<Long>> entry : firstFrameMap.entrySet()){
+            FirstFrameType firstFrameType = entry.getKey() ;
+            List<Long> dataList = entry.getValue() ;
+            int count = dataList.size()  ;
+            Long total = 0L ;
+            for (Long data : dataList){
+                total += data ;
+            }
+            Long avg = total / count ;
+            FirstFrameDataInfoVO firstFrameDataInfoVO = new FirstFrameDataInfoVO() ;
+            firstFrameDataInfoVO.setType(firstFrameType.getType());
+            firstFrameDataInfoVO.setDetail(dataList);
+            firstFrameDataInfoVO.setCount(count);
+            firstFrameDataInfoVO.setAvg(avg);
+            firstFrameDataInfoVOList.add(firstFrameDataInfoVO) ;
+        }
+        return firstFrameDataInfoVOList ;
     }
 
     /**
