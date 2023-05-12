@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutoPerfReportService {
 
-    private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
+    private static final Logger TC_LOGGER = LoggerFactory.getLogger("perfLog");
 
     @Autowired
     private VcloudClientAutoIosPrefMemoryInfoDAO clientAutoIosPrefMemoryInfoDAO;
