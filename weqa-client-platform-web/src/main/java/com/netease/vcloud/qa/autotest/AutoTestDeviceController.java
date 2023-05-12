@@ -2,6 +2,7 @@ package com.netease.vcloud.qa.autotest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.auto.DevicePlatform;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO;
 import com.netease.vcloud.qa.result.ResultUtils;
@@ -96,6 +97,30 @@ public class AutoTestDeviceController {
         try{
             boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner,alias);
             resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+    @RequestMapping("/updateList")
+    @ResponseBody
+    public ResultVO updateDeviceListInfo(@RequestBody JSONObject jsonObject){
+        ResultVO resultVO = null ;
+        try{
+            List<DeviceInfoVO> list = jsonObject.getJSONArray("listData").toJavaList(DeviceInfoVO.class);
+            for(DeviceInfoVO clientAutoDeviceInfoDO : list){
+//                DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByCode(clientAutoDeviceInfoDO.getPlatform());
+                autoTestDeviceService.updateDeviceInfo(clientAutoDeviceInfoDO.getId(),
+                        clientAutoDeviceInfoDO.getIp(),
+                        clientAutoDeviceInfoDO.getPort(),
+                        clientAutoDeviceInfoDO.getPlatform(),
+                        clientAutoDeviceInfoDO.getUserId(),
+                        clientAutoDeviceInfoDO.getCpu(),
+                        clientAutoDeviceInfoDO.getOwner(),
+                        clientAutoDeviceInfoDO.getAlias());
+            }
+            resultVO = ResultUtils.build(true);
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
         }
