@@ -77,13 +77,13 @@ public class AutoPerfFirstFrameService {
     }
 
 
-    public FirstFrameListVO queryFirstFrame(int current ,int size){
+    public FirstFrameListVO queryFirstFrame(String owner , int current , int size){
         FirstFrameListVO firstFrameListVO = new FirstFrameListVO() ;
         firstFrameListVO.setCurrent(current);
         firstFrameListVO.setSize(size);
         int start = (current - 1 ) * size ;
-        List<ClientPerfFirstFrameTaskDO> clientPerfFirstFrameTaskDOList = clientPerfFirstFrameTaskDAO.queryClientPerfFirstFrameTask(start,size) ;
-        int count = clientPerfFirstFrameTaskDAO.getClientPerfFirstFrameTaskCount() ;
+        List<ClientPerfFirstFrameTaskDO> clientPerfFirstFrameTaskDOList = clientPerfFirstFrameTaskDAO.queryClientPerfFirstFrameTask(owner,start,size) ;
+        int count = clientPerfFirstFrameTaskDAO.getClientPerfFirstFrameTaskCount(owner) ;
         List<FirstFrameBaseInfoVO> firstFrameBaseInfoVOList = new ArrayList<>() ;
         if (!CollectionUtils.isEmpty(clientPerfFirstFrameTaskDOList)){
             Set<String> userSet = new HashSet<String>() ;

@@ -22,12 +22,20 @@
     <select id="queryClientPerfFirstFrameTask" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_perf_first_frame_task_info
+        WHERE 1 = 1
+        <if test="owner != null and owner !=''">
+            AND owner = #{owner}
+        </if>
         LIMIT #{start},#{size}
     </select>
 
     <select id="getClientPerfFirstFrameTaskCount" resultType="java.lang.Integer">
         SELECT count(*)
         FROM vcloud_client_perf_first_frame_task_info
+        WHERE 1 = 1
+        <if test="owner != null and owner !=''">
+            AND owner = #{owner}
+        </if>
     </select>
 
     <select id="getClientPerfFirstFrameTaskById" resultMap="BaseResultMap">

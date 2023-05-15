@@ -63,9 +63,10 @@ public class AutoFirstFrameController {
     @RequestMapping("/task/query")
     @ResponseBody
     public ResultVO queryFirstFrameTaskList(@RequestParam(name="current",required = false,defaultValue = "1") int current ,
-                                            @RequestParam(name="size",required = false,defaultValue = "10") int size){
+                                            @RequestParam(name="size",required = false,defaultValue = "10") int size,
+                                            @RequestParam(name = "operator",required = false)String operator){
         ResultVO resultVO = null ;
-        FirstFrameListVO firstFrameListVO = autoPerfFirstFrameService.queryFirstFrame(current, size) ;
+        FirstFrameListVO firstFrameListVO = autoPerfFirstFrameService.queryFirstFrame(operator , current, size) ;
         if (firstFrameListVO != null){
             resultVO = ResultUtils.buildSuccess(firstFrameListVO) ;
         }else{
