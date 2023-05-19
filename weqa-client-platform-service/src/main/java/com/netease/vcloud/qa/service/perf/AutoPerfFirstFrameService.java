@@ -3,11 +3,20 @@ package com.netease.vcloud.qa.service.perf;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
+import com.netease.vcloud.qa.auto.TaskRunStatus;
+import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
+import com.netease.vcloud.qa.dao.ClientAutoTestSuitRelationDAO;
 import com.netease.vcloud.qa.dao.ClientPerfFirstFrameDataDAO;
 import com.netease.vcloud.qa.dao.ClientPerfFirstFrameTaskDAO;
+import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
+import com.netease.vcloud.qa.model.ClientAutoTestSuitRelationDO;
 import com.netease.vcloud.qa.model.ClientPerfFirstFrameDataDO;
 import com.netease.vcloud.qa.model.ClientPerfFirstFrameTaskDO;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+import com.netease.vcloud.qa.service.auto.AutoTestRunException;
+import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
+import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.perf.data.AutoPerfTaskDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameDataDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameTaskDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameType;
@@ -42,27 +51,77 @@ public class AutoPerfFirstFrameService {
     @Autowired
     private UserInfoService userInfoService ;
 
+    @Autowired
+    private AutoTestTaskManagerService autoTestTaskManagerService ;
+
+    @Autowired
+    private ClientAutoTestSuitRelationDAO clientAutoTestSuitRelationDAO ;
+
+    @Autowired
+    private ClientAutoTaskInfoDAO clientAutoTaskInfoDAO ;
     /**
      * 新建一个任务
      * @param firstFrameTaskDTO
      * @return
      */
-    public Long createNewFirstFrame(FirstFrameTaskDTO firstFrameTaskDTO){
+    public Long createNewFirstFrame(FirstFrameTaskDTO firstFrameTaskDTO)throws AutoTestRunException {
         if (firstFrameTaskDTO==null) {
             PERF_LOGGER.error("[AutoPerfFirstFrameService.createNewFirstFrame]firstFrameTaskDTO is null");
-            return null;
+//            return null;
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
         }
         ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO = this.buildFirstFrameTaskDOByDTO(firstFrameTaskDTO) ;
         if (clientPerfFirstFrameTaskDO == null){
             PERF_LOGGER.error("[AutoPerfFirstFrameService.createNewFirstFrame]clientPerfFirstFrameTaskDO is null");
-            return null ;
+//            return null ;
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
         }
         int count = clientPerfFirstFrameTaskDAO.insertFirstFrameTask(clientPerfFirstFrameTaskDO) ;
-        if (count > 0){
-            return clientPerfFirstFrameTaskDO.getId() ;
-        }else {
-            return null ;
+        if (count <= 0){
+//            return null ;
+            PERF_LOGGER.error("[AutoPerfFirstFrameService.createNewFirstFrame]clientPerfFirstFrameTaskDO is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_DB_EXCEPTION) ;
         }
+        AutoTestTaskInfoDTO autoTestTaskInfoDTO = buildAutoTestTaskInfoDTOByAutoPerfTest(firstFrameTaskDTO) ;
+        Long autoTaskID = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO) ;
+        if (autoTaskID !=null){
+            //直接置为ready触发调度
+            autoTestTaskManagerService.setTaskReadySuccess(autoTaskID,true);
+        }
+        Long id = clientPerfFirstFrameTaskDO.getId() ;
+        clientPerfFirstFrameTaskDO.setAutoTaskId(autoTaskID);
+        count = clientPerfFirstFrameTaskDAO.updateFirstFrameTaskInfo(clientPerfFirstFrameTaskDO) ;
+        if (count<=0){
+            PERF_LOGGER.error("[AutoPerfFirstFrameService.createNewFirstFrame]update clientPerfFirstFrameTaskDO is null");
+        }
+        return id ;
+    }
+
+    private AutoTestTaskInfoDTO buildAutoTestTaskInfoDTOByAutoPerfTest(FirstFrameTaskDTO firstFrameTaskDTO) throws AutoTestRunException {
+        Long  suit = firstFrameTaskDTO.getSuitId();
+        if (suit == null){
+            PERF_LOGGER.error("[AutoPerfRunService.buildAutoTestTaskInfoDTOByAutoPerfTest] create testSuit is null ");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SUIT_IS_NOT_EXIST) ;
+        }
+        List<ClientAutoTestSuitRelationDO> clientAutoTestSuitRelationDOList = clientAutoTestSuitRelationDAO.getAutoTestSuitRelationListBySuit(suit) ;
+        if (CollectionUtils.isEmpty(clientAutoTestSuitRelationDOList)){
+            PERF_LOGGER.error("[AutoPerfRunService.buildAutoTestTaskInfoDTOByAutoPerfTest] create testSuit is empty ");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_SCRIPT_ID_EMPTY) ;
+        }
+        List<Long> scriptIdList = new ArrayList<Long>() ;
+        for (ClientAutoTestSuitRelationDO clientAutoTestSuitRelationDO :clientAutoTestSuitRelationDOList ){
+            scriptIdList.add(clientAutoTestSuitRelationDO.getScriptId()) ;
+        }
+        AutoTestTaskInfoDTO autoTestTaskInfoDTO = new AutoTestTaskInfoDTO() ;
+        autoTestTaskInfoDTO.setTaskType("python");
+        autoTestTaskInfoDTO.setTaskName(firstFrameTaskDTO.getTaskName());
+        autoTestTaskInfoDTO.setOperator(firstFrameTaskDTO.getOperator());
+        autoTestTaskInfoDTO.setTestCaseScriptId(scriptIdList);
+        autoTestTaskInfoDTO.setDeviceType((byte) 0);
+        autoTestTaskInfoDTO.setGitInfo(firstFrameTaskDTO.getGitInfo());
+        autoTestTaskInfoDTO.setGitBranch(firstFrameTaskDTO.getGitBranch());
+        autoTestTaskInfoDTO.setDeviceList(firstFrameTaskDTO.getDeviceList());
+        return autoTestTaskInfoDTO ;
     }
 
     private ClientPerfFirstFrameTaskDO buildFirstFrameTaskDOByDTO(FirstFrameTaskDTO firstFrameTaskDTO){
@@ -150,6 +209,17 @@ public class AutoPerfFirstFrameService {
         List<ClientPerfFirstFrameDataDO> clientPerfFirstFrameDataDOList = clientPerfFirstFrameDataDAO.getTaskFirstFrameData(id) ;
         List<FirstFrameDataInfoVO> firstFrameDataInfoVOList = this.buildFirstFrameDataInfoVOByDO(clientPerfFirstFrameDataDOList) ;
         firstFrameDetailInfoVO.setDataInfo(firstFrameDataInfoVOList);
+        //自动化信息
+        if (clientPerfFirstFrameTaskDO.getAutoTaskId() != null){
+            firstFrameDetailInfoVO.setAutoId(clientPerfFirstFrameTaskDO.getAutoTaskId());
+            ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(clientPerfFirstFrameTaskDO.getAutoTaskId()) ;
+            if (clientAutoTaskInfoDO != null){
+                TaskRunStatus taskRunStatus = TaskRunStatus.getTaskRunStatusByCode(clientAutoTaskInfoDO.getTaskStatus()) ;
+                if (taskRunStatus != null){
+                    firstFrameDetailInfoVO.setAutoStatus(taskRunStatus.getStatus());
+                }
+            }
+        }
         return  firstFrameDetailInfoVO ;
     }
 

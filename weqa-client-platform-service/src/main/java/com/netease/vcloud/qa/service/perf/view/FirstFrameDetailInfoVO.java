@@ -11,6 +11,12 @@ public class FirstFrameDetailInfoVO {
     private FirstFrameBaseInfoVO baseInfo ;
 
     private List<FirstFrameDataInfoVO> dataInfo ;
+    //自动化相关信息
+    private Long autoId ;
+    /**
+     * 自动任务状态
+     */
+    private String autoStatus ;
 
     public FirstFrameBaseInfoVO getBaseInfo() {
         return baseInfo;
@@ -26,5 +32,21 @@ public class FirstFrameDetailInfoVO {
 
     public void setDataInfo(List<FirstFrameDataInfoVO> dataInfo) {
         this.dataInfo = dataInfo;
+    }
+
+    public Long getAutoId() {
+        return autoId;
+    }
+
+    public void setAutoId(Long autoId) {
+        this.autoId = autoId;
+    }
+
+    public String getAutoStatus() {
+        return autoStatus;
+    }
+
+    public void setAutoStatus(String autoStatus) {
+        this.autoStatus = autoStatus;
     }
 }
