@@ -20,10 +20,8 @@ import com.netease.vcloud.qa.service.perf.data.AutoPerfTaskDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameDataDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameTaskDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameType;
-import com.netease.vcloud.qa.service.perf.view.FirstFrameBaseInfoVO;
-import com.netease.vcloud.qa.service.perf.view.FirstFrameDataInfoVO;
-import com.netease.vcloud.qa.service.perf.view.FirstFrameDetailInfoVO;
-import com.netease.vcloud.qa.service.perf.view.FirstFrameListVO;
+import com.netease.vcloud.qa.service.perf.report.AutoPerfBaseReportInterface;
+import com.netease.vcloud.qa.service.perf.view.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,7 @@ import java.util.*;
  * on 2023/5/9 15:32
  */
 @Service
-public class AutoPerfFirstFrameService {
+public class AutoPerfFirstFrameService  implements AutoPerfBaseReportInterface {
 
     private static final Logger PERF_LOGGER = LoggerFactory.getLogger("perfLog");
 
@@ -289,4 +287,21 @@ public class AutoPerfFirstFrameService {
         }
     }
 
+    @Override
+    public List<PerfBasePerfTaskInfoVO> getBaseTaskInfoList(String query, int start, int size) {
+        List<ClientPerfFirstFrameTaskDO> clientPerfFirstFrameTaskDOList = clientPerfFirstFrameTaskDAO.queryClientPerfFirstFrameTaskByKey(query,start,size) ;
+        List<PerfBasePerfTaskInfoVO> perfBasePerfTaskInfoVOS = new ArrayList<PerfBasePerfTaskInfoVO>() ;
+        if (clientPerfFirstFrameTaskDOList != null){
+            for (ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO :clientPerfFirstFrameTaskDOList){
+                if (clientPerfFirstFrameTaskDO == null){
+                    continue;
+                }
+                PerfBasePerfTaskInfoVO perfTaskInfoVO = new PerfBasePerfTaskInfoVO() ;
+                perfTaskInfoVO.setId(clientPerfFirstFrameTaskDO.getId());
+                perfTaskInfoVO.setName(clientPerfFirstFrameTaskDO.getTaskName());
+                perfTaskInfoVO.setType(AutoPerfType.FIRST_FRAME.getName());
+            }
+        }
+        return perfBasePerfTaskInfoVOS;
+    }
 }

@@ -37,6 +37,17 @@
         LIMIT #{start},#{size}
     </select>
 
+    <select id="queryClientPerfFirstFrameTaskByKey" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_first_frame_task_info
+        WHERE 1 = 1
+        <if test="owner != null and owner !=''">
+            AND task_name like CONCAT ("%",#{task_name},"%")
+        </if>
+        ORDER BY id DESC
+        LIMIT #{start},#{size}
+    </select>
+
     <select id="getClientPerfFirstFrameTaskCount" resultType="java.lang.Integer">
         SELECT count(*)
         FROM vcloud_client_perf_first_frame_task_info
