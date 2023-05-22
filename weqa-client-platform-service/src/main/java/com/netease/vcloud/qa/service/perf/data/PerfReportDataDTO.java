@@ -14,7 +14,9 @@ public class PerfReportDataDTO {
 
     private List<Long> taskList ;
 
-    private Long baseLineList ;
+    private Long baseLine ;
+
+    private String owner ;
 
     public String getName() {
         return name;
@@ -40,11 +42,19 @@ public class PerfReportDataDTO {
         this.taskList = taskList;
     }
 
-    public Long getBaseLineList() {
-        return baseLineList;
+    public Long getBaseLine() {
+        return baseLine;
     }
 
-    public void setBaseLineList(Long baseLineList) {
-        this.baseLineList = baseLineList;
+    public void setBaseLine(Long baseLine) {
+        this.baseLine = baseLine;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

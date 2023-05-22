@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.perf.report;
 
+import com.netease.vcloud.qa.service.perf.data.AutoPerfBaseReportResultDataInterface;
 import com.netease.vcloud.qa.service.perf.view.PerfBasePerfTaskInfoVO;
 
 import java.util.List;
@@ -12,4 +13,7 @@ import java.util.List;
 public interface AutoPerfBaseReportInterface {
 
     List<PerfBasePerfTaskInfoVO> getBaseTaskInfoList(String query, int start, int limit) ;
+
+    AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultData) ;
+
 }

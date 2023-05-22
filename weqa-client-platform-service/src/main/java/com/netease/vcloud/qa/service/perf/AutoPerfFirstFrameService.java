@@ -16,10 +16,7 @@ import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
-import com.netease.vcloud.qa.service.perf.data.AutoPerfTaskDTO;
-import com.netease.vcloud.qa.service.perf.data.FirstFrameDataDTO;
-import com.netease.vcloud.qa.service.perf.data.FirstFrameTaskDTO;
-import com.netease.vcloud.qa.service.perf.data.FirstFrameType;
+import com.netease.vcloud.qa.service.perf.data.*;
 import com.netease.vcloud.qa.service.perf.report.AutoPerfBaseReportInterface;
 import com.netease.vcloud.qa.service.perf.view.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -304,5 +301,10 @@ public class AutoPerfFirstFrameService  implements AutoPerfBaseReportInterface {
             }
         }
         return perfBasePerfTaskInfoVOS;
+    }
+
+    @Override
+    public AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultData) {
+        return null;
     }
 }

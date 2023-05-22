@@ -90,7 +90,7 @@ public class AutoPerfBaseLineService {
      * @param perfBaseLineDTO
      * @return
      */
-    public Long insertNewPerfBaseLine(PerfBaseLineDTO perfBaseLineDTO){
+    public Long insertNewPerfBaseLine(PerfBaseLineDTO perfBaseLineDTO) throws AutoTestRunException{
         return null ;
     }
 

@@ -16,4 +16,6 @@ public interface ClientPerfReportDAO {
     List<ClientPerfReportDO> queryClientPerfReportList(@Param("type") byte type, @Param("start") int page, @Param("size") int size) ;
 
     int countClientPerfReportList(@Param("type") byte type) ;
+
+    int insertClientPerfReport(@Param("report") ClientPerfReportDO clientPerfReportDO) ;
 }

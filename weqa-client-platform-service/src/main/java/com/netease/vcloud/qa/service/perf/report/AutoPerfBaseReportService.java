@@ -1,13 +1,16 @@
 package com.netease.vcloud.qa.service.perf.report;
 
+import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.dao.ClientPerfBaseLineDAO;
 import com.netease.vcloud.qa.dao.ClientPerfReportDAO;
+import com.netease.vcloud.qa.model.ClientPerfBaseLineDO;
 import com.netease.vcloud.qa.model.ClientPerfReportDO;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.perf.AutoPerfType;
+import com.netease.vcloud.qa.service.perf.data.AutoPerfBaseReportResultDataInterface;
 import com.netease.vcloud.qa.service.perf.data.PerfReportDataDTO;
 import com.netease.vcloud.qa.service.perf.view.PerfBasePerfTaskInfoVO;
 import com.netease.vcloud.qa.service.perf.view.PerfBaseReportDetailVO;
@@ -118,8 +121,52 @@ public class AutoPerfBaseReportService {
         return perfBaseReportListVO ;
     }
 
-    public Long createNewPerfReport(PerfReportDataDTO perfReportDataDTO){
-        return null ;
+    public Long createNewPerfReport(PerfReportDataDTO perfReportDataDTO) throws AutoTestRunException{
+        if (perfReportDataDTO == null||CollectionUtils.isEmpty(perfReportDataDTO.getTaskList())){
+            TC_LOGGER.error("[AutoPerfBaseReportService.createNewPerfReport] perf ReportDataDTO is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        String type = perfReportDataDTO.getType() ;
+        AutoPerfType autoPerfType = AutoPerfType.getAutoPerfTypeByName(type) ;
+        if (autoPerfType == null){
+            TC_LOGGER.error("[AutoPerfBaseReportService.createNewPerfReport]autoPerfType is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        AutoPerfBaseReportInterface autoPerfBaseReportService = autoPerfTypeServiceManager.getAutoPerfBaseReportByType(autoPerfType) ;
+        if (autoPerfBaseReportService == null){
+            TC_LOGGER.error("[AutoPerfBaseReportService.createNewPerfReport]autoPerfBaseReportService is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        Long baseLineId = perfReportDataDTO.getBaseLine() ;
+        String baseLineData = null ;
+        if (baseLineId != null) {
+            ClientPerfBaseLineDO clientPerfBaseLineDO = clientPerfBaseLineDAO.getClientPerfBaseLineDOById(baseLineId) ;
+            if (clientPerfBaseLineDO != null && clientPerfBaseLineDO.getBaseLineType()==autoPerfType.getCode()){
+                baseLineData = clientPerfBaseLineDO.getResultData() ;
+            }
+        }
+        AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData =autoPerfBaseReportService.buildAutoPerfBaseReportResultData(perfReportDataDTO.getTaskList(),baseLineData) ;
+        if (autoPerfBaseReportResultData == null){
+            TC_LOGGER.error("[AutoPerfBaseReportService.createNewPerfReport]autoPerfBaseReportResultData build fail");
+            throw  new AutoTestRunException(AutoTestRunException.BUILD_REPORT_RESULT_FAIL) ;
+        }
+        ClientPerfReportDO clientPerfReportDO = new ClientPerfReportDO() ;
+        clientPerfReportDO.setReportName(perfReportDataDTO.getName());
+        clientPerfReportDO.setReportType(autoPerfType.getCode());
+        clientPerfReportDO.setOwner(perfReportDataDTO.getOwner());
+        clientPerfReportDO.setRelationBase(perfReportDataDTO.getBaseLine());
+        StringBuilder stringBuilder = new StringBuilder() ;
+        for (Long taskId : perfReportDataDTO.getTaskList()){
+            stringBuilder.append(taskId).append("|") ;
+        }
+        clientPerfReportDO.setRelationTask(stringBuilder.toString());
+        clientPerfReportDO.setResultData(JSONObject.toJSONString(autoPerfBaseReportResultData));
+        int count = clientPerfReportDAO.insertClientPerfReport(clientPerfReportDO) ;
+        if (count > 0){
+            return clientPerfReportDO.getId() ;
+        }else {
+            return null;
+        }
     }
 
 

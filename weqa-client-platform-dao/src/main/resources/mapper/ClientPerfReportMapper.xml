@@ -31,4 +31,9 @@
         WHERE report_type = #{type}
     </select>
 
+    <insert id="insertClientPerfReport" parameterType="com.netease.vcloud.qa.model.ClientPerfReportDO"  keyProperty="report.id" useGeneratedKeys="true">
+        insert into vcloud_client_perf_report_info(gmt_create,gmt_update,report_name,report_type,owner,relation_task,relation_base,result_data)
+        value(now(),now(),#{report.reportName},,#{report.reportType},,#{report.owner},,#{report.relationTask},#{report.relationBase},,#{report.resultData})
+    </insert>
+
 </mapper>

@@ -17,4 +17,6 @@ public interface ClientPerfBaseLineDAO {
     List<ClientPerfBaseLineDO> queryClientPerfBaseLineList(@Param("type") byte type, @Param("start") int page, @Param("size") int size) ;
 
     int countClientPerfBaseLineDOList(@Param("type") byte type) ;
+
+    ClientPerfBaseLineDO getClientPerfBaseLineDOById(@Param("id")long id) ;
 }

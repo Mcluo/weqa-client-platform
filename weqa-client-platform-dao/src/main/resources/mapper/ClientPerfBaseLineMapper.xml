@@ -29,4 +29,10 @@
         WHERE baseline_type = #{type}
     </select>
 
+
+    <select id="getClientPerfBaseLineDOById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_baseline_info
+        WHERE id = #{id}
+    </select>
 </mapper>

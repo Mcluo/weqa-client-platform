@@ -8,6 +8,7 @@ import com.netease.vcloud.qa.auto.TaskRunStatus;
 import com.netease.vcloud.qa.dao.*;
 import com.netease.vcloud.qa.model.*;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+import com.netease.vcloud.qa.service.perf.data.AutoPerfBaseReportResultDataInterface;
 import com.netease.vcloud.qa.service.perf.report.AutoPerfBaseReportInterface;
 import com.netease.vcloud.qa.service.perf.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -274,5 +275,10 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
             perfBasePerfTaskInfoVOList.add(perfBasePerfTaskInfoVO) ;
         }
         return perfBasePerfTaskInfoVOList;
+    }
+
+    @Override
+    public AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultData) {
+        return null;
     }
 }
