@@ -26,9 +26,10 @@ public class AutoReportController {
     @RequestMapping("/addIosMemoryInfo")
     @ResponseBody
     public ResultVO addIosMemoryInfo(@RequestBody JSONObject jsonObject ) {
-        List<VcloudClientAutoIosPrefMemoryInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefMemoryInfoDO.class);
+        List<VcloudClientAutoIosPrefMemoryInfoDO> list = jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefMemoryInfoDO.class);
+        Integer taskId = autoPerfReportService.getTaskId(jsonObject.getLong("taskId"));
         for(VcloudClientAutoIosPrefMemoryInfoDO clientAutoIosPrefMemoryInfoDO : list){
-            clientAutoIosPrefMemoryInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
+            clientAutoIosPrefMemoryInfoDO.setTaskid(taskId);
             autoPerfReportService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
         }
         return ResultUtils.build(true);
@@ -38,8 +39,9 @@ public class AutoReportController {
     @ResponseBody
     public ResultVO addIosPowerInfo(@RequestBody JSONObject jsonObject ) {
         List<VcloudClientAutoIosPrefInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoIosPrefInfoDO.class);
+        Integer taskId = autoPerfReportService.getTaskId(jsonObject.getLong("taskId"));
         for(VcloudClientAutoIosPrefInfoDO clientAutoIosPrefInfoDO : list){
-            clientAutoIosPrefInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
+            clientAutoIosPrefInfoDO.setTaskid(taskId);
             autoPerfReportService.insertIosInfo(clientAutoIosPrefInfoDO);
         }
         return ResultUtils.build(true);
@@ -49,8 +51,9 @@ public class AutoReportController {
     @ResponseBody
     public ResultVO addAndroidInfo(@RequestBody JSONObject jsonObject ) {
         List<VcloudClientAutoAndroidPrefInfoDO> list =  jsonObject.getJSONArray("listData").toJavaList(VcloudClientAutoAndroidPrefInfoDO.class);
+        Integer taskId = autoPerfReportService.getTaskId(jsonObject.getLong("taskId"));
         for (VcloudClientAutoAndroidPrefInfoDO clientAutoAndroidPrefInfoDO: list){
-            clientAutoAndroidPrefInfoDO.setTaskid(jsonObject.getIntValue("taskId"));
+            clientAutoAndroidPrefInfoDO.setTaskid(taskId);
             autoPerfReportService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);
         }
         return ResultUtils.build(true);
