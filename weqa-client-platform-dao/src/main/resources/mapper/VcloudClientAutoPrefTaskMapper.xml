@@ -290,6 +290,18 @@
     LIMIT #{start},#{size}
   </select>
 
+  <select id="queryAutoPerfTaskListByKey" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM vcloud_client_auto_pref_task
+    WHERE 1 = 1
+    <if test="key != null and key != ''">
+      AND name like CONCAT ("%",#{key},"%")
+    </if>
+    ORDER BY id DESC
+    LIMIT #{start},#{size}
+  </select>
+
   <select id="countAUtoPerfTask" resultType="java.lang.Integer">
     SELECT count(1)
     FROM vcloud_client_auto_pref_task

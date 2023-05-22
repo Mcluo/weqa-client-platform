@@ -30,6 +30,10 @@ public class ClientPerfBaseLineDO {
      */
     private byte baseLineType ;
     /**
+     * 归属人
+     */
+    private String owner ;
+    /**
      * 结果
      */
     private String resultData ;
@@ -80,5 +84,13 @@ public class ClientPerfBaseLineDO {
 
     public void setResultData(String resultData) {
         this.resultData = resultData;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientPerfBaseLineDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientPerfBaseLineDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="baseline_name" jdbcType="VARCHAR" property="baseLineName"/>
+        <result column="baseline_type" jdbcType="TINYINT" property="baselineType"/>
+        <result column="owner" jdbcType="VARCHAR" property="owner"/>
+        <result column="result_data" jdbcType="VARCHAR" property="resultData"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,baseline_name,baseline_type,owner,result_data
+    </sql>
+
+    <select id="queryClientPerfBaseLineList" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_baseline_info
+        WHERE baseline_type = #{type}
+        ORDER BY id DESC
+        LIMIT #{start},#{size}
+    </select>
+
+    <select id="countClientPerfBaseLineDOList" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM vcloud_client_perf_baseline_info
+        WHERE baseline_type = #{type}
+    </select>
+
+</mapper>

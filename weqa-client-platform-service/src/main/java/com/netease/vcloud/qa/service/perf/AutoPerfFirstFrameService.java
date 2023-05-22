@@ -300,6 +300,7 @@ public class AutoPerfFirstFrameService  implements AutoPerfBaseReportInterface {
                 perfTaskInfoVO.setId(clientPerfFirstFrameTaskDO.getId());
                 perfTaskInfoVO.setName(clientPerfFirstFrameTaskDO.getTaskName());
                 perfTaskInfoVO.setType(AutoPerfType.FIRST_FRAME.getName());
+                perfBasePerfTaskInfoVOS.add(perfTaskInfoVO);
             }
         }
         return perfBasePerfTaskInfoVOS;

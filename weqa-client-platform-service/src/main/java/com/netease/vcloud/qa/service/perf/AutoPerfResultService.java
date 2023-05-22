@@ -258,6 +258,21 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
 
     @Override
     public List<PerfBasePerfTaskInfoVO> getBaseTaskInfoList(String query, int start, int limit) {
-        return null;
+        List<VcloudClientAutoPerfTaskDO> vcloudClientAutoPerfTaskDOS = clientAutoPerfTaskDAO.queryAutoPerfTaskListByKey(query, start, limit) ;
+        List<PerfBasePerfTaskInfoVO> perfBasePerfTaskInfoVOList = new ArrayList<PerfBasePerfTaskInfoVO>() ;
+        if (CollectionUtils.isEmpty(vcloudClientAutoPerfTaskDOS)){
+            return perfBasePerfTaskInfoVOList ;
+        }
+        for (VcloudClientAutoPerfTaskDO clientAutoPerfTaskDO : vcloudClientAutoPerfTaskDOS){
+            if (clientAutoPerfTaskDO == null){
+                continue;
+            }
+            PerfBasePerfTaskInfoVO perfBasePerfTaskInfoVO = new PerfBasePerfTaskInfoVO() ;
+            perfBasePerfTaskInfoVO.setId(new Long(clientAutoPerfTaskDO.getId()));
+            perfBasePerfTaskInfoVO.setName(clientAutoPerfTaskDO.getName());
+            perfBasePerfTaskInfoVO.setType(AutoPerfType.NORMAL.getName());
+            perfBasePerfTaskInfoVOList.add(perfBasePerfTaskInfoVO) ;
+        }
+        return perfBasePerfTaskInfoVOList;
     }
 }

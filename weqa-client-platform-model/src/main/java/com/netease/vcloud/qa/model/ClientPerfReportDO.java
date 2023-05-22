@@ -31,6 +31,10 @@ public class ClientPerfReportDO {
      */
     private byte reportType ;
     /**
+     * 归属人
+     */
+    private String owner ;
+    /**
      * 关联任务，以“|”划分
      */
     private String relationTask ;
@@ -105,5 +109,13 @@ public class ClientPerfReportDO {
 
     public void setResultData(String resultData) {
         this.resultData = resultData;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }
