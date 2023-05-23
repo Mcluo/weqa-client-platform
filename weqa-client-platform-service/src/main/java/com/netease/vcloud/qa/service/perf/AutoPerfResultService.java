@@ -278,7 +278,18 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
     }
 
     @Override
-    public AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultData) {
+    public AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultDataStr) {
+        return null;
+    }
+
+
+    @Override
+    public AutoPerfBaseReportResultDataInterface buildBaseLineByReport(String reportResultDataStr) {
+        return null;
+    }
+
+    @Override
+    public AutoPerfBaseReportResultDataInterface buildResultVO(String resultDataStr) {
         return null;
     }
 }

@@ -7,4 +7,5 @@ import java.io.Serializable;
  * on 2023/5/22 21:15
  */
 public interface AutoPerfBaseReportResultDataInterface extends Serializable {
+
 }

@@ -41,7 +41,7 @@ public class ClientPerfReportDO {
     /**
      * 关联基线ID
      */
-    private long relationBase ;
+    private Long relationBase ;
     /**
      * 结果JSON
      */
@@ -95,11 +95,11 @@ public class ClientPerfReportDO {
         this.relationTask = relationTask;
     }
 
-    public long getRelationBase() {
+    public Long getRelationBase() {
         return relationBase;
     }
 
-    public void setRelationBase(long relationBase) {
+    public void setRelationBase(Long relationBase) {
         this.relationBase = relationBase;
     }
 

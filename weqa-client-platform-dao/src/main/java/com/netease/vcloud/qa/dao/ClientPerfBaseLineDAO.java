@@ -1,7 +1,6 @@
 package com.netease.vcloud.qa.dao;
 
 import com.netease.vcloud.qa.model.ClientPerfBaseLineDO;
-import com.netease.vcloud.qa.model.ClientPerfReportDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,4 +18,6 @@ public interface ClientPerfBaseLineDAO {
     int countClientPerfBaseLineDOList(@Param("type") byte type) ;
 
     ClientPerfBaseLineDO getClientPerfBaseLineDOById(@Param("id")long id) ;
+
+    int insertClientPerfBaseLineDOList(@Param("baseLine")ClientPerfBaseLineDO clientPerfBaseLineDO) ;
 }

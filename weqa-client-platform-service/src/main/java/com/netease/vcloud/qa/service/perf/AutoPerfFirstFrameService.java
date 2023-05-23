@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.perf;
 
+import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
@@ -8,10 +9,7 @@ import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTestSuitRelationDAO;
 import com.netease.vcloud.qa.dao.ClientPerfFirstFrameDataDAO;
 import com.netease.vcloud.qa.dao.ClientPerfFirstFrameTaskDAO;
-import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
-import com.netease.vcloud.qa.model.ClientAutoTestSuitRelationDO;
-import com.netease.vcloud.qa.model.ClientPerfFirstFrameDataDO;
-import com.netease.vcloud.qa.model.ClientPerfFirstFrameTaskDO;
+import com.netease.vcloud.qa.model.*;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
@@ -19,6 +17,7 @@ import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.perf.data.*;
 import com.netease.vcloud.qa.service.perf.report.AutoPerfBaseReportInterface;
 import com.netease.vcloud.qa.service.perf.view.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -304,7 +303,124 @@ public class AutoPerfFirstFrameService  implements AutoPerfBaseReportInterface {
     }
 
     @Override
-    public AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultData) {
-        return null;
+    public AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultDataStr) {
+        if (CollectionUtils.isEmpty(taskIdList)){
+            PERF_LOGGER.error("[AutoPerfFirstFrameService.buildAutoPerfBaseReportResultData]taskIdList is empty");
+            return null ;
+        }
+//        FirstFrameReportResultData baseLineResultData = null ;
+        Map<String,FirstFrameReportDetailData> perfTestReportDataMap = new HashMap<String, FirstFrameReportDetailData>() ;
+        if (StringUtils.isNotBlank(baselineResultDataStr)){
+            FirstFrameReportResultData baseLineResultData = JSONObject.parseObject(baselineResultDataStr,FirstFrameReportResultData.class) ;
+            List<FirstFrameReportDetailData> firstFrameBaseLineResultDataList = baseLineResultData.getDataList() ;
+            for (FirstFrameReportDetailData firstFrameReportDetailData : firstFrameBaseLineResultDataList){
+                if (firstFrameReportDetailData !=null){
+                    perfTestReportDataMap.put(firstFrameReportDetailData.getDeviceInfo(), firstFrameReportDetailData) ;
+                }
+            }
+        }
+        FirstFrameReportResultData firstFrameReportResultData = new FirstFrameReportResultData() ;
+        List<FirstFrameReportDetailData> dataList = new ArrayList<>() ;
+        firstFrameReportResultData.setDataList(dataList);
+        for (Long id : taskIdList) {
+            ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO = clientPerfFirstFrameTaskDAO.getClientPerfFirstFrameTaskById(id) ;
+            List<ClientPerfFirstFrameDataDO> clientPerfFirstFrameDataDOList = clientPerfFirstFrameDataDAO.getTaskFirstFrameData(id);
+            //处理为具体报告
+            FirstFrameReportDetailData firstFrameBaseLinetDetailData = perfTestReportDataMap.get(clientPerfFirstFrameTaskDO.getTaskName()) ;
+            FirstFrameReportDetailData firstFrameReportDetailData = null;
+            if (firstFrameBaseLinetDetailData!=null) {
+                firstFrameReportDetailData = this.buildFirstFrameReportDetailData(clientPerfFirstFrameTaskDO, clientPerfFirstFrameDataDOList, firstFrameBaseLinetDetailData.getData());
+            }else {
+                firstFrameReportDetailData = this.buildFirstFrameReportDetailData(clientPerfFirstFrameTaskDO, clientPerfFirstFrameDataDOList,null) ;
+            }
+            dataList.add(firstFrameReportDetailData) ;
+        }
+        return firstFrameReportResultData;
+    }
+
+    /**
+     * 构建基本的报告返回信息
+     * @param clientPerfFirstFrameTaskDO
+     * @param clientPerfFirstFrameDataDOList
+     * @param baseLineResultData
+     * @return
+     */
+    private FirstFrameReportDetailData buildFirstFrameReportDetailData( ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO,List<ClientPerfFirstFrameDataDO> clientPerfFirstFrameDataDOList,PerfTestReportData baseLineResultData){
+        FirstFrameReportDetailData firstFrameReportDetailData = new FirstFrameReportDetailData() ;
+        firstFrameReportDetailData.setTaskId(clientPerfFirstFrameTaskDO.getId());
+        firstFrameReportDetailData.setDeviceInfo(clientPerfFirstFrameTaskDO.getDeviceInfo());
+        PerfTestReportData perfTestReportData = new PerfTestReportData() ;
+        if (!CollectionUtils.isEmpty(clientPerfFirstFrameDataDOList)){
+            long total = 0  ;
+            int count = 0 ;
+            long max = Long.MIN_VALUE ;
+            long min = Long.MAX_VALUE ;
+            for (ClientPerfFirstFrameDataDO clientPerfFirstFrameDataDO : clientPerfFirstFrameDataDOList){
+                if (clientPerfFirstFrameDataDO == null){
+                    continue;
+                }
+                count++ ;
+                long data = clientPerfFirstFrameDataDO.getFirstFrameData();
+                total += data;
+                if (data > max){
+                    max = data ;
+                }
+                if (data < min){
+                    min = data ;
+                }
+            }
+            long avg = total / count ;
+            perfTestReportData.setAvg(avg);
+            perfTestReportData.setCount(count);
+            perfTestReportData.setMax(max);
+            perfTestReportData.setMin(min);
+            if (baseLineResultData!=null){
+                perfTestReportData.setBaseAvg(baseLineResultData.getBaseAvg());
+                perfTestReportData.setBaseMax(baseLineResultData.getBaseMax());
+                perfTestReportData.setBaseMin(baseLineResultData.getBaseMin());
+            }
+
+        }
+        firstFrameReportDetailData.setData(perfTestReportData);
+        return firstFrameReportDetailData ;
+    }
+
+
+    @Override
+    public AutoPerfBaseReportResultDataInterface buildBaseLineByReport(String reportResultDataStr) {
+        if (StringUtils.isBlank(reportResultDataStr)){
+            return null ;
+        }
+        FirstFrameReportResultData firstFrameReportResultData = JSONObject.parseObject(reportResultDataStr,FirstFrameReportResultData.class);
+        if (firstFrameReportResultData == null || CollectionUtils.isEmpty(firstFrameReportResultData.getDataList())) {
+            return null;
+        }
+        List<FirstFrameReportDetailData> baseLineDataList = new ArrayList<>() ;
+        for (FirstFrameReportDetailData firstFrameReportDetailData : firstFrameReportResultData.getDataList()){
+            if (firstFrameReportDetailData == null){
+                continue;
+            }
+            FirstFrameReportDetailData firstFrameBaseLineDetailData = new FirstFrameReportDetailData() ;
+            firstFrameBaseLineDetailData.setTaskId(firstFrameReportDetailData.getTaskId());
+            firstFrameBaseLineDetailData.setDeviceInfo(firstFrameReportDetailData.getDeviceInfo());
+            PerfTestReportData perfTestReportData = firstFrameReportDetailData.getData() ;
+            if (perfTestReportData != null) {
+                PerfTestReportData perfTestBaseLineData = new PerfTestReportData();
+                perfTestBaseLineData.setBaseMax(perfTestReportData.getMax());
+                perfTestBaseLineData.setBaseMin(perfTestReportData.getMin());
+                perfTestBaseLineData.setBaseAvg(perfTestReportData.getAvg());
+                firstFrameBaseLineDetailData.setData(perfTestBaseLineData);
+            }
+            baseLineDataList.add(firstFrameBaseLineDetailData) ;
+        }
+        FirstFrameReportResultData firstFrameBaseLineResultData = new FirstFrameReportResultData() ;
+        firstFrameBaseLineResultData.setDataList(baseLineDataList);
+        return  firstFrameBaseLineResultData ;
+    }
+
+    @Override
+    public AutoPerfBaseReportResultDataInterface buildResultVO(String resultDataStr) {
+        FirstFrameReportResultData firstFrameReportResultData = JSONObject.parseObject(resultDataStr,FirstFrameReportResultData.class);
+        return firstFrameReportResultData ;
     }
 }

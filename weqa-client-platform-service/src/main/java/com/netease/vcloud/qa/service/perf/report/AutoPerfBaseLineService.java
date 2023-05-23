@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.perf.report;
 
+import com.alibaba.fastjson.JSON;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
@@ -10,10 +11,12 @@ import com.netease.vcloud.qa.model.ClientPerfReportDO;
 import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.perf.AutoPerfType;
+import com.netease.vcloud.qa.service.perf.data.AutoPerfBaseReportResultDataInterface;
 import com.netease.vcloud.qa.service.perf.data.PerfBaseLineDTO;
 import com.netease.vcloud.qa.service.perf.view.PerfBaseLineDetailVO;
 import com.netease.vcloud.qa.service.perf.view.PerfBaseLineListVO;
 import com.netease.vcloud.qa.service.perf.view.PerfBaseLineVO;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,11 +94,68 @@ public class AutoPerfBaseLineService {
      * @return
      */
     public Long insertNewPerfBaseLine(PerfBaseLineDTO perfBaseLineDTO) throws AutoTestRunException{
-        return null ;
+        if (perfBaseLineDTO == null){
+            TC_LOGGER.error("[AutoPerfBaseLineService.insertNewPerfBaseLine] perfBaseLineDTO is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        if (StringUtils.isBlank(perfBaseLineDTO.getName())||perfBaseLineDTO.getReportId()==null){
+            TC_LOGGER.error("[AutoPerfBaseLineService.insertNewPerfBaseLine] some param is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        ClientPerfReportDO clientPerfReportDO = clientPerfReportDAO.getClientPerfReportDOById(perfBaseLineDTO.getReportId()) ;
+        if (clientPerfReportDO == null){
+            TC_LOGGER.error("[AutoPerfBaseLineService.insertNewPerfBaseLine] clientPerfReportDO is not exist");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        AutoPerfType autoPerfType = AutoPerfType.getAutoPerfTypeByCode(clientPerfReportDO.getReportType()) ;
+        if (autoPerfType == null){
+            TC_LOGGER.error("[AutoPerfBaseLineService.insertNewPerfBaseLine] autoPerfType is not exist");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        AutoPerfBaseReportInterface autoPerfBaseReportService = autoPerfTypeServiceManager.getAutoPerfBaseReportByType(autoPerfType) ;
+        ClientPerfBaseLineDO clientPerfBaseLineDO = new ClientPerfBaseLineDO() ;
+        clientPerfBaseLineDO.setBaseLineName(perfBaseLineDTO.getName());
+        clientPerfBaseLineDO.setBaseLineType(autoPerfType.getCode());
+        clientPerfBaseLineDO.setOwner(perfBaseLineDTO.getOwner());
+        String resultData = clientPerfReportDO.getResultData() ;
+        AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildBaseLineByReport(resultData) ;
+        clientPerfBaseLineDO.setResultData(JSON.toJSONString(autoPerfBaseReportResultData));
+        int count = clientPerfBaseLineDAO.insertClientPerfBaseLineDOList(clientPerfBaseLineDO) ;
+        if (count > 0) {
+            return clientPerfBaseLineDO.getId() ;
+        }else {
+            return null;
+        }
     }
 
-    public PerfBaseLineDetailVO getPerfBaselineDetail(Long baseLineId){
-        return null ;
+    public PerfBaseLineDetailVO getPerfBaselineDetail(Long baseLineId) throws AutoTestRunException{
+        if (baseLineId == null){
+            TC_LOGGER.error("[AutoPerfBaseLineService.getPerfBaselineDetail] baseLineId is null");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        ClientPerfBaseLineDO clientPerfBaseLineDO = clientPerfBaseLineDAO.getClientPerfBaseLineDOById(baseLineId) ;
+        if (clientPerfBaseLineDO == null){
+            TC_LOGGER.error("[AutoPerfBaseLineService.getPerfBaselineDetail] clientPerfBaseLineDO is null");
+            throw new AutoTestRunException(AutoTestRunException.TEST_BASELINE_IS_NOT_EXIST) ;
+        }
+        PerfBaseLineDetailVO perfBaseLineDetailVO = new PerfBaseLineDetailVO() ;
+        perfBaseLineDetailVO.setId(clientPerfBaseLineDO.getId());
+        perfBaseLineDetailVO.setName(clientPerfBaseLineDO.getBaseLineName());
+        perfBaseLineDetailVO.setTime(clientPerfBaseLineDO.getGmtCreate().getTime());
+        AutoPerfType autoPerfType = AutoPerfType.getAutoPerfTypeByCode(clientPerfBaseLineDO.getBaseLineType()) ;
+        if (autoPerfType != null){
+            perfBaseLineDetailVO.setType(autoPerfType.getName());
+        }
+        UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientPerfBaseLineDO.getOwner()) ;
+        if (userInfoBO != null) {
+            perfBaseLineDetailVO.setOwner(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        }
+        AutoPerfBaseReportInterface autoPerfBaseReportService = autoPerfTypeServiceManager.getAutoPerfBaseReportByType(autoPerfType) ;
+        if (autoPerfBaseReportService!=null) {
+            AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildResultVO(clientPerfBaseLineDO.getResultData());
+            perfBaseLineDetailVO.setBaseLineData(autoPerfBaseReportResultData);
+        }
+        return perfBaseLineDetailVO ;
     }
 
 }

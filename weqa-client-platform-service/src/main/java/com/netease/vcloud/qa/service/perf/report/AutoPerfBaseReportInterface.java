@@ -14,6 +14,10 @@ public interface AutoPerfBaseReportInterface {
 
     List<PerfBasePerfTaskInfoVO> getBaseTaskInfoList(String query, int start, int limit) ;
 
-    AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultData) ;
+    AutoPerfBaseReportResultDataInterface buildAutoPerfBaseReportResultData(List<Long> taskIdList, String baselineResultDataStr) ;
+
+    AutoPerfBaseReportResultDataInterface buildBaseLineByReport(String  reportResultDataStr) ;
+
+    AutoPerfBaseReportResultDataInterface buildResultVO(String resultDataStr) ;
 
 }

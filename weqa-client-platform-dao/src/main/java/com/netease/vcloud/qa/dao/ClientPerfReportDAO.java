@@ -18,4 +18,6 @@ public interface ClientPerfReportDAO {
     int countClientPerfReportList(@Param("type") byte type) ;
 
     int insertClientPerfReport(@Param("report") ClientPerfReportDO clientPerfReportDO) ;
+
+    ClientPerfReportDO getClientPerfReportDOById(@Param("id") Long id) ;
 }

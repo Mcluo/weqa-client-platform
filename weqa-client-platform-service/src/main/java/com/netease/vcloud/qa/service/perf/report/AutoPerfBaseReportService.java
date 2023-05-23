@@ -169,8 +169,32 @@ public class AutoPerfBaseReportService {
         }
     }
 
-
-    public PerfBaseReportDetailVO getPerfBaseReportDetail(Long reportId){
-        return null ;
+    public PerfBaseReportDetailVO getPerfBaseReportDetail(Long reportId) throws AutoTestRunException{
+        if (reportId == null){
+            TC_LOGGER.error("[AutoPerfBaseReportService.getPerfBaseReportDetail] param exception");
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+        }
+        ClientPerfReportDO clientPerfReportDO = clientPerfReportDAO.getClientPerfReportDOById(reportId) ;
+        if (clientPerfReportDO == null){
+            TC_LOGGER.error("[AutoPerfBaseReportService.getPerfBaseReportDetail] clientPerfReportDO is not exist");
+            throw new AutoTestRunException(AutoTestRunException.TEST_REPORT_IS_NOT_EXIST) ;
+        }
+        PerfBaseReportDetailVO perfBaseReportDetailVO = new PerfBaseReportDetailVO() ;
+        perfBaseReportDetailVO.setName(clientPerfReportDO.getReportName());
+        perfBaseReportDetailVO.setTime(clientPerfReportDO.getGmtCreate().getTime());
+        AutoPerfType autoPerfType = AutoPerfType.getAutoPerfTypeByCode(clientPerfReportDO.getReportType()) ;
+        if (autoPerfType!=null) {
+            perfBaseReportDetailVO.setType(autoPerfType.getName());
+        }
+        UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientPerfReportDO.getOwner()) ;
+        if (userInfoBO != null) {
+            perfBaseReportDetailVO.setOwner(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        }
+        AutoPerfBaseReportInterface autoPerfBaseReportService = autoPerfTypeServiceManager.getAutoPerfBaseReportByType(autoPerfType) ;
+        if (autoPerfBaseReportService!=null) {
+            AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildResultVO(clientPerfReportDO.getResultData());
+            perfBaseReportDetailVO.setResult(autoPerfBaseReportResultData);
+        }
+        return perfBaseReportDetailVO ;
     }
 }
