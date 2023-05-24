@@ -14,6 +14,8 @@ public class PerfBaseLineVO {
 
     private Long createTime ;
 
+    private String type ;
+
     private UserInfoVO owner ;
 
     public Long getId() {
@@ -38,6 +40,14 @@ public class PerfBaseLineVO {
 
     public void setCreateTime(Long createTime) {
         this.createTime = createTime;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public UserInfoVO getOwner() {

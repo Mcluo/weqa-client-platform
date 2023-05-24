@@ -77,13 +77,20 @@ public class AutoPerfBaseReportService {
      * @return
      */
     public PerfBaseReportListVO getPerfBaseReportList(AutoPerfType autoPerfType, int page, int size) throws AutoTestRunException {
-        if(autoPerfType == null){
-            TC_LOGGER.error("[AutoPerfBaseReportService.getPerfBaseReportList] autoPerfType is null");
-            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
-        }
+//        if(autoPerfType == null){
+//            TC_LOGGER.error("[AutoPerfBaseReportService.getPerfBaseReportList] autoPerfType is null");
+//            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+//        }
         int start = (page - 1) * size ;
-        List<ClientPerfReportDO> clientPerfReportDOList = clientPerfReportDAO.queryClientPerfReportList(autoPerfType.getCode(), start,size) ;
-        int total = clientPerfReportDAO.countClientPerfReportList(autoPerfType.getCode());
+        List<ClientPerfReportDO> clientPerfReportDOList = null ;
+        int total = 0 ;
+        if (autoPerfType != null) {
+            clientPerfReportDOList = clientPerfReportDAO.queryClientPerfReportList(autoPerfType.getCode(), start, size);
+            total = clientPerfReportDAO.countClientPerfReportList(autoPerfType.getCode());
+        }else {
+            clientPerfReportDOList = clientPerfReportDAO.queryClientPerfReportList(null, start, size);
+            total = clientPerfReportDAO.countClientPerfReportList(null);
+        }
         PerfBaseReportListVO perfBaseReportListVO = new PerfBaseReportListVO() ;
         perfBaseReportListVO.setPage(page);
         perfBaseReportListVO.setSize(size);

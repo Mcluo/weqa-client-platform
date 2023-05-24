@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface ClientPerfBaseLineDAO {
 
-    List<ClientPerfBaseLineDO> queryClientPerfBaseLineList(@Param("type") byte type, @Param("start") int page, @Param("size") int size) ;
+    List<ClientPerfBaseLineDO> queryClientPerfBaseLineList(@Param("type") Byte type, @Param("start") int page, @Param("size") int size) ;
 
-    int countClientPerfBaseLineDOList(@Param("type") byte type) ;
+    int countClientPerfBaseLineDOList(@Param("type") Byte type) ;
 
     ClientPerfBaseLineDO getClientPerfBaseLineDOById(@Param("id")long id) ;
 

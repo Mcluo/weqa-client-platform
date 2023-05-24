@@ -52,13 +52,20 @@ public class AutoPerfBaseLineService {
      * @return
      */
     public PerfBaseLineListVO getPerfBaseLineList(AutoPerfType autoPerfType,int current,int size) throws AutoTestRunException {
-        if(autoPerfType == null){
-            TC_LOGGER.error("[AutoPerfBaseLineService.getPerfBaseLineList] autoPerfType is null");
-            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
-        }
+//        if(autoPerfType == null){
+//            TC_LOGGER.error("[AutoPerfBaseLineService.getPerfBaseLineList] autoPerfType is null");
+//            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_PARAM_EXCEPTION) ;
+//        }
         int start = (current - 1 ) * size ;
-        List<ClientPerfBaseLineDO> clientPerfBaseLineDOList = clientPerfBaseLineDAO.queryClientPerfBaseLineList(autoPerfType.getCode(),start,size) ;
-        int total = clientPerfBaseLineDAO.countClientPerfBaseLineDOList(autoPerfType.getCode()) ;
+        List<ClientPerfBaseLineDO> clientPerfBaseLineDOList = null ;
+        int total = 0 ;
+        if (autoPerfType != null) {
+            clientPerfBaseLineDOList = clientPerfBaseLineDAO.queryClientPerfBaseLineList(autoPerfType.getCode(), start, size);
+            total = clientPerfBaseLineDAO.countClientPerfBaseLineDOList(autoPerfType.getCode());
+        }else {
+            clientPerfBaseLineDOList = clientPerfBaseLineDAO.queryClientPerfBaseLineList(null, start, size);
+            total = clientPerfBaseLineDAO.countClientPerfBaseLineDOList(null);
+        }
         PerfBaseLineListVO perfBaseLineListVO = new PerfBaseLineListVO() ;
         perfBaseLineListVO.setPage(current);
         perfBaseLineListVO.setSize(size);
@@ -78,6 +85,10 @@ public class AutoPerfBaseLineService {
                 perfBaseLineVO.setId(clientPerfBaseLineDO.getId());
                 perfBaseLineVO.setName(clientPerfBaseLineDO.getBaseLineName());
                 perfBaseLineVO.setCreateTime(clientPerfBaseLineDO.getGmtCreate().getTime());
+                AutoPerfType baseLineType = AutoPerfType.getAutoPerfTypeByCode(clientPerfBaseLineDO.getBaseLineType()) ;
+                if (baseLineType!=null) {
+                    perfBaseLineVO.setType(baseLineType.getName());
+                }
                 UserInfoBO userInfoBO = userInfoBOMap.get(clientPerfBaseLineDO.getOwner()) ;
                 if (userInfoBO != null) {
                     perfBaseLineVO.setOwner(CommonUtils.buildUserInfoVOByBO(userInfoBO));

@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface ClientPerfReportDAO {
 
-    List<ClientPerfReportDO> queryClientPerfReportList(@Param("type") byte type, @Param("start") int page, @Param("size") int size) ;
+    List<ClientPerfReportDO> queryClientPerfReportList(@Param("type") Byte type, @Param("start") int page, @Param("size") int size) ;
 
-    int countClientPerfReportList(@Param("type") byte type) ;
+    int countClientPerfReportList(@Param("type") Byte type) ;
 
     int insertClientPerfReport(@Param("report") ClientPerfReportDO clientPerfReportDO) ;
 

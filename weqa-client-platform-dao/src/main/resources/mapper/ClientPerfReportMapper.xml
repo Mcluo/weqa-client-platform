@@ -20,7 +20,10 @@
     <select id="queryClientPerfReportList" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_perf_report_info
-        WHERE report_type = #{type}
+        WHERE 1=1
+        <if test="type != null">
+            AND report_type = #{type}
+        </if>
         ORDER BY id DESC
         LIMIT #{start},#{size}
     </select>
@@ -28,7 +31,10 @@
     <select id="countClientPerfReportList" resultType="java.lang.Integer">
         SELECT count(1)
         FROM vcloud_client_perf_report_info
-        WHERE report_type = #{type}
+        WHERE 1=1
+        <if test="type != null">
+            AND report_type = #{type}
+        </if>
     </select>
 
     <insert id="insertClientPerfReport" parameterType="com.netease.vcloud.qa.model.ClientPerfReportDO"  keyProperty="report.id" useGeneratedKeys="true">

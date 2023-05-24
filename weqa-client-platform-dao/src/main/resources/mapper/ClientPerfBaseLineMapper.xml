@@ -18,7 +18,10 @@
     <select id="queryClientPerfBaseLineList" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_perf_baseline_info
-        WHERE baseline_type = #{type}
+        WHERE 1=1
+        <if test="type != null">
+            AND baseline_type = #{type}
+        </if>
         ORDER BY id DESC
         LIMIT #{start},#{size}
     </select>
@@ -26,7 +29,10 @@
     <select id="countClientPerfBaseLineDOList" resultType="java.lang.Integer">
         SELECT count(1)
         FROM vcloud_client_perf_baseline_info
-        WHERE baseline_type = #{type}
+        WHERE 1=1
+        <if test="type != null">
+            AND baseline_type = #{type}
+        </if>
     </select>
 
     <select id="getClientPerfBaseLineDOById" resultMap="BaseResultMap">

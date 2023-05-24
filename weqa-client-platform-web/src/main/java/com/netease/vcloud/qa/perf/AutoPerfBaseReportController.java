@@ -72,15 +72,15 @@ public class AutoPerfBaseReportController {
      */
     @RequestMapping("/report/query")
     @ResponseBody
-    public ResultVO queryPerfBaseReportList(@RequestParam(name = "type",required = false,defaultValue = "normal") String type,
+    public ResultVO queryPerfBaseReportList(@RequestParam(name = "type",required = false) String type,
                                             @RequestParam(name = "current",required = false,defaultValue = "1")int current,
                                             @RequestParam(name = "size",required = false,defaultValue = "10")int size){
         ResultVO resultVO = null ;
         AutoPerfType autoPerfType = AutoPerfType.getAutoPerfTypeByName(type) ;
-        if (autoPerfType == null){
-            resultVO = ResultUtils.buildFail()  ;
-            return resultVO ;
-        }
+//        if (autoPerfType == null){
+//            resultVO = ResultUtils.buildFail()  ;
+//            return resultVO ;
+//        }
         try{
             PerfBaseReportListVO perfBaseReportListVO = autoPerfBaseReportService.getPerfBaseReportList(autoPerfType,current,size) ;
             if (perfBaseReportListVO == null){
@@ -104,15 +104,15 @@ public class AutoPerfBaseReportController {
      */
     @RequestMapping("/baseline/query")
     @ResponseBody
-    public ResultVO queryPerfBaseLineList(@RequestParam(name = "type",required = false,defaultValue = "normal") String type,
+    public ResultVO queryPerfBaseLineList(@RequestParam(name = "type",required = false) String type,
                                             @RequestParam(name = "current",required = false,defaultValue = "1")int current,
                                             @RequestParam(name = "size",required = false,defaultValue = "10")int size){
         ResultVO resultVO = null ;
         AutoPerfType autoPerfType = AutoPerfType.getAutoPerfTypeByName(type) ;
-        if (autoPerfType == null){
-            resultVO = ResultUtils.buildFail()  ;
-            return resultVO ;
-        }
+//        if (autoPerfType == null){
+//            resultVO = ResultUtils.buildFail()  ;
+//            return resultVO ;
+//        }
         try{
             PerfBaseLineListVO perfBaseLineListVO = autoPerfBaseLineService.getPerfBaseLineList(autoPerfType,current,size) ;
             if (perfBaseLineListVO == null){
