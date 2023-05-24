@@ -75,4 +75,5 @@ public class PerfTestReportData {
     public void setBaseAvg(Number baseAvg) {
         this.baseAvg = baseAvg;
     }
+
 }

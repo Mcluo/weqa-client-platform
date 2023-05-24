@@ -128,6 +128,7 @@ public class AutoPerfBaseReportController {
 
     /**
      * http://127.0.0.1:8788/g2-client/perf/base/report/create?name=report&type=firstFrame&task=1&owner=luqiuwei
+     * http://127.0.0.1:8788/g2-client/perf/base/report/create?name=report&type=normal&task=51&owner=system&base=9
      * @param name
      * @param type
      * @param taskList
@@ -164,6 +165,7 @@ public class AutoPerfBaseReportController {
 
     /**
      * http://127.0.0.1:8788/g2-client/perf/base/baseline/create?name=baseline&report=1&owner=system
+     * http://127.0.0.1:8788/g2-client/perf/base/baseline/create?name=baseline&report=8&owner=system
      * @param name
      * @param reportId
      * @param owner

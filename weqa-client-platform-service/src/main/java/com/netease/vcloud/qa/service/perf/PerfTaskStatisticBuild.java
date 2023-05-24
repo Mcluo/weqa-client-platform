@@ -32,10 +32,16 @@ public class PerfTaskStatisticBuild {
     }
 
     public Number getMax() {
+        if (count == 0){
+            return 0 ;
+        }
         return max;
     }
 
     public Number getMin() {
+        if (count == 0){
+            return 0 ;
+        }
         return min;
     }
 
