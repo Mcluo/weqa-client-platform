@@ -219,11 +219,11 @@ public class AutoPerfBaseReportController {
 
 
     /**
-     * http://127.0.0.1:8788/g2-client/perf/base/baseline/get?id=4
+     * http://127.0.0.1:8788/g2-client/perf/base/baseline/get?id=9
      * @param id
      * @return
      */
-    @RequestMapping("/baseLine/get")
+    @RequestMapping("/baseline/get")
     @ResponseBody
     public ResultVO getBaseLine(@RequestParam(name = "id") Long id ){
         ResultVO resultVO = null ;
