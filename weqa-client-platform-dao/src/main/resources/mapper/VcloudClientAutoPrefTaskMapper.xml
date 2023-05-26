@@ -316,4 +316,11 @@
     SET auto_task_id = #{auto,jdbcType=BIGINT}
     where id = #{perf,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByPrimaryAuto" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vcloud_client_auto_pref_task
+    where auto_task_id = #{auto,jdbcType=BIGINT}
+  </select>
 </mapper>

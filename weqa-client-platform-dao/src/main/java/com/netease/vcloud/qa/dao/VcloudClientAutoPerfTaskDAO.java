@@ -32,4 +32,6 @@ public interface VcloudClientAutoPerfTaskDAO {
     int countAUtoPerfTask(@Param("user") String userInfo) ;
 
     int updatePerfTestAutoCase(@Param("perf") int perfId ,@Param("auto") Long autoTaskId) ;
+
+    VcloudClientAutoPerfTaskDO selectByPrimaryAuto(@Param("auto") Long autoTaskId);
 }

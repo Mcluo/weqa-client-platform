@@ -15,10 +15,11 @@
         <result column="git_branch" jdbcType="VARCHAR" property="gitBranch"/>
         <result column="task_status" jdbcType="TINYINT" property="taskStatus"/>
         <result column="project_id" jdbcType="BIGINT" property="projectId"/>
+        <result column="email" jdbcType="INTEGER" property="email"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status,project_id
+        select id,gmt_create,gmt_update,task_type,task_name,test_suit_id,operator,device_type,device_info,git_info,git_branch,task_status,project_id,email
     </sql>
 
     <select id="getClientAutoTaskInfoById" resultMap="BaseResultMap">
@@ -54,6 +55,19 @@
         ORDER BY id desc
         LIMIT #{start}, #{size}
     </select>
+
+    <select id="queryAutoTaskInfo1" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_task_info
+        WHERE (task_status=4 or task_status=-1 or task_status=-2 or task_status=9)
+        AND email=#{email}
+    </select>
+
+    <update id="updateClientAutoTaskEmail">
+        UPDATE vcloud_client_auto_task_info
+        SET gmt_update=now(),email=#{email}
+        WHERE id = #{id}
+    </update>
 
     <select id="queryAutoTaskInfoCount" resultType="java.lang.Integer">
         SELECT count(1)

@@ -41,6 +41,16 @@ public class ClientAutoTaskInfoDO {
 
     private Long projectId ;
 
+    private Integer email;
+
+    public Integer getEmail() {
+        return email;
+    }
+
+    public void setEmail(Integer email) {
+        this.email = email;
+    }
+
     public long getId() {
         return id;
     }
