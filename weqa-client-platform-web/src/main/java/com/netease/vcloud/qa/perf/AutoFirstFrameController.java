@@ -3,6 +3,7 @@ package com.netease.vcloud.qa.perf;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
+import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.perf.AutoPerfFirstFrameService;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameDataDTO;
 import com.netease.vcloud.qa.service.perf.data.FirstFrameTaskDTO;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 首帧相关接口
@@ -39,17 +42,29 @@ public class AutoFirstFrameController {
     @ResponseBody
     public ResultVO createFirstFrameTask(@RequestParam("name") String name ,
                                          @RequestParam("device") String deviceInfo,
-                                         @RequestParam("operator") String operator){
+                                         @RequestParam("operator") String operator,
+                                         @RequestParam(name = "suit",required = false) Long suitId,
+                                         @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
+                                         @RequestParam(name = "gitBranch",required = false) String gitBranch,
+                                         @RequestParam(name = "deviceList",required = false) List<Long> deviceList){
         ResultVO resultVO = null ;
         FirstFrameTaskDTO firstFrameTaskDTO = new FirstFrameTaskDTO() ;
         firstFrameTaskDTO.setTaskName(name);
         firstFrameTaskDTO.setDeviceInfo(deviceInfo);
         firstFrameTaskDTO.setOperator(operator);
-        Long id = autoPerfFirstFrameService.createNewFirstFrame(firstFrameTaskDTO) ;
-        if (id != null){
-            resultVO = ResultUtils.buildSuccess(id) ;
-        }else{
-            resultVO = ResultUtils.buildFail() ;
+        firstFrameTaskDTO.setSuitId(suitId);
+        firstFrameTaskDTO.setGitInfo(gitInfo);
+        firstFrameTaskDTO.setGitBranch(gitBranch);
+        firstFrameTaskDTO.setDeviceList(deviceList);
+        try {
+            Long id = autoPerfFirstFrameService.createNewFirstFrame(firstFrameTaskDTO);
+            if (id != null) {
+                resultVO = ResultUtils.buildSuccess(id);
+            } else {
+                resultVO = ResultUtils.buildFail();
+            }
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
         }
         return resultVO ;
     }
@@ -63,9 +78,10 @@ public class AutoFirstFrameController {
     @RequestMapping("/task/query")
     @ResponseBody
     public ResultVO queryFirstFrameTaskList(@RequestParam(name="current",required = false,defaultValue = "1") int current ,
-                                            @RequestParam(name="size",required = false,defaultValue = "10") int size){
+                                            @RequestParam(name="size",required = false,defaultValue = "10") int size,
+                                            @RequestParam(name = "operator",required = false)String operator){
         ResultVO resultVO = null ;
-        FirstFrameListVO firstFrameListVO = autoPerfFirstFrameService.queryFirstFrame(current, size) ;
+        FirstFrameListVO firstFrameListVO = autoPerfFirstFrameService.queryFirstFrame(operator , current, size) ;
         if (firstFrameListVO != null){
             resultVO = ResultUtils.buildSuccess(firstFrameListVO) ;
         }else{

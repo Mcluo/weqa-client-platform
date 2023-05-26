@@ -28,6 +28,12 @@ public class AutoTestRunException extends Exception{
 
     public static String PRIVATE_ADDRESS_IS_NOT_EXIST = "私有地址不存在" ;
 
+    public static String BUILD_REPORT_RESULT_FAIL = "构建测试报告失败" ;
+
+    public static String TEST_REPORT_IS_NOT_EXIST = "测试报告不存在" ;
+
+    public static String TEST_BASELINE_IS_NOT_EXIST = "性能基线不存在" ;
+
     private String exceptionInfo ;
 
     public AutoTestRunException() {

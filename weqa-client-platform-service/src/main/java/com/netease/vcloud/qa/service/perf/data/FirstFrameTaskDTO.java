@@ -1,5 +1,7 @@
 package com.netease.vcloud.qa.service.perf.data;
 
+import java.util.List;
+
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2023/5/9 17:51
@@ -20,6 +22,18 @@ public class FirstFrameTaskDTO {
      */
     private String deviceInfo ;
 
+
+    /**
+     * 执行集ID
+     * (根据性能测试执行集，触发对应性能测试)
+     */
+    private Long suitId ;
+
+    private List<Long> deviceList;
+
+    private String gitInfo ;
+
+    private String gitBranch ;
 
     public Long getId() {
         return id;
@@ -51,5 +65,37 @@ public class FirstFrameTaskDTO {
 
     public void setDeviceInfo(String deviceInfo) {
         this.deviceInfo = deviceInfo;
+    }
+
+    public Long getSuitId() {
+        return suitId;
+    }
+
+    public void setSuitId(Long suitId) {
+        this.suitId = suitId;
+    }
+
+    public List<Long> getDeviceList() {
+        return deviceList;
+    }
+
+    public void setDeviceList(List<Long> deviceList) {
+        this.deviceList = deviceList;
+    }
+
+    public String getGitInfo() {
+        return gitInfo;
+    }
+
+    public void setGitInfo(String gitInfo) {
+        this.gitInfo = gitInfo;
+    }
+
+    public String getGitBranch() {
+        return gitBranch;
+    }
+
+    public void setGitBranch(String gitBranch) {
+        this.gitBranch = gitBranch;
     }
 }

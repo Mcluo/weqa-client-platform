@@ -36,6 +36,11 @@ public class ClientPerfFirstFrameTaskDO {
      */
     private String owner ;
 
+    /**
+     * 自动化任务ID
+     */
+    private Long autoTaskId ;
+
     public Long getId() {
         return id;
     }
@@ -82,5 +87,13 @@ public class ClientPerfFirstFrameTaskDO {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public Long getAutoTaskId() {
+        return autoTaskId;
+    }
+
+    public void setAutoTaskId(Long autoTaskId) {
+        this.autoTaskId = autoTaskId;
     }
 }

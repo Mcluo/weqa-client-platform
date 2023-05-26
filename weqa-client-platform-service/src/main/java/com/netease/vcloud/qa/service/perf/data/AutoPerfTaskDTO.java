@@ -65,7 +65,7 @@ public class AutoPerfTaskDTO {
 
     /**
      * 执行集ID
-     * (根据性能测试执行集，触发对应性能测试)
+     * (根据性能测试执行集，触发对应自动化测试)
      */
     private Long suitId ;
 

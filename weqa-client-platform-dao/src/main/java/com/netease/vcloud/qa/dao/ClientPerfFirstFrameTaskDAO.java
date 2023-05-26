@@ -16,9 +16,12 @@ public interface ClientPerfFirstFrameTaskDAO {
 
     int insertFirstFrameTask(@Param("task") ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO) ;
 
-    List<ClientPerfFirstFrameTaskDO> queryClientPerfFirstFrameTask(@Param("start") int start , @Param("size") int size) ;
+    int updateFirstFrameTaskInfo(@Param("task") ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO) ;
 
-    int getClientPerfFirstFrameTaskCount() ;
+    List<ClientPerfFirstFrameTaskDO> queryClientPerfFirstFrameTask(@Param("owner") String owner ,@Param("start") int start , @Param("size") int size) ;
+    List<ClientPerfFirstFrameTaskDO> queryClientPerfFirstFrameTaskByKey(@Param("key") String key ,@Param("start") int start , @Param("size") int size) ;
+
+    int getClientPerfFirstFrameTaskCount(@Param("owner")String owner) ;
 
     ClientPerfFirstFrameTaskDO getClientPerfFirstFrameTaskById(@Param("id")Long id) ;
 

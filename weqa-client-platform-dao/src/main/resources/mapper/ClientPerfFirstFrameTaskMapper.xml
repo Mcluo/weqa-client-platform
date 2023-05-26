@@ -8,26 +8,53 @@
         <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
         <result column="device_info" jdbcType="VARCHAR" property="deviceInfo"/>
         <result column="owner" jdbcType="VARCHAR" property="owner"/>
+        <result column="auto_task_id" jdbcType="BIGINT" property="autoTaskId"/>
     </resultMap>
 
     <sql id="baseSql">
-        select id,gmt_create,gmt_update,task_name,device_info,owner
+        select id,gmt_create,gmt_update,task_name,device_info,owner,auto_task_id
     </sql>
 
     <insert id="insertFirstFrameTask" parameterType="com.netease.vcloud.qa.model.ClientPerfFirstFrameTaskDO" keyProperty="task.id" useGeneratedKeys="true">
-        insert into vcloud_client_perf_first_frame_task_info(gmt_create,gmt_update,task_name,device_info,owner)
-        value(now(),now(),#{task.taskName},#{task.deviceInfo},#{task.owner})
+        insert into vcloud_client_perf_first_frame_task_info(gmt_create,gmt_update,task_name,device_info,owner,auto_task_id)
+        value(now(),now(),#{task.taskName},#{task.deviceInfo},#{task.owner},#{task.autoTaskId})
     </insert>
+
+    <update id="updateFirstFrameTaskInfo" parameterType="com.netease.vcloud.qa.model.ClientPerfFirstFrameTaskDO">
+        UPDATE vcloud_client_perf_first_frame_task_info
+        SET gmt_update=now(),task_name=#{task.taskName},device_info=#{task.deviceInfo},owner=#{task.owner},auto_task_id=#{task.autoTaskId}
+        WHERE id = #{task.id}
+    </update>
 
     <select id="queryClientPerfFirstFrameTask" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_perf_first_frame_task_info
+        WHERE 1 = 1
+        <if test="owner != null and owner !=''">
+            AND owner = #{owner}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{start},#{size}
+    </select>
+
+    <select id="queryClientPerfFirstFrameTaskByKey" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_first_frame_task_info
+        WHERE 1 = 1
+        <if test="key != null and key !=''">
+            AND task_name like CONCAT ("%",#{key},"%")
+        </if>
+        ORDER BY id DESC
         LIMIT #{start},#{size}
     </select>
 
     <select id="getClientPerfFirstFrameTaskCount" resultType="java.lang.Integer">
         SELECT count(*)
         FROM vcloud_client_perf_first_frame_task_info
+        WHERE 1 = 1
+        <if test="owner != null and owner !=''">
+            AND owner = #{owner}
+        </if>
     </select>
 
     <select id="getClientPerfFirstFrameTaskById" resultMap="BaseResultMap">

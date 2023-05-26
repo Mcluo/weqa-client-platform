@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientPerfBaseLineDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientPerfBaseLineDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="baseline_name" jdbcType="VARCHAR" property="baseLineName"/>
+        <result column="baseline_type" jdbcType="TINYINT" property="baseLineType"/>
+        <result column="owner" jdbcType="VARCHAR" property="owner"/>
+        <result column="result_data" jdbcType="VARCHAR" property="resultData"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,baseline_name,baseline_type,owner,result_data
+    </sql>
+
+    <select id="queryClientPerfBaseLineList" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_baseline_info
+        WHERE 1=1
+        <if test="type != null">
+            AND baseline_type = #{type}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{start},#{size}
+    </select>
+
+    <select id="countClientPerfBaseLineDOList" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM vcloud_client_perf_baseline_info
+        WHERE 1=1
+        <if test="type != null">
+            AND baseline_type = #{type}
+        </if>
+    </select>
+
+    <select id="getClientPerfBaseLineDOById" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_baseline_info
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertClientPerfBaseLineDOList" parameterType="com.netease.vcloud.qa.model.ClientPerfBaseLineDO"  keyProperty="baseLine.id" useGeneratedKeys="true">
+        insert into vcloud_client_perf_baseline_info(gmt_create,gmt_update,baseline_name,baseline_type,owner,result_data)
+        value(now(),now(),#{baseLine.baseLineName},#{baseLine.baseLineType},#{baseLine.owner},#{baseLine.resultData})
+    </insert>
+</mapper>
