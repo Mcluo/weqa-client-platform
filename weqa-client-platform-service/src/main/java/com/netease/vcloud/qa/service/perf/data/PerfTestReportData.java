@@ -1,10 +1,14 @@
 package com.netease.vcloud.qa.service.perf.data;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2023/5/23 11:09
  */
 public class PerfTestReportData {
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00") ;
 
     private Number max ;
 
@@ -21,7 +25,10 @@ public class PerfTestReportData {
     private Number baseAvg ;
 
     public Number getMax() {
-        return max;
+        if (max == null){
+            return null ;
+        }
+        return Double.parseDouble(DECIMAL_FORMAT.format(max.doubleValue()));
     }
 
     public void setMax(Number max) {
@@ -29,7 +36,12 @@ public class PerfTestReportData {
     }
 
     public Number getMin() {
-        return min;
+//        return min;
+        if (min == null){
+            return null ;
+        }
+        return Double.parseDouble(DECIMAL_FORMAT.format(min.doubleValue()));
+
     }
 
     public void setMin(Number min) {
@@ -37,7 +49,11 @@ public class PerfTestReportData {
     }
 
     public Number getAvg() {
-        return avg;
+        if (avg == null) {
+            return null;
+        }
+        return Double.parseDouble(DECIMAL_FORMAT.format(avg.doubleValue()));
+
     }
 
     public void setAvg(Number avg) {
@@ -53,7 +69,10 @@ public class PerfTestReportData {
     }
 
     public Number getBaseMax() {
-        return baseMax;
+        if (baseMax == null) {
+            return null;
+        }
+        return Double.parseDouble(DECIMAL_FORMAT.format(baseMax.doubleValue()));
     }
 
     public void setBaseMax(Number baseMax) {
@@ -61,7 +80,10 @@ public class PerfTestReportData {
     }
 
     public Number getBaseMin() {
-        return baseMin;
+        if (baseMin==null) {
+            return null;
+        }
+        return Double.parseDouble(DECIMAL_FORMAT.format(baseMin.doubleValue()));
     }
 
     public void setBaseMin(Number baseMin) {
@@ -69,7 +91,10 @@ public class PerfTestReportData {
     }
 
     public Number getBaseAvg() {
-        return baseAvg;
+        if (baseAvg==null) {
+            return null;
+        }
+        return Double.parseDouble(DECIMAL_FORMAT.format(baseAvg.doubleValue()));
     }
 
     public void setBaseAvg(Number baseAvg) {

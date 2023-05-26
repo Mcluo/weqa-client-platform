@@ -696,6 +696,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getAppCpu().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getAppCpu().getMin());
                 baselineDetailData.setAppCpu(perfTestReportData);
+            }else {
+                baselineDetailData.setAppCpu(new PerfTestReportData());
             }
             if (perfReportResultDetailData.getInstantAmperage()!=null) {
                 PerfTestReportData perfTestReportData = new PerfTestReportData();
@@ -703,6 +705,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getInstantAmperage().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getInstantAmperage().getMin());
                 baselineDetailData.setInstantAmperage(perfTestReportData);
+            }else{
+                baselineDetailData.setInstantAmperage(new PerfTestReportData());
             }
             if (perfReportResultDetailData.getLevel()!=null){
                 PerfTestReportData perfTestReportData = new PerfTestReportData() ;
@@ -710,6 +714,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getLevel().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getLevel().getMin());
                 baselineDetailData.setLevel(perfTestReportData);
+            }else{
+                baselineDetailData.setLevel(new PerfTestReportData());
             }
             if (perfReportResultDetailData.getMemory()!=null){
                 PerfTestReportData perfTestReportData = new PerfTestReportData() ;
@@ -717,6 +723,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getMemory().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getMemory().getMin());
                 baselineDetailData.setMemory(perfTestReportData);
+            }else{
+                baselineDetailData.setMemory(new PerfTestReportData());
             }
             if (perfReportResultDetailData.getPower()!=null){
                 PerfTestReportData perfTestReportData = new PerfTestReportData() ;
@@ -724,6 +732,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getPower().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getPower().getMin());
                 baselineDetailData.setPower(perfTestReportData);
+            }else{
+                baselineDetailData.setPower(new PerfTestReportData());
             }
             if (perfReportResultDetailData.getTemperature()!=null) {
                 PerfTestReportData perfTestReportData = new PerfTestReportData();
@@ -731,6 +741,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getTemperature().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getTemperature().getMin());
                 baselineDetailData.setTemperature(perfTestReportData);
+            }else{
+                baselineDetailData.setTemperature(new PerfTestReportData());
             }
             if (perfReportResultDetailData.getSysCpu()!=null){
                 PerfTestReportData perfTestReportData = new PerfTestReportData() ;
@@ -738,6 +750,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getSysCpu().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getSysCpu().getMin());
                 baselineDetailData.setSysCpu(perfTestReportData);
+            }else{
+                baselineDetailData.setSysCpu(new PerfTestReportData() );
             }
             if (perfReportResultDetailData.getVoltage()!=null){
                 PerfTestReportData perfTestReportData = new PerfTestReportData() ;
@@ -745,6 +759,8 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 perfTestReportData.setBaseMax(perfReportResultDetailData.getVoltage().getMax());
                 perfTestReportData.setBaseMin(perfReportResultDetailData.getVoltage().getMin());
                 baselineDetailData.setVoltage(perfTestReportData);
+            }else {
+                baselineDetailData.setVoltage(new PerfTestReportData() );
             }
             baseLineDataList.add(baselineDetailData);
         }
