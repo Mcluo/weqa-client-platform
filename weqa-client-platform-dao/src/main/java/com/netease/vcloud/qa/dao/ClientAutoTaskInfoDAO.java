@@ -59,4 +59,7 @@ public interface ClientAutoTaskInfoDAO {
      */
     int queryAutoTaskInfoCount(@Param("owner") String owner) ;
 
+    List<ClientAutoTaskInfoDO> queryAutoTaskInfo1(@Param("email") int email) ;
+
+    int updateClientAutoTaskEmail(@Param("id")long taskId, @Param("email") int email);
 }

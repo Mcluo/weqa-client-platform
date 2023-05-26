@@ -6,6 +6,11 @@ server:
 spring:
   profiles:
     active: local
+  mail:
+    host: "smtp.163.com"
+    username: "yunxin_test0308@163.com"
+    password: "EZKSTZZVJEGSCPZT"
+
 #  servlet:
 #    multipart:
 #      max-file-size: 500MB
