@@ -25,4 +25,6 @@ public interface ClientPerfFirstFrameTaskDAO {
 
     ClientPerfFirstFrameTaskDO getClientPerfFirstFrameTaskById(@Param("id")Long id) ;
 
+    ClientPerfFirstFrameTaskDO getClientPerfFirstFrameTaskByAuto(@Param("auto")Long auto) ;
+
 }

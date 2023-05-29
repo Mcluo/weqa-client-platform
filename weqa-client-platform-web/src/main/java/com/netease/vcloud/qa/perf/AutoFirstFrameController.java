@@ -132,5 +132,21 @@ public class AutoFirstFrameController {
         return resultVO ;
     }
 
-
+    /**
+     * http://127.0.0.1:8788/g2-client/perf/first/id/get?auto=1805
+     * @param taskId
+     * @return
+     */
+    @RequestMapping("/id/get")
+    @ResponseBody
+    public  ResultVO getFirstFrameIdByAutoTask(@RequestParam("auto") long taskId){
+        ResultVO resultVO = null ;
+        Long perfId = autoPerfFirstFrameService.getPerTaskIdByAuto(taskId) ;
+        if (perfId == null){
+            resultVO = ResultUtils.buildFail() ;
+        }else{
+            resultVO = ResultUtils.buildSuccess(perfId) ;
+        }
+        return resultVO ;
+    }
 }

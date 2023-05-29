@@ -62,4 +62,10 @@
         FROM vcloud_client_perf_first_frame_task_info
         WHERE id = #{id}
     </select>
+
+    <select id="getClientPerfFirstFrameTaskByAuto" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_perf_first_frame_task_info
+        WHERE auto_task_id = #{auto}
+    </select>
 </mapper>
