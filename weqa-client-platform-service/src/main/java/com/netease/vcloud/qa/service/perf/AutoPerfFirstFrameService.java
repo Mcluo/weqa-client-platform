@@ -423,4 +423,16 @@ public class AutoPerfFirstFrameService  implements AutoPerfBaseReportInterface {
         FirstFrameReportResultData firstFrameReportResultData = JSONObject.parseObject(resultDataStr,FirstFrameReportResultData.class);
         return firstFrameReportResultData ;
     }
+
+
+    public Long getPerTaskIdByAuto(Long autoId){
+        if (autoId == null){
+            return null ;
+        }
+        ClientPerfFirstFrameTaskDO clientPerfFirstFrameTaskDO = clientPerfFirstFrameTaskDAO.getClientPerfFirstFrameTaskByAuto(autoId) ;
+        if (clientPerfFirstFrameTaskDO == null){
+            return null;
+        }
+        return clientPerfFirstFrameTaskDO.getId() ;
+    }
 }
