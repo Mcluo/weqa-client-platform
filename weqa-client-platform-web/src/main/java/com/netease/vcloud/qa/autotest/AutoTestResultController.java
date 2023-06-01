@@ -64,6 +64,26 @@ public class AutoTestResultController {
         return ResultUtils.build(flag);
     }
 
+
+    /**
+     * @return
+     */
+    @RequestMapping("/test/result/weqa/add")
+    @ResponseBody
+    public ResultVO addWeqaResult( @RequestParam(name = "script")Long scriptId,
+                                   @RequestParam(name = "success",required = false,defaultValue = "true") boolean success,
+                                   @RequestParam(name = "result",required = false) String result){
+        JSONObject resultJson = null ;
+        if (result!=null) {
+            try {
+                resultJson = JSONObject.parseObject(result);
+            }catch (Exception e){
+                CONTROLLER_LOGGER.error("[AutoTestResultController.addResultTest] parse result exception",e);
+            }
+        }
+        boolean flag = autoTestResult.saveAutoTestResult(scriptId,success,resultJson);
+        return ResultUtils.build(flag);
+    }
     /**
      * http://127.0.0.1:8788/g2-client/auto/covered/add
      * 批量标记tc的覆盖情况
