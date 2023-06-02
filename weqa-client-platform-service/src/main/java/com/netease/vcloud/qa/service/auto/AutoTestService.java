@@ -114,7 +114,6 @@ public class AutoTestService {
         if (projectId == null || tcId == null){
             return true;
         }
-        //todo 处理项目中的覆盖情况
         //1，更新TC的覆盖，
         if (tcId!=null) {
             boolean flag = autoCoveredService.checkAndMarkTestCase(tcId);
@@ -124,7 +123,7 @@ public class AutoTestService {
             }
         }
         //2，更新具体项目下面执行集的覆盖情况
-
+        //todo 处理项目中的覆盖情况
         return true;
     }
 
