@@ -2,10 +2,7 @@ package com.netease.vcloud.qa.service.risk.source;
 
 import com.netease.vcloud.qa.risk.RiskCheckRange;
 import com.netease.vcloud.qa.service.risk.RiskCheckException;
-import com.netease.vcloud.qa.service.risk.source.manager.AutoTestCheckManageService;
-import com.netease.vcloud.qa.service.risk.source.manager.DevSmokeExecCheckManagerService;
-import com.netease.vcloud.qa.service.risk.source.manager.DevSmokeRateCheckManagerService;
-import com.netease.vcloud.qa.service.risk.source.manager.RiskTestCheckManageInterface;
+import com.netease.vcloud.qa.service.risk.source.manager.*;
 import com.netease.vcloud.qa.service.risk.source.struct.CheckInfoStructInterface;
 import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,11 @@ public class RiskDataService {
      */
     private static final String BUG_STATUS = "bug_status" ;
 
+    /**
+     * 自动化覆盖情况
+     */
+    private static final String AUTO_TEST_COVER = "auto_test_cover" ;
+
     private Map<String , RiskTestCheckManageInterface> riskTestCheckManageMap ;
 
     @Autowired
@@ -50,12 +52,16 @@ public class RiskDataService {
     @Autowired
     private DevSmokeRateCheckManagerService devSmokeRateCheckManagerService ;
 
+    @Autowired
+    private TCTestSuitCheckManagerService tcTestSuitCheckManagerService ;
+
     @PostConstruct
     public void init(){
         riskTestCheckManageMap = new HashMap<String, RiskTestCheckManageInterface>() ;
         riskTestCheckManageMap.put(AUTO_TEST,autoTestCheckManageService) ;
         riskTestCheckManageMap.put(DEVELOP_TEST,devSmokeExecCheckManagerService) ;
         riskTestCheckManageMap.put(SMOKE_TEST,devSmokeRateCheckManagerService) ;
+        riskTestCheckManageMap.put(AUTO_TEST_COVER,tcTestSuitCheckManagerService) ;
     }
 
 

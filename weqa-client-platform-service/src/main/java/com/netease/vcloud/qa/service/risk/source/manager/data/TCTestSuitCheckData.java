@@ -8,7 +8,15 @@ import com.netease.vcloud.qa.service.risk.source.struct.CheckInfoStructInterface
  */
 public class TCTestSuitCheckData implements CheckInfoStructInterface {
 
+    /**
+     * 用例通过占比
+     */
     private Double passPercent ;
+
+    /**
+     * 自动化占比
+     */
+    private Double autoPercent ;
 
     public Double getPassPercent() {
         return passPercent;
@@ -16,5 +24,13 @@ public class TCTestSuitCheckData implements CheckInfoStructInterface {
 
     public void setPassPercent(Double passPercent) {
         this.passPercent = passPercent;
+    }
+
+    public Double getAutoPercent() {
+        return autoPercent;
+    }
+
+    public void setAutoPercent(Double autoPercent) {
+        this.autoPercent = autoPercent;
     }
 }

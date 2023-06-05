@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.dao.ClientTestCaseProjectCoverInfoDAO;
 import com.netease.vcloud.qa.model.ClientTestCaseProjectCoverInfoDO;
+import com.netease.vcloud.qa.service.risk.source.struct.view.TCTestSuitCoveredDetailVO;
 import com.netease.vcloud.qa.service.tc.data.ClientExecData;
 import com.netease.vcloud.qa.service.tc.data.ClientExecResultData;
+import com.netease.vcloud.qa.service.tc.data.ClientTCCoveredData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,9 +96,12 @@ public class TCAutoCoverManagerService {
             ClientTestCaseProjectCoverInfoDO clientTestCaseProjectCoverInfoDO = new ClientTestCaseProjectCoverInfoDO() ;
             clientTestCaseProjectCoverInfoDO.setProjectId(projectId) ;
             clientTestCaseProjectCoverInfoDO.setTaskId(taskId);
-            clientTestCaseProjectCoverInfoDO.setTVId(tvId);
+            clientTestCaseProjectCoverInfoDO.setTvId(tvId);
             clientTestCaseProjectCoverInfoDO.setTestSuitId(clientExecResultData.getId());
             clientTestCaseProjectCoverInfoDO.setTestCaseId(clientExecResultData.getCase_id()) ;
+            clientTestCaseProjectCoverInfoDO.setName(clientExecResultData.getName());
+            clientTestCaseProjectCoverInfoDO.setPriority(clientExecResultData.getPriority_id());
+            clientTestCaseProjectCoverInfoDO.setResult(clientExecResultData.getResult_id());
             clientTestCaseProjectCoverInfoDO.setIsCover((byte) 0);
             clientTestCaseProjectCoverInfoDOList.add(clientTestCaseProjectCoverInfoDO) ;
         }
@@ -112,7 +117,7 @@ public class TCAutoCoverManagerService {
      * @param tcId
      * @return
      */
-    public boolean updateTvTCCoveredInfo (Long projectId , Long tcId){
+    public boolean updateTvTCCoveredInfo(Long projectId , Long tcId){
         if (projectId == null ||tcId == null){
             return false ;
         }
@@ -120,11 +125,58 @@ public class TCAutoCoverManagerService {
         if (CollectionUtils.isEmpty(clientTestCaseProjectCoverInfoDOList)){
             return true ;
         }
+        //设置为已经覆盖
         int count = clientTestCaseProjectCoverInfoDAO.updateTestProjectCoverInfo(projectId,tcId,(byte)1) ;
         if (count >= clientTestCaseProjectCoverInfoDOList.size()) {
             return true;
         }else {
             return false ;
         }
+    }
+
+    public ClientTCCoveredData getTaskCurrentValue(Long project , Long taskId ){
+        if(project == null && taskId==null){
+            return null ;
+        }
+        List<ClientTestCaseProjectCoverInfoDO> clientTestCaseProjectCoverInfoDOList = clientTestCaseProjectCoverInfoDAO.getTestProjectCoverInfo(project, taskId, null) ;
+        if (clientTestCaseProjectCoverInfoDOList.size() == 0){
+            return null ;
+        }
+        int coveredNumber = 0 ;
+        for (ClientTestCaseProjectCoverInfoDO clientTestCaseProjectCoverInfoDO :clientTestCaseProjectCoverInfoDOList){
+            if (clientTestCaseProjectCoverInfoDO == null){
+                continue;
+            }
+            if (clientTestCaseProjectCoverInfoDO.getIsCover()==(byte) 1){
+                coveredNumber++ ;
+            }
+        }
+        ClientTCCoveredData clientTCCoveredData = new ClientTCCoveredData() ;
+        clientTCCoveredData.setCovered(coveredNumber);
+        clientTCCoveredData.setTotal(clientTestCaseProjectCoverInfoDOList.size());
+        return clientTCCoveredData ;
+    }
+
+
+    public List<TCTestSuitCoveredDetailVO> getTaskDetailValue(Long project , Long taskId){
+        List<ClientTestCaseProjectCoverInfoDO> clientTestCaseProjectCoverInfoDOList = clientTestCaseProjectCoverInfoDAO.getTestProjectCoverInfo(project, taskId, null) ;
+        if (clientTestCaseProjectCoverInfoDOList.size() == 0){
+            return null ;
+        }
+        List<TCTestSuitCoveredDetailVO> tcTestSuitCoveredDetailVOList = new ArrayList<>() ;
+        for (ClientTestCaseProjectCoverInfoDO clientTestCaseProjectCoverInfoDO : clientTestCaseProjectCoverInfoDOList){
+            if (clientTestCaseProjectCoverInfoDO==null){
+                continue;
+            }
+            TCTestSuitCoveredDetailVO tcTestSuitCoveredDetailVO = new TCTestSuitCoveredDetailVO() ;
+            tcTestSuitCoveredDetailVO.setTestSuidId(clientTestCaseProjectCoverInfoDO.getTestSuitId());
+            tcTestSuitCoveredDetailVO.setTestCaseId(clientTestCaseProjectCoverInfoDO.getTestCaseId());
+            tcTestSuitCoveredDetailVO.setName(clientTestCaseProjectCoverInfoDO.getName());
+            tcTestSuitCoveredDetailVO.setPriority(clientTestCaseProjectCoverInfoDO.getPriority());
+            tcTestSuitCoveredDetailVO.setResult(clientTestCaseProjectCoverInfoDO.getResult());
+            tcTestSuitCoveredDetailVO.setCovered(clientTestCaseProjectCoverInfoDO.getIsCover()==(byte)1?true:false);
+            tcTestSuitCoveredDetailVOList.add(tcTestSuitCoveredDetailVO) ;
+        }
+        return tcTestSuitCoveredDetailVOList ;
     }
 }

@@ -26,7 +26,7 @@ public class ClientTestCaseProjectCoverInfoDO {
     /**
      * 执行集ID
      */
-    private Long TVId ;
+    private Long tvId;
     /**
      * 执行集内ID
      */
@@ -35,6 +35,19 @@ public class ClientTestCaseProjectCoverInfoDO {
      * 原生TCID
      */
     private Long TestCaseId ;
+
+    /**
+     * 用例名
+     */
+    private String name ;
+    /**
+     * 优先级
+     */
+    private Integer priority ;
+    /**
+     * 结果
+     */
+    private Integer result ;
     /**
      * 是否覆盖，0：否，1：是
      */
@@ -80,12 +93,12 @@ public class ClientTestCaseProjectCoverInfoDO {
         this.taskId = taskId;
     }
 
-    public Long getTVId() {
-        return TVId;
+    public Long getTvId() {
+        return tvId;
     }
 
-    public void setTVId(Long TVId) {
-        this.TVId = TVId;
+    public void setTvId(Long tvId) {
+        this.tvId = tvId;
     }
 
     public Long getTestSuitId() {
@@ -102,6 +115,30 @@ public class ClientTestCaseProjectCoverInfoDO {
 
     public void setTestCaseId(Long testCaseId) {
         TestCaseId = testCaseId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public Integer getResult() {
+        return result;
+    }
+
+    public void setResult(Integer result) {
+        this.result = result;
     }
 
     public byte getIsCover() {
