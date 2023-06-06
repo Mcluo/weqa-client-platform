@@ -129,8 +129,8 @@ public class RiskManagerService {
         //操作风险信息
         Set<Long> ruleIdSet = new HashSet<Long>() ;
         //1.将已有风险信息删除
-        for (Long ruleId : ruleIdSet){
-            ruleIdSet.add(ruleId) ;
+        for (RiskRuleInfoBO riskRuleInfoBO : riskRuleInfoBOList){
+            ruleIdSet.add(riskRuleInfoBO.getId()) ;
         }
         riskDetailDAO.deleteRiskByRangeAndRule(RiskCheckRange.TASK.getCode(), taskId,ruleIdSet) ;
         //2.重新新增风险信息并进行校验

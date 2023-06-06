@@ -12,9 +12,9 @@ public class TCTestSuitCoveredDetailVO {
 
     private String name ;
 
-    private int priority ;
+    private String priority ;
 
-    private int result ;
+    private String result ;
 
     private boolean isCovered ;
 
@@ -42,19 +42,19 @@ public class TCTestSuitCoveredDetailVO {
         this.name = name;
     }
 
-    public int getPriority() {
+    public String getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 
-    public int getResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(String result) {
         this.result = result;
     }
 

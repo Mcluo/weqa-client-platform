@@ -37,8 +37,18 @@ public class TCAutoCoverManagerService {
 
     private static final String TV_ID_ARGS = "tvId" ;
 
+    private static Map<Integer,String> tcTestStatusMap = new HashMap<Integer,String>() ;
+
+    static {
+        tcTestStatusMap.put(1,"未执行");
+        tcTestStatusMap.put(2,"通过");
+        tcTestStatusMap.put(3,"失败");
+        tcTestStatusMap.put(4,"忽略");
+    }
+
     @Autowired
     private ClientTestCaseProjectCoverInfoDAO clientTestCaseProjectCoverInfoDAO ;
+
 
     private List<ClientExecResultData> getClientExecDataList(Long tvId){
         if (tvId == null){
@@ -143,6 +153,7 @@ public class TCAutoCoverManagerService {
             return null ;
         }
         int coveredNumber = 0 ;
+        int passCount = 0 ;
         for (ClientTestCaseProjectCoverInfoDO clientTestCaseProjectCoverInfoDO :clientTestCaseProjectCoverInfoDOList){
             if (clientTestCaseProjectCoverInfoDO == null){
                 continue;
@@ -150,9 +161,13 @@ public class TCAutoCoverManagerService {
             if (clientTestCaseProjectCoverInfoDO.getIsCover()==(byte) 1){
                 coveredNumber++ ;
             }
+            if (clientTestCaseProjectCoverInfoDO.getResult()==(byte)1){
+                passCount++ ;
+            }
         }
         ClientTCCoveredData clientTCCoveredData = new ClientTCCoveredData() ;
         clientTCCoveredData.setCovered(coveredNumber);
+        clientTCCoveredData.setPassed(passCount);
         clientTCCoveredData.setTotal(clientTestCaseProjectCoverInfoDOList.size());
         return clientTCCoveredData ;
     }
@@ -172,8 +187,9 @@ public class TCAutoCoverManagerService {
             tcTestSuitCoveredDetailVO.setTestSuidId(clientTestCaseProjectCoverInfoDO.getTestSuitId());
             tcTestSuitCoveredDetailVO.setTestCaseId(clientTestCaseProjectCoverInfoDO.getTestCaseId());
             tcTestSuitCoveredDetailVO.setName(clientTestCaseProjectCoverInfoDO.getName());
-            tcTestSuitCoveredDetailVO.setPriority(clientTestCaseProjectCoverInfoDO.getPriority());
-            tcTestSuitCoveredDetailVO.setResult(clientTestCaseProjectCoverInfoDO.getResult());
+            tcTestSuitCoveredDetailVO.setPriority("P" + clientTestCaseProjectCoverInfoDO.getPriority());
+            String result = tcTestStatusMap.get(clientTestCaseProjectCoverInfoDO.getResult()) ;
+            tcTestSuitCoveredDetailVO.setResult(result==null?"-":result);
             tcTestSuitCoveredDetailVO.setCovered(clientTestCaseProjectCoverInfoDO.getIsCover()==(byte)1?true:false);
             tcTestSuitCoveredDetailVOList.add(tcTestSuitCoveredDetailVO) ;
         }

@@ -71,9 +71,12 @@ public class TCTestSuitCheckManagerService implements RiskTestCheckManageInterfa
             return null;
         }
         ClientTCCoveredData clientTCCoveredData = null ;
+        //FIXME 这边如果强制更新的话，会造成解析结果偏慢，但如果不更新，就缺少更新的地方，待优化
         if (rangeType == RiskCheckRange.PROJECT) {
+            tcAutoCoverManagerService.addOrUpdateTVInfoDetail(rangeId,null,clientRiskTCTestSuitCheckDO.getTvID()) ;
             clientTCCoveredData = tcAutoCoverManagerService.getTaskCurrentValue(rangeId ,null);
         }else if (rangeType == RiskCheckRange.TASK) {
+            tcAutoCoverManagerService.addOrUpdateTVInfoDetail(null,rangeId,clientRiskTCTestSuitCheckDO.getTvID()) ;
             clientTCCoveredData = tcAutoCoverManagerService.getTaskCurrentValue(null,rangeId);
         }else {
             clientTCCoveredData = null ;
@@ -125,18 +128,24 @@ public class TCTestSuitCheckManagerService implements RiskTestCheckManageInterfa
             return null ;
         }
         TCTestSuitCheckDataInfoVO testSuitCheckDataInfoVO = new TCTestSuitCheckDataInfoVO() ;
+        testSuitCheckDataInfoVO.setTvID(clientRiskTCTestSuitCheckDO.getTvID());
         testSuitCheckDataInfoVO.setTcTotal(0);
         testSuitCheckDataInfoVO.setAutoCovered(0);
         List<TCTestSuitCoveredDetailVO> detailValueList = tcAutoCoverManagerService.getTaskDetailValue(clientRiskTCTestSuitCheckDO.getProjectID(),clientRiskTCTestSuitCheckDO.getRiskRangeId()) ;
         testSuitCheckDataInfoVO.setDetailList(detailValueList);
         if (!CollectionUtils.isEmpty(detailValueList)){
             int countNumber = 0 ;
+            int passCount = 0 ;
             for (TCTestSuitCoveredDetailVO  detailVO : detailValueList){
                 if (detailVO!=null && detailVO.isCovered()){
                     countNumber ++;
                 }
+                if (detailVO != null && detailVO.getResult() != null && detailVO.getResult().equals("通过")){
+                    passCount ++ ;
+                }
             }
             testSuitCheckDataInfoVO.setTcTotal(detailValueList.size());
+            testSuitCheckDataInfoVO.setPassCount(passCount);
             testSuitCheckDataInfoVO.setAutoCovered(countNumber);
         }
 

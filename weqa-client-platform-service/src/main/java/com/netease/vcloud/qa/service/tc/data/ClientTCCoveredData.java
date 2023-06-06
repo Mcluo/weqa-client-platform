@@ -10,6 +10,7 @@ public class ClientTCCoveredData {
 
     private int covered ;
 
+    private int passed ;
 
     public int getTotal() {
         return total;
@@ -25,5 +26,13 @@ public class ClientTCCoveredData {
 
     public void setCovered(int covered) {
         this.covered = covered;
+    }
+
+    public int getPassed() {
+        return passed;
+    }
+
+    public void setPassed(int passed) {
+        this.passed = passed;
     }
 }

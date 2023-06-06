@@ -21,8 +21,20 @@ public class TCTestSuitCheckDataInfoVO implements CheckDataVOInterface{
      * 覆盖总数
      */
     private int autoCovered ;
+    /**
+     * 通过总数
+     */
+    private int passCount ;
 
     private List<TCTestSuitCoveredDetailVO> detailList ;
+
+    public Long getTvID() {
+        return tvID;
+    }
+
+    public void setTvID(Long tvID) {
+        this.tvID = tvID;
+    }
 
     public int getTcTotal() {
         return tcTotal;
@@ -46,5 +58,13 @@ public class TCTestSuitCheckDataInfoVO implements CheckDataVOInterface{
 
     public void setDetailList(List<TCTestSuitCoveredDetailVO> detailList) {
         this.detailList = detailList;
+    }
+
+    public int getPassCount() {
+        return passCount;
+    }
+
+    public void setPassCount(int passCount) {
+        this.passCount = passCount;
     }
 }
