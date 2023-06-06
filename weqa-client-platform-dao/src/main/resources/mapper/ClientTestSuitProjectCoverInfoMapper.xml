@@ -47,8 +47,8 @@
     </select>
 
     <update id="updateTestProjectCoverInfo">
-        SET vcloud_test_case_project_cover_info
-        is_cover = #{isCover}
+        UPDATE vcloud_test_case_project_cover_info
+        SET is_cover = #{isCover} , gmt_update=now()
         WHERE project_id = #{project}
         AND test_case_id = #{tc}
     </update>

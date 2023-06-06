@@ -9,6 +9,7 @@ import com.netease.vcloud.qa.model.AutoTestResultDO;
 import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
 import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
+import com.netease.vcloud.qa.service.tc.TCAutoCoverManagerService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,9 @@ public class AutoTestService {
 
     @Autowired
     private ClientScriptTcInfoDAO clientScriptTcInfoDAO ;
+
+    @Autowired
+    private TCAutoCoverManagerService tcAutoCoverManagerService ;
 
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
         if (StringUtils.isBlank(runInfo)||runInfo.startsWith("auto")){
@@ -101,9 +105,9 @@ public class AutoTestService {
         }
         Long projectId = clientAutoTaskInfoDO.getProjectId() ;
         Long scriptTcId = clientAutoScriptRunInfoDO.getScriptTcId();
-        if (projectId == null || scriptTcId == null) {
+        if (projectId != null && scriptTcId != null) {
             ClientScriptTcInfoDO clientScriptTcInfoDO = clientScriptTcInfoDAO.getClientScriptById(scriptTcId) ;
-            if (clientScriptTcInfoDO == null || clientScriptTcInfoDO.getTcId()!=null) {
+            if (clientScriptTcInfoDO != null && clientScriptTcInfoDO.getTcId()!=null) {
                 flag = this.managerProject(projectId, clientScriptTcInfoDO.getTcId());
             }
         }
@@ -123,7 +127,7 @@ public class AutoTestService {
             }
         }
         //2，更新具体项目下面执行集的覆盖情况
-        //todo 处理项目中的覆盖情况
+        tcAutoCoverManagerService.updateTvTCCoveredInfo(projectId, tcId) ;
         return true;
     }
 

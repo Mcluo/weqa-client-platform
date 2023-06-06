@@ -66,6 +66,7 @@ public class AutoTestResultController {
 
 
     /**
+     * http://127.0.0.1:8788/g2-client/auto/test/result/weqa/add?script=22&success=true&result={}
      * @return
      */
     @RequestMapping("/test/result/weqa/add")
