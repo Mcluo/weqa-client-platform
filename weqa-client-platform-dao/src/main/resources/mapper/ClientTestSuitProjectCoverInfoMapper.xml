@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientTestCaseProjectCoverInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientTestCaseProjectCoverInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
+        <result column="task_id" jdbcType="BIGINT" property="taskId"/>
+        <result column="tv_id" jdbcType="BIGINT" property="tvId"/>
+        <result column="test_suit_id" jdbcType="BIGINT" property="TestSuitId"/>
+        <result column="test_case_id" jdbcType="BIGINT" property="TestCaseId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="priority" jdbcType="INTEGER" property="priority"/>
+        <result column="result" jdbcType="INTEGER" property="result"/>
+        <result column="is_cover" jdbcType="TINYINT" property="isCover"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,project_id,task_id,tv_id,test_suit_id,test_case_id,name,priority,result,is_cover
+    </sql>
+
+    <insert id="patchInsertTestProjectCoverInfo" parameterType="com.netease.vcloud.qa.model.ClientTestCaseProjectCoverInfoDO">
+        INSERT INTO vcloud_test_case_project_cover_info(gmt_create,gmt_update,project_id,task_id,tv_id,test_suit_id,test_case_id,name,priority,result,is_cover)
+        VALUES
+        <foreach collection="list" item="info" separator=",">
+            (now(),now(),#{info.projectId},#{info.taskId},#{info.tvId},#{info.testSuitId},#{info.testCaseId},#{info.name},#{info.priority},#{info.result},#{info.isCover})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        gmt_update = now(),name=VALUES(name),priority=VALUES(priority),result=VALUES(result);
+    </insert>
+
+
+    <select id="getTestProjectCoverInfo" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_test_case_project_cover_info
+        WHERE 1=1
+        <if test="project!=null">
+            AND project_id = #{project}
+        </if>
+        <if test="task!=null">
+            AND task_id = #{task}
+        </if>
+        <if test="tc!=null">
+            AND test_case_id = #{tc}
+        </if>
+    </select>
+
+    <update id="updateTestProjectCoverInfo">
+        UPDATE vcloud_test_case_project_cover_info
+        SET is_cover = #{isCover} , gmt_update=now()
+        WHERE project_id = #{project}
+        AND test_case_id = #{tc}
+    </update>
+
+</mapper>

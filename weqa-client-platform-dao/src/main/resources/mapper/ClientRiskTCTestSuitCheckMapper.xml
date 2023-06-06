@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientRiskTCTestSuitCheckDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientRiskTCTestSuitCheckDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="range_type" jdbcType="TINYINT" property="rangeType"/>
+        <result column="risk_range_id" jdbcType="BIGINT" property="riskRangeId"/>
+        <result column="tv_id" jdbcType="BIGINT" property="tvID"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectID"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,range_type,risk_range_id,tv_id,project_id
+    </sql>
+
+    <insert id="insertRiskTCTestSuit">
+        INSERT INTO vcloud_risk_tc_test_suit_check(gmt_create,gmt_update,range_type,risk_range_id,tv_id,project_id)
+        value(now(),now(),#{rangeType},#{rangeId},#{tvId},#{projectId})
+    </insert>
+
+    <select id="getRiskTCTestSuit" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_risk_tc_test_suit_check
+        WHERE range_type = #{rangeType}
+        AND risk_range_id = #{rangeId}
+    </select>
+
+</mapper>

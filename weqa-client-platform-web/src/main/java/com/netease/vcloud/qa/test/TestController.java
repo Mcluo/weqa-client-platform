@@ -3,9 +3,13 @@ package com.netease.vcloud.qa.test;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
+import com.netease.vcloud.qa.risk.RiskCheckRange;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.risk.RiskCheckException;
+import com.netease.vcloud.qa.service.risk.source.RiskDataService;
+import com.netease.vcloud.qa.service.risk.source.struct.view.CheckDataVOInterface;
 import com.netease.vcloud.qa.service.tc.TCExecManagerService;
 import com.netease.vcloud.qa.service.tc.data.ClientExecData;
 import com.netease.vcloud.qa.service.tc.data.ClientExecDataBO;
@@ -30,6 +34,9 @@ public class TestController {
 
     @Autowired
     private TCExecManagerService tcExecManagerService ;
+
+    @Autowired
+    private RiskDataService riskDataService ;
     /**
      * http://127.0.0.1:8788/g2-client/test/test
      * @return
@@ -130,4 +137,66 @@ public class TestController {
         return resultVO ;
     }
 
+
+    /**
+     * http://127.0.0.1:8788/g2-client/test/risk/async?data=auto_test_cover&type=task&id=12
+     * @param dataType
+     * @param rangeType
+     * @param rangeId
+     * @return
+     */
+    @RequestMapping("/risk/async")
+    public ResultVO riskDataAsync(@RequestParam("data") String dataType,@RequestParam("type") String rangeType, @RequestParam("id") Long rangeId) {
+        RiskCheckRange riskCheckRange = RiskCheckRange.getRiskCheckRageByName(rangeType) ;
+        ResultVO resultVO = null ;
+        try {
+            riskDataService.asyncDate(dataType, riskCheckRange, rangeId);
+            resultVO = ResultUtils.buildSuccess() ;
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * 获取当前数值
+     * http://127.0.0.1:8788/g2-client/test/risk/current?data=auto_test_cover&type=task&id=12
+     * @param dataType
+     * @param rangeType
+     * @param rangeId
+     * @return
+     */
+    @RequestMapping("/risk/current")
+    public ResultVO riskDataCurrent(@RequestParam("data") String dataType,@RequestParam("type") String rangeType, @RequestParam("id") Long rangeId) {
+        RiskCheckRange riskCheckRange = RiskCheckRange.getRiskCheckRageByName(rangeType) ;
+        ResultVO resultVO = null ;
+        try {
+            String result = riskDataService.getCurrentDate(dataType, riskCheckRange, rangeId);
+            resultVO = ResultUtils.buildSuccess(result) ;
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
+
+    /**
+     * http://127.0.0.1:8788/g2-client/test/risk/detail?data=auto_test_cover&type=task&id=12
+     * @param dataType
+     * @param rangeType
+     * @param rangeId
+     * @return
+     */
+    @RequestMapping("/risk/detail")
+    public ResultVO riskDataDetail(@RequestParam("data") String dataType,@RequestParam("type") String rangeType, @RequestParam("id") Long rangeId) {
+        RiskCheckRange riskCheckRange = RiskCheckRange.getRiskCheckRageByName(rangeType) ;
+        ResultVO resultVO = null ;
+        try {
+            CheckDataVOInterface checkDataVO = riskDataService.getCheckData(dataType, riskCheckRange, rangeId);
+            resultVO = ResultUtils.buildSuccess(checkDataVO) ;
+        }catch (RiskCheckException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
 }

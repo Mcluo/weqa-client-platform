@@ -17,6 +17,7 @@ public interface ClientScriptTcInfoDAO {
     int patchInsertClientScript(@Param("list") List<ClientScriptTcInfoDO> clientScriptTcInfoDOList) ;
 
     List<ClientScriptTcInfoDO> getClientScriptSet(@Param("idSet") Collection<Long> scriptIdSet) ;
+    ClientScriptTcInfoDO getClientScriptById(@Param("id") Long id) ;
 
     List<ClientScriptTcInfoDO> getClientScript(@Param("start") Integer start, @Param("size") Integer size) ;
 

@@ -49,4 +49,5 @@ public interface ClientAutoScriptRunInfoDAO {
     int updateStatusByTaskAndStatus(@Param("taskId") long taskId,@Param("origin") byte originStatusCode ,@Param("newStatus") byte newStatusCode) ;
 
 	ClientAutoScriptRunInfoDO getClientAutoScriptRunInfoById(@Param("id") long id) ;
+
 }
