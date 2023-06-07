@@ -18,6 +18,8 @@
     <insert id="insertRiskTCTestSuit">
         INSERT INTO vcloud_risk_tc_test_suit_check(gmt_create,gmt_update,range_type,risk_range_id,tv_id,project_id)
         value(now(),now(),#{rangeType},#{rangeId},#{tvId},#{projectId})
+        ON DUPLICATE KEY UPDATE
+        gmt_update = now(),tv_id = #{tvId}
     </insert>
 
     <select id="getRiskTCTestSuit" resultMap="BaseResultMap">
