@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.service.risk.source.manager;
 
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.CommonData;
 import com.netease.vcloud.qa.dao.ClientRiskTCTestSuitCheckDAO;
 import com.netease.vcloud.qa.dao.ClientRiskTaskDAO;
 import com.netease.vcloud.qa.model.ClientRiskTCTestSuitCheckDO;
@@ -76,14 +77,15 @@ public class TCTestSuitCheckManagerService implements RiskTestCheckManageInterfa
             tcAutoCoverManagerService.addOrUpdateTVInfoDetail(rangeId,null,clientRiskTCTestSuitCheckDO.getTvID()) ;
             clientTCCoveredData = tcAutoCoverManagerService.getTaskCurrentValue(rangeId ,null);
         }else if (rangeType == RiskCheckRange.TASK) {
-            tcAutoCoverManagerService.addOrUpdateTVInfoDetail(null,rangeId,clientRiskTCTestSuitCheckDO.getTvID()) ;
+            tcAutoCoverManagerService.addOrUpdateTVInfoDetail(clientRiskTCTestSuitCheckDO.getProjectID(),rangeId,clientRiskTCTestSuitCheckDO.getTvID()) ;
             clientTCCoveredData = tcAutoCoverManagerService.getTaskCurrentValue(null,rangeId);
         }else {
             clientTCCoveredData = null ;
         }
         if (clientTCCoveredData != null  && clientTCCoveredData.getTotal() > 0){
-            double rate = (double) clientTCCoveredData.getCovered() / (double)clientTCCoveredData.getTotal() * 100 ;
-            return rate + "%";
+            double passRate = (double) clientTCCoveredData.getPassed() / (double)clientTCCoveredData.getTotal() * 100 ;
+            double coverRate = (double) clientTCCoveredData.getCovered() / (double)clientTCCoveredData.getTotal() * 100 ;
+            return "测试通过率"+CommonData.NUMBER_FORMAT.format(passRate)+"%,自动化覆盖率："+CommonData.NUMBER_FORMAT.format(coverRate) + "%";
         }
         return null;
     }
