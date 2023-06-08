@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.auto;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.dao.AutoTestResultDAO;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
@@ -78,7 +79,7 @@ public class AutoTestService {
         }
     }
 
-    public boolean saveAutoTestResult(Long scriptId, boolean isSuccess, JSONObject result) {
+    public boolean saveAutoTestResult(Long scriptId, boolean isSuccess, String result) {
         ClientAutoScriptRunInfoDO clientAutoScriptRunInfoDO = clientAutoScriptRunInfoDAO.getClientAutoScriptRunInfoById(scriptId);
         if (clientAutoScriptRunInfoDO == null) {
             TC_LOGGER.error("[AutoTestService.saveAutoTestResult] clientAutoScriptRunInfoDO is null");
@@ -98,7 +99,9 @@ public class AutoTestService {
         }else {
             fail = 1;
         }
-        boolean flag = this.saveAutoTestResult(runInfo, clientAutoScriptRunInfoDO.getScriptName(), clientAutoScriptRunInfoDO.getScriptDetail(), success, fail, result, null);
+        JSONObject jsonObject = new JSONObject() ;
+        jsonObject.put(RESULT_ERROR_MESSAGE_ARGS,result) ;
+        boolean flag = this.saveAutoTestResult(runInfo, clientAutoScriptRunInfoDO.getScriptName(), clientAutoScriptRunInfoDO.getScriptDetail(), success, fail, jsonObject, null);
         if (!flag) {
             TC_LOGGER.error("[AutoTestService.saveAutoTestResult] save auto test Result failed");
             return false;
