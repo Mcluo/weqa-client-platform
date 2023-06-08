@@ -123,6 +123,9 @@ public class AutoTestResultStatisticService {
         }
         Map<String , Long> errorInfoCountMap = new LinkedHashMap<>() ;
         for (ClientAutoTestStatisticErrorInfoDO clientAutoTestStatisticErrorInfoDO : clientAutoTestStatisticErrorInfoDOList){
+            if (StringUtils.isBlank(clientAutoTestStatisticErrorInfoDO.getErrorInfo())){
+                continue;
+            }
             errorInfoCountMap.put(clientAutoTestStatisticErrorInfoDO.getErrorInfo(),(long)clientAutoTestStatisticErrorInfoDO.getCount()) ;
         }
         runResultStatisticDetailVO.setErrorInfoCountMap(errorInfoCountMap);

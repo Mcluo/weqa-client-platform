@@ -73,7 +73,7 @@ public class AutoTestResultController {
     @ResponseBody
     public ResultVO addWeqaResult( @RequestParam(name = "script")Long scriptId,
                                    @RequestParam(name = "success",required = false,defaultValue = "true") boolean success,
-                                   @RequestParam(name = "result",required = false) String result){
+                                   @RequestParam(name = "result",required = false,defaultValue = "{}") String result){
         JSONObject resultJson = null ;
         if (result!=null) {
             try {
