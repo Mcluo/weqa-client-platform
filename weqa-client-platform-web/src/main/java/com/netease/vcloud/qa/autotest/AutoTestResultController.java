@@ -73,16 +73,16 @@ public class AutoTestResultController {
     @ResponseBody
     public ResultVO addWeqaResult( @RequestParam(name = "script")Long scriptId,
                                    @RequestParam(name = "success",required = false,defaultValue = "true") boolean success,
-                                   @RequestParam(name = "result",required = false,defaultValue = "{}") String result){
-        JSONObject resultJson = null ;
-        if (result!=null) {
-            try {
-                resultJson = JSONObject.parseObject(result);
-            }catch (Exception e){
-                CONTROLLER_LOGGER.error("[AutoTestResultController.addResultTest] parse result exception",e);
-            }
-        }
-        boolean flag = autoTestResult.saveAutoTestResult(scriptId,success,resultJson);
+                                   @RequestParam(name = "result",required = false) String result){
+//        JSONObject resultJson = null ;
+//        if (result!=null) {
+//            try {
+//                resultJson = JSONObject.parseObject(result);
+//            }catch (Exception e){
+//                CONTROLLER_LOGGER.error("[AutoTestResultController.addResultTest] parse result exception",e);
+//            }
+//        }
+        boolean flag = autoTestResult.saveAutoTestResult(scriptId,success,result);
         return ResultUtils.build(flag);
     }
     /**
