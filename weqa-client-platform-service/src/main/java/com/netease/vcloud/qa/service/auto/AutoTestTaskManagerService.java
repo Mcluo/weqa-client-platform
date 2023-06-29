@@ -260,6 +260,7 @@ public class AutoTestTaskManagerService {
         taskBaseInfoVO.setBranch(clientAutoTaskInfoDO.getGitBranch());
         taskBaseInfoVO.setStartTime(clientAutoTaskInfoDO.getGmtCreate().getTime());
         taskBaseInfoVO.setUserInfo(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        taskBaseInfoVO.setDeviceType((int)clientAutoTaskInfoDO.getDeviceType());
         TaskRunStatus taskRunStatus = TaskRunStatus.getTaskRunStatusByCode(clientAutoTaskInfoDO.getTaskStatus()) ;
         if (taskRunStatus!=null) {
             taskBaseInfoVO.setStatus(taskRunStatus.getStatus());
