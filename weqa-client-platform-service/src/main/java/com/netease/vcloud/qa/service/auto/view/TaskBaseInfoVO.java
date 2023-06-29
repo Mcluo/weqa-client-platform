@@ -31,6 +31,8 @@ public class TaskBaseInfoVO {
 
     private List<DeviceInfoVO> deviceList ;
 
+    private Integer deviceType ;
+
     private Long projectId ;
 
     private String projectName ;
@@ -114,6 +116,14 @@ public class TaskBaseInfoVO {
 
     public void setDeviceList(List<DeviceInfoVO> deviceList) {
         this.deviceList = deviceList;
+    }
+
+    public Integer getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(Integer deviceType) {
+        this.deviceType = deviceType;
     }
 
     public Long getProjectId() {
