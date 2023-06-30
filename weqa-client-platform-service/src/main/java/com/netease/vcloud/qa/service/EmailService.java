@@ -78,11 +78,9 @@ public class EmailService {
                 }
                 if (list.size() > 0 ){
                     List<ClientAutoDeviceInfoDO> deviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(list);
-                    for(ClientAutoDeviceInfoDO deviceInfoDO : deviceInfoDOList){
-                        if (deviceInfoDO.getRun() == 1 ){
-                            deviceInfoDO.setRun((byte)0);
-                            clientAutoDeviceInfoDAO.updateDeviceInfo(deviceInfoDO);
-                        }
+                    for (ClientAutoDeviceInfoDO deviceInfoDO : deviceInfoDOList) {
+                        deviceInfoDO.setRun((byte) 0);
+                        clientAutoDeviceInfoDAO.updateDeviceInfo(deviceInfoDO);
                     }
                 }
             }
