@@ -25,15 +25,17 @@ public class JiraVersion {
 
     private boolean overdue;
 
-    private DateTime startDate;
+    private String startDate;
 
-    private DateTime releaseDate;
+    private String releaseDate;
 
-    private DateTime userStartDate;
+    private String userStartDate;
 
-    private DateTime userReleaseDate;
+    private String userReleaseDate;
 
-    private DateTime actualReleaseDate;
+    private String actualReleaseDate;
+
+    private Long projectId;
 
     public URI getSelf() {
         return self;
@@ -99,43 +101,51 @@ public class JiraVersion {
         this.overdue = overdue;
     }
 
-    public DateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(DateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public DateTime getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(DateTime releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
-    public DateTime getUserStartDate() {
+    public String getUserStartDate() {
         return userStartDate;
     }
 
-    public void setUserStartDate(DateTime userStartDate) {
+    public void setUserStartDate(String userStartDate) {
         this.userStartDate = userStartDate;
     }
 
-    public DateTime getUserReleaseDate() {
+    public String getUserReleaseDate() {
         return userReleaseDate;
     }
 
-    public void setUserReleaseDate(DateTime userReleaseDate) {
+    public void setUserReleaseDate(String userReleaseDate) {
         this.userReleaseDate = userReleaseDate;
     }
 
-    public DateTime getActualReleaseDate() {
+    public String getActualReleaseDate() {
         return actualReleaseDate;
     }
 
-    public void setActualReleaseDate(DateTime actualReleaseDate) {
+    public void setActualReleaseDate(String actualReleaseDate) {
         this.actualReleaseDate = actualReleaseDate;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

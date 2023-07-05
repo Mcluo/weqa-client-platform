@@ -6,12 +6,15 @@ import com.netease.vcloud.qa.PropertiesConfig;
 import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.version.data.JiraVersion;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.net.URI;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +53,35 @@ public class JiraService {
             if (jsonArray == null){
                 return null ;
             }
-            System.out.println(jsonArray.toJSONString());
+//            System.out.println(jsonArray.toJSONString());
+            for (Object object : jsonArray){
+                if (object == null || object instanceof JSONObject == false) {
+                    continue;
+                }
+                JSONObject jsonObject = (JSONObject) object ;
+                JiraVersion jiraVersion = new JiraVersion() ;
+                String selfStr = jsonObject.getString("self") ;
+                if (StringUtils.isNotBlank(selfStr)) {
+                    jiraVersion.setSelf(new URI(selfStr));
+                }
+                String id = jsonObject.getString("id") ;
+                if (id != null) {
+                    try {
+                        jiraVersion.setId(Long.parseLong(id));
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
+                    }
+                }
+                jiraVersion.setName(jsonObject.getString("name"));
+                jiraVersion.setArchived(jsonObject.getBoolean("archived"));
+                jiraVersion.setReleased(jsonObject.getBoolean("released"));
+                jiraVersion.setStartDate(jsonObject.getString("startDate"));
+                jiraVersion.setReleaseDate(jsonObject.getString("releaseDate"));
+                jiraVersion.setUserStartDate(jsonObject.getString("userStartDate"));
+                jiraVersion.setUserReleaseDate(jsonObject.getString("userReleaseDate"));
+                jiraVersion.setProjectId(jsonObject.getLong("projectId"));
+                list.add(jiraVersion);
+            }
         } catch (Exception e) {
             COMMON_LOGGER.error("Remote JIRA service getProjectVersions failed", e);
         }

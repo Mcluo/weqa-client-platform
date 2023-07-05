@@ -33,6 +33,8 @@ public class PropertiesConfig {
 
     public static final String JIRA_PASSWORD = "jira_password";
 
+    public static final String JIRA_KEY = "jira_key";
+
     /**
      * 配置文件名
      */
