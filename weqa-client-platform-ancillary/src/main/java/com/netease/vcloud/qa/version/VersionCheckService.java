@@ -39,7 +39,7 @@ public class VersionCheckService{
     @Autowired
     private PopoNotifyService popoNotifyService ;
 
-    @Scheduled(cron = "0 0 0 * *? *")
+//    @Scheduled(cron = "0 0 0 * *? *")
     public void VersionCheckSchedule() {
         String jiraKey = this.getJiraKey();
         if (StringUtils.isBlank(jiraKey)) {
