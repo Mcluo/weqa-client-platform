@@ -21,6 +21,8 @@ public enum DevicePlatform {
     ELECTRON("electron",(byte)6),
 
     FLUTTER("flutter",(byte) 7),
+
+    UNIAPP("uniapp",(byte)8),
     ;
 
     private String platform ;

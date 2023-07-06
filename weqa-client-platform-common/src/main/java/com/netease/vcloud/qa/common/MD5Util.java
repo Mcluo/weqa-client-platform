@@ -1,4 +1,4 @@
-package com.netease.vcloud.qa.service.tc.data;
+package com.netease.vcloud.qa.common;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

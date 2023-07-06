@@ -14,6 +14,9 @@ import com.netease.vcloud.qa.service.tc.TCExecManagerService;
 import com.netease.vcloud.qa.service.tc.data.ClientExecData;
 import com.netease.vcloud.qa.service.tc.data.ClientExecDataBO;
 import com.netease.vcloud.qa.service.tc.data.ClientExecResultData;
+import com.netease.vcloud.qa.version.JiraService;
+import com.netease.vcloud.qa.version.VersionCheckService;
+import com.netease.vcloud.qa.version.data.JiraVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +40,9 @@ public class TestController {
 
     @Autowired
     private RiskDataService riskDataService ;
+
+    @Autowired
+    private VersionCheckService versionCheckScheduler ;
     /**
      * http://127.0.0.1:8788/g2-client/test/test
      * @return
@@ -198,5 +204,18 @@ public class TestController {
             resultVO = ResultUtils.buildFail(e.getMessage()) ;
         }
         return resultVO ;
+    }
+
+    /**
+     *  http://127.0.0.1:8788/g2-client/test/jira/version
+     * @return
+     */
+    @RequestMapping("/jira/version")
+    public ResultVO getJiraVersionInfo() {
+        ResultVO resultVO = null ;
+//        List<JiraVersion> jiraVersionList = jiraService.getProjectVersions("NRTCG2");
+        versionCheckScheduler.VersionCheckSchedule();
+        resultVO = ResultUtils.buildSuccess() ;
+        return  resultVO ;
     }
 }
