@@ -35,6 +35,8 @@ public class PropertiesConfig {
 
     public static final String JIRA_KEY = "jira_key";
 
+    public static final String CONFIG_NOTIFY_USER = "config_download_notify_user";
+
     /**
      * 配置文件名
      */
