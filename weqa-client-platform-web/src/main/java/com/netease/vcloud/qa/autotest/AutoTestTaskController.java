@@ -44,6 +44,7 @@ public class AutoTestTaskController {
     @Autowired
     private AutoTestDeviceService autoTestDeviceService;
 
+
     /**
      * 创建自动化测试任务
      * @param taskName
