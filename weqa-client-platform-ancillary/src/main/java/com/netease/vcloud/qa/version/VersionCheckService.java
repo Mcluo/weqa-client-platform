@@ -39,7 +39,7 @@ public class VersionCheckService{
     @Autowired
     private PopoNotifyService popoNotifyService ;
 
-//    @Scheduled(cron = "0 0 0 * *? *")
+    @Scheduled(cron = "0 0 10 * * ? ")
     public void VersionCheckSchedule() {
         String jiraKey = this.getJiraKey();
         if (StringUtils.isBlank(jiraKey)) {
@@ -100,11 +100,15 @@ public class VersionCheckService{
         //生成二级配置ID
         Map<String,String> idMap = new HashMap<>() ;
         for(String version : versionList){
-            List<String> versionIdList = configCheckService.buildConfigIdByVersion(version) ;
-            if (versionIdList!= null){
-                for (String versionId : versionIdList) {
-                    idMap.put(versionId, version);
+            if (version.startsWith("4.6.")) {
+                List<String> versionIdList = configCheckService.buildConfigIdByVersion(version);
+                if (versionIdList != null) {
+                    for (String versionId : versionIdList) {
+                        idMap.put(versionId, version);
+                    }
                 }
+            }else{
+                //不需要校验
             }
         }
         return idMap ;

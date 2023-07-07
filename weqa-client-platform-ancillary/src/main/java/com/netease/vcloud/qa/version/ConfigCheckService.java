@@ -37,14 +37,14 @@ public class ConfigCheckService {
         }
         version = version.trim() ;
         List<String> configIdList = new ArrayList<>();
-        String audioConfigId = String.format(AUDIO_CONFIG_FORMAT, version) ;
-        configIdList.add(audioConfigId);
-        String videoConfigId = String.format(VIDEO_CONFIG_FORMAT, version) ;
-        configIdList.add(videoConfigId);
+//        String audioConfigId = String.format(AUDIO_CONFIG_FORMAT, version) ;
+//        configIdList.add(audioConfigId);
+//        String videoConfigId = String.format(VIDEO_CONFIG_FORMAT, version) ;
+//        configIdList.add(videoConfigId);
         String qosConfigId = String.format(QOS_CONFIG_FORMAT, version) ;
         configIdList.add(qosConfigId);
-        String videoHWConfigId = String.format(VIDEO_HW_CONFIG_FORMAT, version) ;
-        configIdList.add(videoHWConfigId);
+//        String videoHWConfigId = String.format(VIDEO_HW_CONFIG_FORMAT, version) ;
+//        configIdList.add(videoHWConfigId);
         return  configIdList;
     }
 
