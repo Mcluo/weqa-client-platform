@@ -6,10 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 配置校验服务
@@ -80,7 +77,7 @@ public class ConfigCheckService {
         if (configLostList == null){
             return null ;
         }
-        Map<String,List<String>> configMap = new HashMap<>();
+        Map<String,List<String>> configMap = new LinkedHashMap<>();
         for (String configLost : configLostList) {
             String[] configArray = configLost.split("-");
             if (configArray.length < 2){
@@ -97,18 +94,27 @@ public class ConfigCheckService {
         if (CollectionUtils.isEmpty(configMap)){
             return null ;
         }
+        List<Map.Entry<String,List<String>>> entryList = new ArrayList<>(configMap.entrySet()) ;
+        Collections.sort(entryList,new Comparator<Map.Entry<String, List<String>>>() {
+            @Override
+            public int compare(Map.Entry<String, List<String>> o1, Map.Entry<String, List<String>> o2) {
+                String key1 = o1.getKey() ;
+                String key2 = o2.getKey() ;
+                return key1.compareTo(key2);
+            }
+        }) ;
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String,List<String>> entry : configMap.entrySet()) {
+        for (Map.Entry<String,List<String>> entry : entryList) {
             String version = entry.getKey() ;
             List<String> configList = entry.getValue() ;
             if (CollectionUtils.isEmpty(configList)){
                 continue;
             }
-            stringBuilder.append(version).append(" : ") ;
-            for (String config : configList) {
-                stringBuilder.append(config).append(" , ") ;
-            }
-            stringBuilder.append("\n") ;
+            stringBuilder.append(version).append(" , ") ;
+//            for (String config : configList) {
+//                stringBuilder.append(config).append(" , ") ;
+//            }
+//            stringBuilder.append("\n") ;
         }
         return stringBuilder.toString() ;
     }

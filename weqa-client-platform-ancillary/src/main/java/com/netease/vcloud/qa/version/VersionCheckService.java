@@ -148,7 +148,7 @@ public class VersionCheckService{
         if (CollectionUtils.isEmpty(configLostList)){
             contentBuilder.append("所有版本配置均存在");
         }else {
-            contentBuilder.append("以下版本存在配置缺失：\n");
+            contentBuilder.append("QOS以下版本存在配置缺失：\n");
             String info = configCheckService.buildNotifyContent(configLostList);
 //            System.out.println(info);
             contentBuilder.append(info);
