@@ -2,7 +2,9 @@ package com.netease.vcloud.qa.version;
 
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.common.HttpUtils;
+import com.netease.vcloud.qa.dao.ClientConfigVersionCheckWriteListDAO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,6 +29,7 @@ public class ConfigCheckService {
     private static final String RTC_CONFIG_URL = "wecan-lbs.netease.im" ;
 
     private static final String RTC_CONFIG_PATH = "/multimedia-conf/v3/cc/config" ;
+
 
     public List<String> buildConfigIdByVersion(String version) {
         if (StringUtils.isBlank(version)){
