@@ -105,8 +105,15 @@ public class AutoTaskApiService {
         return tcIdList ;
     }
 
-    public List<ApiTaskBuildData> getTaskBuildData(Long buildId) {
-        String urls = this.buildUrlList(buildId) ;
+    public List<ApiTaskBuildData> getTaskBuildData(Long buildId,JenkinsBuildDTO jenkinsBuildDTO) {
+        String urls = null ;
+        if(jenkinsBuildDTO == null){
+            //仅可以在办公网络使用
+            urls = this.buildUrlList(buildId) ;
+        }else {
+            //均可以使用
+            urls = this.buildUrlList(jenkinsBuildDTO);
+        }
         List<ApiTaskBuildData>  apiTaskBuildDataList = new ArrayList<ApiTaskBuildData>() ;
         List<List<Long>> deviceList = this.getDeviceList() ;
         if (deviceList!=null){
@@ -146,6 +153,34 @@ public class AutoTaskApiService {
             AUTO_LOGGER.error("[AutoTaskApiService.getDeviceList] exception" ,e);
         }
         return deviceList ;
+    }
+    private String buildUrlList(JenkinsBuildDTO jenkinsBuildDTO){
+        List<AutoTestTaskUrlDTO> urlList = new ArrayList<AutoTestTaskUrlDTO>() ;
+        if (jenkinsBuildDTO.getWindows()!=null) {
+            AutoTestTaskUrlDTO autoTestTaskUrlDTO = new AutoTestTaskUrlDTO();
+            autoTestTaskUrlDTO.setPlatform("windows");
+            autoTestTaskUrlDTO.setUrl(jenkinsBuildDTO.getWindows());
+            urlList.add(autoTestTaskUrlDTO);
+        }
+        if (jenkinsBuildDTO.getMac()!=null) {
+            AutoTestTaskUrlDTO autoTestTaskUrlDTO = new AutoTestTaskUrlDTO();
+            autoTestTaskUrlDTO.setPlatform("mac");
+            autoTestTaskUrlDTO.setUrl(jenkinsBuildDTO.getMac());
+            urlList.add(autoTestTaskUrlDTO);
+        }
+        if (jenkinsBuildDTO.getAndroid()!=null) {
+            AutoTestTaskUrlDTO autoTestTaskUrlDTO = new AutoTestTaskUrlDTO();
+            autoTestTaskUrlDTO.setPlatform("android");
+            autoTestTaskUrlDTO.setUrl(jenkinsBuildDTO.getAndroid());
+            urlList.add(autoTestTaskUrlDTO);
+        }
+        if (jenkinsBuildDTO.getIos()!=null) {
+            AutoTestTaskUrlDTO autoTestTaskUrlDTO = new AutoTestTaskUrlDTO();
+            autoTestTaskUrlDTO.setPlatform("ios");
+            autoTestTaskUrlDTO.setUrl(jenkinsBuildDTO.getIos());
+            urlList.add(autoTestTaskUrlDTO);
+        }
+        return JSONArray.toJSONString(urlList) ;
     }
 
     private String buildUrlList(long buildId){
