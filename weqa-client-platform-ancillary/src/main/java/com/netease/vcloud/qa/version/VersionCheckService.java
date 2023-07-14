@@ -1,7 +1,10 @@
 package com.netease.vcloud.qa.version;
 
 import com.netease.vcloud.qa.PropertiesConfig;
+import com.netease.vcloud.qa.dao.ClientConfigVersionCheckWriteListDAO;
+import com.netease.vcloud.qa.model.ClientConfigVersionCheckWriteListDO;
 import com.netease.vcloud.qa.notify.PopoNotifyService;
+import com.netease.vcloud.qa.version.data.ConfigType;
 import com.netease.vcloud.qa.version.data.JiraVersion;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -11,10 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -39,8 +39,35 @@ public class VersionCheckService{
     @Autowired
     private PopoNotifyService popoNotifyService ;
 
+    @Autowired
+    private ClientConfigVersionCheckWriteListDAO clientConfigVersionCheckWriteListDAO ;
+
+    private Map<String, Set> versionMap = new HashMap<>();
+
+    public boolean addWriteList(String type ,List<String> versionList){
+        if (CollectionUtils.isEmpty(versionList)|| StringUtils.isBlank(type)){
+            return false ;
+        }
+        List<ClientConfigVersionCheckWriteListDO> clientConfigVersionCheckWriteListDOList = new ArrayList<>() ;
+        for (String version : versionList){
+            version = version.trim() ;
+            ClientConfigVersionCheckWriteListDO clientConfigVersionCheckWriteListDO = new ClientConfigVersionCheckWriteListDO() ;
+            clientConfigVersionCheckWriteListDO.setConfigType(type);
+            clientConfigVersionCheckWriteListDO.setConfigVersion(version);
+            clientConfigVersionCheckWriteListDOList.add(clientConfigVersionCheckWriteListDO) ;
+        }
+        int count = clientConfigVersionCheckWriteListDAO.patchInsertWriteList(clientConfigVersionCheckWriteListDOList);
+        if (count >= clientConfigVersionCheckWriteListDOList.size()){
+            return true ;
+        }else {
+            return false ;
+        }
+    }
+
+
     @Scheduled(cron = "0 0 10 * * ? ")
-    public void VersionCheckSchedule() {
+    public void versionCheckSchedule() {
+        this.updateWriteList();
         String jiraKey = this.getJiraKey();
         if (StringUtils.isBlank(jiraKey)) {
             return;
@@ -65,6 +92,20 @@ public class VersionCheckService{
         boolean notifyResult = this.configWarningNotify(configLostVersionList) ;
         if (!notifyResult){
             COMMON_LOGGER.error("[VersionCheckService.VersionCheckSchedule] configWarningNotify failed");
+        }
+    }
+
+    private void updateWriteList(){
+        this.versionMap = new HashMap<>() ;
+        List<ClientConfigVersionCheckWriteListDO> clientConfigVersionCheckWriteListDOS = clientConfigVersionCheckWriteListDAO.getClientConfigVersionCheckWriteListByType(ConfigType.QOS) ;
+        if (!CollectionUtils.isEmpty(clientConfigVersionCheckWriteListDOS)){
+            Set<String> qosList = new HashSet<String>();
+            for (ClientConfigVersionCheckWriteListDO clientConfigVersionCheckWriteListDO : clientConfigVersionCheckWriteListDOS) {
+                if (clientConfigVersionCheckWriteListDO !=null){
+                    qosList.add(clientConfigVersionCheckWriteListDO.getConfigVersion()) ;
+                }
+            }
+            versionMap.put(ConfigType.QOS,qosList) ;
         }
     }
 
@@ -119,10 +160,14 @@ public class VersionCheckService{
             return null;
         }
         List<String> configNotExistList = new ArrayList<>() ;
+        Set qosWriteList = versionMap.get(ConfigType.QOS) ;
         for(Map.Entry<String,String> entry : idMap.entrySet()){
             boolean isConfigExist = configCheckService.isConfigExist(entry.getKey()) ;
             if (!isConfigExist){
-                COMMON_LOGGER.error("[ConfigCheckService.getConfigLostVersionList] config not exist.version is " +entry.getValue() +"key is"+entry.getKey());
+                if (qosWriteList.contains(entry.getValue())){
+                    continue;
+                }
+                COMMON_LOGGER.info("[ConfigCheckService.getConfigLostVersionList] config not exist.version is " +entry.getValue() +"key is"+entry.getKey());
                 configNotExistList.add(entry.getKey()) ;
             }
         }
@@ -147,6 +192,7 @@ public class VersionCheckService{
         StringBuilder contentBuilder = new StringBuilder() ;
         if (CollectionUtils.isEmpty(configLostList)){
             contentBuilder.append("所有版本配置均存在");
+            return null ;
         }else {
             contentBuilder.append("QOS以下版本存在配置缺失：\n");
             String info = configCheckService.buildNotifyContent(configLostList);

@@ -6,7 +6,10 @@ import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.api.ApiTaskBuildData;
 import com.netease.vcloud.qa.service.api.AutoTaskApiService;
+import com.netease.vcloud.qa.service.api.JenkinsBuildDTO;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +26,8 @@ import java.util.List;
 @RequestMapping("/auto/api")
 public class AutoTestAPIController {
 
+    private static final Logger CONTROLLER_LOGGER = LoggerFactory.getLogger("controller");
+
     private static final String DEFAULT_GIT_INFO = "ssh://git@g.hz.netease.com:22222/ClientTest/fusion/GeneralTester.git" ;
 
     private static final String DEFAULT_OPERATOR = "" ;
@@ -35,7 +40,7 @@ public class AutoTestAPIController {
 
     /**
      * 对外提供的接口，用于触发自动化测试用例
-     * http://127.0.0.1:8788/g2-client/auto/api/task/create?name=构建自动化测试&version=5.4.0&buildId=3721
+     * http://127.0.0.1:8788/g2-client/auto/api/task/create?name=构建自动化测试&version=5.4.0&buildId=3721&url={}
      * @param taskName
      * @param version
      * @param buildID
@@ -47,12 +52,19 @@ public class AutoTestAPIController {
                                       @RequestParam("version") String version,
                                       @RequestParam("buildId") Long buildID,
                                       @RequestParam(name = "operator",required = false) String operator,
+                                      @RequestParam(name = "url",required = false) String url ,
                                       @RequestParam(name = "extend",required = false) String buildExtendInfo){
         ResultVO resultVO = ResultUtils.buildSuccess();
         String gitBranch = autoTaskApiService.getGitBranchByVersion(version) ;
         JSONObject extendInfoObject = JSONObject.parseObject(buildExtendInfo) ;
         List<Long> runCasedIds = autoTaskApiService.getTCIds(extendInfoObject) ;
-        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(buildID) ;
+        JenkinsBuildDTO jenkinsBuildDTO = null ;
+        try {
+            jenkinsBuildDTO = JSONObject.parseObject(url, JenkinsBuildDTO.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(buildID,jenkinsBuildDTO) ;
         if(CollectionUtils.isEmpty(apiTaskBuildDataList)){
             resultVO = ResultUtils.buildFail("缺少合适运行给设备") ;
         }

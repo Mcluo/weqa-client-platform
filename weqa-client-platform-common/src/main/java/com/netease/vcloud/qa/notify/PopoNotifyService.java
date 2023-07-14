@@ -26,6 +26,9 @@ public class PopoNotifyService {
 
 
     public boolean sendPOPOMessage(String userEmail, String message)  {
+        if (message == null || "".equals(message)){
+            return true ;
+        }
         PopoSendData sendPOPO =new PopoSendData();
         sendPOPO.setTo(userEmail);
         sendPOPO.setContent(message);
