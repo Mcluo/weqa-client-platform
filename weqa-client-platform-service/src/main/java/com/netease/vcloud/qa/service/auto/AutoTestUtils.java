@@ -58,6 +58,9 @@ public class AutoTestUtils {
         if (autoTestTaskInfoBO.getProjectId()!=null) {
             clientAutoTaskInfoDO.setProjectId(autoTestTaskInfoBO.getProjectId());
         }
+        if (autoTestTaskInfoBO.getBuildGroupId()!=null) {
+            clientAutoTaskInfoDO.setBuildGroupId(autoTestTaskInfoBO.getBuildGroupId());
+        }
         return clientAutoTaskInfoDO ;
     }
 

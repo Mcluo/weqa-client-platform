@@ -12,7 +12,7 @@ public class AutoTaskAPIDTO {
 
     private Long buildID ;
 
-    private Long buildGroupID ;
+    private String buildGroupId ;
 
     private String script ;
     private String operator ;
@@ -53,12 +53,12 @@ public class AutoTaskAPIDTO {
         this.operator = operator;
     }
 
-    public Long getBuildGroupID() {
-        return buildGroupID;
+    public String getBuildGroupId() {
+        return buildGroupId;
     }
 
-    public void setBuildGroupID(Long buildGroupID) {
-        this.buildGroupID = buildGroupID;
+    public void setBuildGroupId(String buildGroupId) {
+        this.buildGroupId = buildGroupId;
     }
 
     public String getScript() {

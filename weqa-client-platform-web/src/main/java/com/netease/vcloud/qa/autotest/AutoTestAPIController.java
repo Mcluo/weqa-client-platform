@@ -65,7 +65,7 @@ public class AutoTestAPIController {
             if(apiTaskBuildData == null){
                 continue ;
             }
-            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, autoTaskAPIDTO.getOperator() == null ? DEFAULT_OPERATOR : autoTaskAPIDTO.getOperator(), DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null);
+            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, autoTaskAPIDTO.getOperator() == null ? DEFAULT_OPERATOR : autoTaskAPIDTO.getOperator(), DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null,autoTaskAPIDTO.getBuildGroupId());
             if (simpleResultVO.getCode()!=200) {
                 resultVO.setCode(simpleResultVO.getCode());
                 resultVO.setMsg(simpleResultVO.getMsg());
@@ -113,7 +113,7 @@ public class AutoTestAPIController {
             if(apiTaskBuildData == null){
                 continue ;
             }
-            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, operator == null ? DEFAULT_OPERATOR : operator, DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null);
+            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, operator == null ? DEFAULT_OPERATOR : operator, DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null,null);
             if (simpleResultVO.getCode()!=200) {
                 resultVO.setCode(simpleResultVO.getCode());
                 resultVO.setMsg(simpleResultVO.getMsg());

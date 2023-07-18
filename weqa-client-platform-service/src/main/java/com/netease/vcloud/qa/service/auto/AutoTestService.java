@@ -2,6 +2,7 @@ package com.netease.vcloud.qa.service.auto;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.auto.TaskRunStatus;
 import com.netease.vcloud.qa.dao.AutoTestResultDAO;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
@@ -144,6 +145,18 @@ public class AutoTestService {
             errorMessage = errorMessage.substring(0,63) ;
         }
         return errorMessage ;
+    }
+
+    public void onTaskFinish(Long taskId){
+        //任务结束事件
+        ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        if (clientAutoTaskInfoDO== null){
+            return;
+        }
+        if (TaskRunStatus.isTaskFinish(clientAutoTaskInfoDO.getTaskStatus())){
+            //任务完成，触发相关事件
+        }
+        return ;
     }
 
 }

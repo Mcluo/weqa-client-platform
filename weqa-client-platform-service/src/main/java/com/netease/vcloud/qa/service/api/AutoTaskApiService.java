@@ -41,8 +41,8 @@ public class AutoTaskApiService {
 
     private static final String DEFAULT_GIT_BRANCH = "master" ;
 
-//    private static final Long TEST_SUIT_ID = 93L ;
-    private static final Long TEST_SUIT_ID = 3L ;
+    private static final Long TEST_SUIT_ID = 93L ;
+//    private static final Long TEST_SUIT_ID = 3L ;
 
     @Autowired
     private GitInfoService gitInfoService ;
