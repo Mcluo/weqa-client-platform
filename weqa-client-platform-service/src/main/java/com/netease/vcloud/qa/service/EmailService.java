@@ -9,6 +9,7 @@ import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
 import com.netease.vcloud.qa.common.MD5Util;
+import com.netease.vcloud.qa.service.auto.AutoTestService;
 import com.netease.vcloud.qa.service.tc.data.SendPOPO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,9 @@ public class EmailService {
 
     @Autowired
     private ClientAutoDeviceInfoDAO clientAutoDeviceInfoDAO ;
+
+    @Autowired
+    private AutoTestService autoTestService;
 
     private static final Logger COMMON_LOGGER = LoggerFactory.getLogger("EmailService");
 
@@ -85,10 +89,12 @@ public class EmailService {
                 try {
                     this.sendHtmlMail(infoDO.getOperator(), "Rtc自动化测试", emailText);
                     this.sendPOPO1(infoDO.getOperator(), popoText);
+                    this.sendPipeLine(infoDO.getId());
                 }catch (Exception e){
                     COMMON_LOGGER.error("[sendEmail.execute] start task exception", e);
                 }
             }) ;
+
         }
     }
 
@@ -151,6 +157,10 @@ public class EmailService {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void sendPipeLine(long taskId){
+        autoTestService.onTaskFinish(taskId);
     }
 }
 

@@ -12,6 +12,7 @@ import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.git.GitInfoService;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -80,8 +81,18 @@ public class AutoTaskApiService {
             }
         }
         return gitList.get(0);
-
     }
+
+    public String getGitBranchByVersionAndScript(String version,String script){
+        if (StringUtils.isNotBlank(script)){
+            List<String> gitList = gitInfoService.queryGitBranchList(DEFAULT_GIT_ID,script) ;
+            if (!CollectionUtils.isEmpty(gitList)){
+                return gitList.get(0);
+            }
+        }
+        return this.getGitBranchByVersion(version) ;
+    }
+
 
     /**
      * 获取TC用例集，当前直接使用最小回归集合
@@ -156,16 +167,18 @@ public class AutoTaskApiService {
     }
     private String buildUrlList(JenkinsBuildDTO jenkinsBuildDTO){
         List<AutoTestTaskUrlDTO> urlList = new ArrayList<AutoTestTaskUrlDTO>() ;
-        if (jenkinsBuildDTO.getWindows()!=null) {
+        String windowsUrl = StringUtils.isNotBlank(jenkinsBuildDTO.getPc_x64())?jenkinsBuildDTO.getPc_x64():jenkinsBuildDTO.getPc_x86() ;
+        if (StringUtils.isNotBlank(windowsUrl)) {
             AutoTestTaskUrlDTO autoTestTaskUrlDTO = new AutoTestTaskUrlDTO();
             autoTestTaskUrlDTO.setPlatform("windows");
-            autoTestTaskUrlDTO.setUrl(jenkinsBuildDTO.getWindows());
+            autoTestTaskUrlDTO.setUrl(windowsUrl);
             urlList.add(autoTestTaskUrlDTO);
         }
-        if (jenkinsBuildDTO.getMac()!=null) {
+        String macUrl = StringUtils.isNotBlank(jenkinsBuildDTO.getMac_x64())?jenkinsBuildDTO.getMac_x64():jenkinsBuildDTO.getMac_arm64() ;
+        if (StringUtils.isNotBlank(macUrl)) {
             AutoTestTaskUrlDTO autoTestTaskUrlDTO = new AutoTestTaskUrlDTO();
             autoTestTaskUrlDTO.setPlatform("mac");
-            autoTestTaskUrlDTO.setUrl(jenkinsBuildDTO.getMac());
+            autoTestTaskUrlDTO.setUrl(macUrl);
             urlList.add(autoTestTaskUrlDTO);
         }
         if (jenkinsBuildDTO.getAndroid()!=null) {

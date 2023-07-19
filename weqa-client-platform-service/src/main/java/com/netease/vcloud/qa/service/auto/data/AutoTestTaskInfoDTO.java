@@ -38,6 +38,11 @@ public class AutoTestTaskInfoDTO {
      */
     private Long projectId ;
 
+    /**
+     * 构建号
+     */
+    private String buildGroupId ;
+
     public String getTaskType() {
         return taskType;
     }
@@ -124,5 +129,13 @@ public class AutoTestTaskInfoDTO {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public String getBuildGroupId() {
+        return buildGroupId;
+    }
+
+    public void setBuildGroupId(String buildGroupId) {
+        this.buildGroupId = buildGroupId;
     }
 }
