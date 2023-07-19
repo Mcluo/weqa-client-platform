@@ -44,6 +44,7 @@ public class AutoTaskApiService {
     private static final Long TEST_SUIT_ID = 93L ;
 //    private static final Long TEST_SUIT_ID = 3L ;
 
+
     @Autowired
     private GitInfoService gitInfoService ;
 

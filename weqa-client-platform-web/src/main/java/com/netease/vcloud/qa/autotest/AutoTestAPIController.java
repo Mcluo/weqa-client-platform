@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.autotest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.auto.DeviceType;
 import com.netease.vcloud.qa.result.ResultUtils;
@@ -47,11 +48,11 @@ public class AutoTestAPIController {
     public ResultVO createAutoTask(@RequestBody AutoTaskAPIDTO autoTaskAPIDTO){
         ResultVO resultVO = ResultUtils.buildSuccess();
         String gitBranch = autoTaskApiService.getGitBranchByVersionAndScript(autoTaskAPIDTO.getVersion(),autoTaskAPIDTO.getScript()) ;
-        JSONObject extendInfoObject = JSONObject.parseObject(autoTaskAPIDTO.getCropParameter()) ;
+        JSONObject extendInfoObject = autoTaskAPIDTO.getCropParameter() ;
         List<Long> runCasedIds = autoTaskApiService.getTCIds(extendInfoObject) ;
         JenkinsBuildDTO jenkinsBuildDTO = null ;
         try {
-            jenkinsBuildDTO = JSONObject.parseObject(autoTaskAPIDTO.getUrl(), JenkinsBuildDTO.class);
+            jenkinsBuildDTO = JSON.toJavaObject(autoTaskAPIDTO.getUrl(), JenkinsBuildDTO.class);
         }catch (Exception e){
             e.printStackTrace();
         }

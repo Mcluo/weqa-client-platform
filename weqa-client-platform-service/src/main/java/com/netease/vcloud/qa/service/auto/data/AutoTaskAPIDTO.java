@@ -1,5 +1,7 @@
 package com.netease.vcloud.qa.service.auto.data;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2023/7/18 15:55
@@ -17,9 +19,9 @@ public class AutoTaskAPIDTO {
     private String script ;
     private String operator ;
 
-    private String cropParameter ;
+    private JSONObject cropParameter ;
 
-    private String url ;
+    private JSONObject url ;
 
     public String getName() {
         return name;
@@ -69,19 +71,19 @@ public class AutoTaskAPIDTO {
         this.script = script;
     }
 
-    public String getCropParameter() {
+    public JSONObject getCropParameter() {
         return cropParameter;
     }
 
-    public void setCropParameter(String cropParameter) {
+    public void setCropParameter(JSONObject cropParameter) {
         this.cropParameter = cropParameter;
     }
 
-    public String getUrl() {
+    public JSONObject getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(JSONObject url) {
         this.url = url;
     }
 }
