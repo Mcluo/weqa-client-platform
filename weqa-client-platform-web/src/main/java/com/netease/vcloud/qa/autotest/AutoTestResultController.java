@@ -86,7 +86,11 @@ public class AutoTestResultController {
         return ResultUtils.build(flag);
     }
 
-
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/test/task/finish?task=22
+     * @param taskId
+     * @return
+     */
     @RequestMapping("/test/task/finish")
     @ResponseBody
     public ResultVO notifyTaskFinish(@RequestParam(name = "task")Long taskId){

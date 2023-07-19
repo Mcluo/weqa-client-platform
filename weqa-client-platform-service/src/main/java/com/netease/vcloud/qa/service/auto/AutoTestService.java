@@ -47,6 +47,9 @@ public class AutoTestService {
     @Autowired
     private TCAutoCoverManagerService tcAutoCoverManagerService ;
 
+    @Autowired
+    private AutoPipeLineNotifyService autoPipeLineNotifyService ;
+
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
         if (StringUtils.isBlank(runInfo)||runInfo.startsWith("auto")){
             TC_LOGGER.warn("[AutoTestService.saveAutoTestResult] run info is invalid");
@@ -155,8 +158,11 @@ public class AutoTestService {
         }
         if (TaskRunStatus.isTaskFinish(clientAutoTaskInfoDO.getTaskStatus())){
             //任务完成，触发相关事件
+            autoPipeLineNotifyService.notifyPipeline(clientAutoTaskInfoDO);
         }
         return ;
     }
+
+
 
 }
