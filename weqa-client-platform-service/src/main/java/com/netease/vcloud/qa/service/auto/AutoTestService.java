@@ -158,6 +158,7 @@ public class AutoTestService {
         }
         if (TaskRunStatus.isTaskFinish(clientAutoTaskInfoDO.getTaskStatus())){
             //任务完成，触发相关事件
+            System.out.println("[onTaskFinish] task id is" + clientAutoTaskInfoDO.getDeviceInfo());
             autoPipeLineNotifyService.notifyPipeline(clientAutoTaskInfoDO);
         }
         return ;
