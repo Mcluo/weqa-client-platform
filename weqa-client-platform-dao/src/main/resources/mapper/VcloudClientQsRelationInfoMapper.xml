@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.vcloud.qa.dao.VcloudClientQsRelationInfoDAO">
+  <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.VcloudClientQsRelationDO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate" />
+    <result column="auto_task_id" jdbcType="BIGINT" property="autoTaskId" />
+    <result column="qs_task_id" jdbcType="BIGINT" property="qsTaskId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_update, auto_task_id, qs_task_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vcloud_client_qs_relation_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByQsId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vcloud_client_qs_relation_info
+    where qs_task_id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from vcloud_client_qs_relation_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.netease.vcloud.qa.model.VcloudClientQsRelationDO">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into vcloud_client_qs_relation_info (gmt_create, gmt_update, auto_task_id, 
+      qs_task_id)
+    values (now(), now(), #{autoTaskId,jdbcType=BIGINT},
+      #{qsTaskId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.netease.vcloud.qa.model.VcloudClientQsRelationDO">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into vcloud_client_qs_relation_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtUpdate != null">
+        gmt_update,
+      </if>
+      <if test="autoTaskId != null">
+        auto_task_id,
+      </if>
+      <if test="qsTaskId != null">
+        qs_task_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtUpdate != null">
+        #{gmtUpdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="autoTaskId != null">
+        #{autoTaskId,jdbcType=BIGINT},
+      </if>
+      <if test="qsTaskId != null">
+        #{qsTaskId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.netease.vcloud.qa.model.VcloudClientQsRelationDO">
+    update vcloud_client_qs_relation_info
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtUpdate != null">
+        gmt_update = #{gmtUpdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="autoTaskId != null">
+        auto_task_id = #{autoTaskId,jdbcType=BIGINT},
+      </if>
+      <if test="qsTaskId != null">
+        qs_task_id = #{qsTaskId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.netease.vcloud.qa.model.VcloudClientQsRelationDO">
+    update vcloud_client_qs_relation_info
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_update = #{gmtUpdate,jdbcType=TIMESTAMP},
+      auto_task_id = #{autoTaskId,jdbcType=BIGINT},
+      qs_task_id = #{qsTaskId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

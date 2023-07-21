@@ -1,19 +1,15 @@
 package com.netease.vcloud.qa.autotest;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.netease.vcloud.qa.common.HttpUtils;
+import com.netease.vcloud.qa.model.VcloudClientQsAppDO;
+import com.netease.vcloud.qa.model.VcloudClientQsTaskDO;
 import com.netease.vcloud.qa.model.VcloudClientScheduledTaskInfoDO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
-import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.*;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
-import com.netease.vcloud.qa.service.auto.view.AutoTestScheduledVO;
-import com.netease.vcloud.qa.service.auto.view.ScriptRunLogVO;
-import com.netease.vcloud.qa.service.auto.view.TaskDetailInfoVO;
-import com.netease.vcloud.qa.service.auto.view.TaskInfoListVO;
+import com.netease.vcloud.qa.service.auto.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +41,8 @@ public class AutoTestTaskController {
     @Autowired
     private AutoTestDeviceService autoTestDeviceService;
 
+    @Autowired
+    private AutoTestQsService qsService;
 
     /**
      * 创建自动化测试任务
@@ -257,4 +256,87 @@ public class AutoTestTaskController {
         }
         return resultVO ;
     }
+
+
+    @RequestMapping("/qs/create")
+    public ResultVO createQsTask(@RequestParam("taskName") String taskName,
+                                 @RequestParam(name = "gitInfo", required = false) String gitInfo,
+                                 @RequestParam("gitBranch") String gitBranch,
+                                 @RequestParam("operator") String operator,
+                                 @RequestParam(name = "deviceType", required = false, defaultValue = "0") byte deviceType,
+                                 @RequestParam("device") List<Long> deviceList,
+                                 @RequestParam(name = "private", required = false) Long privateAddressId,
+                                 @RequestParam(name = "projectId",required = false)Long projectId,
+                                 @RequestParam(name = "appId",required = false) Long appId,
+                                 @RequestParam(name = "startTime" , required = false )Long startTime ,
+                                 @RequestParam(name = "endTime" , required = false ) Long endTime,
+                                 @RequestParam(name = "typicalSceneNum" , required = false )Integer typicalSceneNum ,
+                                 @RequestParam(name = "sampleNum" , required = false )Integer sampleNum) throws ParseException {
+        VcloudClientQsTaskDO qsTaskDO = new VcloudClientQsTaskDO();
+        qsTaskDO.setTaskName(taskName);
+        qsTaskDO.setGitInfo(gitInfo);
+        qsTaskDO.setGitBranch(gitBranch);
+        qsTaskDO.setOperator(operator);
+        qsTaskDO.setDeviceType(deviceType);
+        qsTaskDO.setDeviceInfo("111");
+        qsTaskDO.setPrivateId(String.valueOf(privateAddressId));
+        qsTaskDO.setProjectId(projectId);
+        qsTaskDO.setQsAppId(appId);
+        qsTaskDO.setStartTime(new Date(startTime));
+        qsTaskDO.setEndTime(new Date(endTime));
+        qsTaskDO.setSampleNum(sampleNum);
+        qsTaskDO.setTypicalSceneNum(typicalSceneNum);
+        int id = qsService.addQsTask(qsTaskDO, deviceList);
+        ResultVO resultVO = null;
+        if (id > 0){
+            resultVO = ResultUtils.buildSuccess(id) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+
+    @RequestMapping("/qs/queryQsSceneCount")
+    public ResultVO queryQsSceneCount(@RequestParam(name = "appId",required = false) Long appId,
+                                @RequestParam(name = "startTime" , required = false )Long startTime ,
+                                @RequestParam(name = "endTime" , required = false ) Long endTime){
+        ResultVO resultVO = null;
+
+        int count =qsService.getQsSceneCount(appId,new Date(startTime),new Date(endTime));
+        resultVO = ResultUtils.buildSuccess(count) ;
+        return resultVO ;
+    }
+
+    @RequestMapping("/qs/getAppInfo")
+    public ResultVO  queryAutoQsTaskDetail(){
+        ResultVO resultVO = null ;
+        List<VcloudClientQsAppDO> appDOList = qsService.getAppInfo();
+        resultVO = ResultUtils.buildSuccess(appDOList) ;
+        return resultVO ;
+    }
+
+    @RequestMapping("/qs/query")
+    public ResultVO queryQsTaskList(@RequestParam(name = "owner", required = false) String owner,
+                                    @RequestParam(name = "size", required = false, defaultValue = "20") int size,
+                                    @RequestParam(name = "page", required = false, defaultValue = "1") int pageNo) {
+        ResultVO resultVO = null;
+        QsTaskInfoListVO qsTaskInfoListVO = qsService.getList(owner, size, pageNo);
+        resultVO = ResultUtils.buildSuccess(qsTaskInfoListVO);
+        return resultVO;
+    }
+
+    @RequestMapping("/qs/get")
+    public ResultVO  queryAutoQsTaskDetail(@RequestParam("id") Long taskId){
+        ResultVO resultVO = null ;
+        VcloudClientQsTaskVO qsTaskVO = qsService.getTask(taskId);
+        if (qsTaskVO != null){
+            resultVO = ResultUtils.buildSuccess(qsTaskVO) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+
 }

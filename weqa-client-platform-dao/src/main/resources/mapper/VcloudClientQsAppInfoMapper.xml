@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.vcloud.qa.dao.VcloudClientQsAppInfoDAO">
+  <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.VcloudClientQsAppDO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="app_key" jdbcType="VARCHAR" property="appKey" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="scene_num" jdbcType="INTEGER" property="sceneNum" />
+    <result column="test_app_key" jdbcType="VARCHAR" property="testAppKey" />
+    <result column="test_appid" jdbcType="VARCHAR" property="testAppid" />
+    <result column="is_run" jdbcType="TINYINT" property="isRun" />
+    <result column="execc_class" jdbcType="VARCHAR" property="ExeccClass" />
+    <result column="execc_method" jdbcType="VARCHAR" property="ExeccMethod" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    select id, gmt_create, gmt_update, name, app_key, appid, scene_num, test_app_key, test_appid,
+    is_run,execc_class,execc_class
+  </sql>
+  <select id="getAll" resultMap="BaseResultMap">
+    <include refid="Base_Column_List"/>
+    from vcloud_client_qs_app_info where 1=1
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    *
+    from vcloud_client_qs_app_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+</mapper>
