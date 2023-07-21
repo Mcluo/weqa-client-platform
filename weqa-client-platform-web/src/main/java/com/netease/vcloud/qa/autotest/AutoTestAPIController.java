@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.autotest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.auto.DeviceType;
 import com.netease.vcloud.qa.result.ResultUtils;
@@ -7,13 +8,12 @@ import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.api.ApiTaskBuildData;
 import com.netease.vcloud.qa.service.api.AutoTaskApiService;
 import com.netease.vcloud.qa.service.api.JenkinsBuildDTO;
+import com.netease.vcloud.qa.service.auto.data.AutoTaskAPIDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +39,46 @@ public class AutoTestAPIController {
     private AutoTaskApiService autoTaskApiService ;
 
     /**
+     * http://127.0.0.1:8788/g2-client/auto/api/task/create
+     * @param autoTaskAPIDTO
+     * @return
+     */
+    @RequestMapping("/task/create")
+    @ResponseBody
+    public ResultVO createAutoTask(@RequestBody AutoTaskAPIDTO autoTaskAPIDTO){
+        ResultVO resultVO = ResultUtils.buildSuccess();
+        String gitBranch = autoTaskApiService.getGitBranchByVersionAndScript(autoTaskAPIDTO.getVersion(),autoTaskAPIDTO.getScript()) ;
+        JSONObject extendInfoObject = autoTaskAPIDTO.getCropParameter() ;
+        List<Long> runCasedIds = autoTaskApiService.getTCIds(extendInfoObject) ;
+        JenkinsBuildDTO jenkinsBuildDTO = null ;
+        try {
+            jenkinsBuildDTO = JSON.toJavaObject(autoTaskAPIDTO.getUrl(), JenkinsBuildDTO.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(autoTaskAPIDTO.getBuildID(), jenkinsBuildDTO) ;
+        if(CollectionUtils.isEmpty(apiTaskBuildDataList)){
+            resultVO = ResultUtils.buildFail("缺少合适运行给设备") ;
+        }
+        for(int i = 1 ; i <= apiTaskBuildDataList.size() ; i++) {
+            String name = autoTaskAPIDTO.getName() +"【"+i+"】" ;
+            ApiTaskBuildData apiTaskBuildData = apiTaskBuildDataList.get(i-1) ;
+            if(apiTaskBuildData == null){
+                continue ;
+            }
+            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, autoTaskAPIDTO.getOperator() == null ? DEFAULT_OPERATOR : autoTaskAPIDTO.getOperator(), DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null,autoTaskAPIDTO.getBuildGroupId());
+            if (simpleResultVO.getCode()!=200) {
+                resultVO.setCode(simpleResultVO.getCode());
+                resultVO.setMsg(simpleResultVO.getMsg());
+                resultVO.setData(simpleResultVO.getData());
+                break;
+            }
+        }
+        return resultVO ;
+    }
+
+
+    /**
      * 对外提供的接口，用于触发自动化测试用例
      * http://127.0.0.1:8788/g2-client/auto/api/task/create?name=构建自动化测试&version=5.4.0&buildId=3721&url={}
      * @param taskName
@@ -47,7 +87,7 @@ public class AutoTestAPIController {
      * @param buildExtendInfo
      * @return
      */
-    @RequestMapping("/task/create")
+    @RequestMapping("/task/form/create")
     public ResultVO createAutoTaskAPI(@RequestParam("name")String taskName,
                                       @RequestParam("version") String version,
                                       @RequestParam("buildId") Long buildID,
@@ -74,7 +114,7 @@ public class AutoTestAPIController {
             if(apiTaskBuildData == null){
                 continue ;
             }
-            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, operator == null ? DEFAULT_OPERATOR : operator, DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null);
+            ResultVO simpleResultVO = autoTestTaskController.createAutoTask(name, DEFAULT_GIT_INFO, gitBranch, operator == null ? DEFAULT_OPERATOR : operator, DeviceType.REMOTE_DEVICE_TYPE, apiTaskBuildData.getDeviceList(), runCasedIds, apiTaskBuildData.getUrls(), null, null,null);
             if (simpleResultVO.getCode()!=200) {
                 resultVO.setCode(simpleResultVO.getCode());
                 resultVO.setMsg(simpleResultVO.getMsg());

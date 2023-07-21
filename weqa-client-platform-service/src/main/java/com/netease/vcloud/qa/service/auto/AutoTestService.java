@@ -2,6 +2,7 @@ package com.netease.vcloud.qa.service.auto;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.auto.TaskRunStatus;
 import com.netease.vcloud.qa.dao.AutoTestResultDAO;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
@@ -45,6 +46,9 @@ public class AutoTestService {
 
     @Autowired
     private TCAutoCoverManagerService tcAutoCoverManagerService ;
+
+    @Autowired
+    private AutoPipeLineNotifyService autoPipeLineNotifyService ;
 
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
         if (StringUtils.isBlank(runInfo)||runInfo.startsWith("auto")){
@@ -145,5 +149,21 @@ public class AutoTestService {
         }
         return errorMessage ;
     }
+
+    public void onTaskFinish(Long taskId){
+        //任务结束事件
+        ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        if (clientAutoTaskInfoDO== null){
+            return;
+        }
+        if (TaskRunStatus.isTaskFinish(clientAutoTaskInfoDO.getTaskStatus())){
+            //任务完成，触发相关事件
+            System.out.println("[onTaskFinish] task id is" + clientAutoTaskInfoDO.getDeviceInfo());
+            autoPipeLineNotifyService.notifyPipeline(clientAutoTaskInfoDO);
+        }
+        return ;
+    }
+
+
 
 }

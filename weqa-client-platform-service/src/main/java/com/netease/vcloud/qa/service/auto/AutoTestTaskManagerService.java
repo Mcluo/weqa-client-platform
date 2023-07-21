@@ -192,6 +192,7 @@ public class AutoTestTaskManagerService {
         }
         autoTestTaskInfoBO.setPrivateAddressId(autoTestTaskInfoDTO.getPrivateAddressId());
         autoTestTaskInfoBO.setProjectId(autoTestTaskInfoDTO.getProjectId());
+        autoTestTaskInfoBO.setBuildGroupId(autoTestTaskInfoDTO.getBuildGroupId());
         return autoTestTaskInfoBO ;
     }
 
