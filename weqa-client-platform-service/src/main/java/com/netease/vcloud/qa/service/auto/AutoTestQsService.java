@@ -38,6 +38,8 @@ public class AutoTestQsService {
     @Autowired
     private ClientAutoTaskInfoDAO clientAutoTaskInfoDAO ;
 
+    @Autowired
+    private AutoTestTaskManagerService autoTestTaskManagerService;
 
 
     public int addQsTask(VcloudClientQsTaskDO qsTaskDO, List<Long> deviceList){
@@ -81,7 +83,7 @@ public class AutoTestQsService {
                 clientAutoScriptRunInfoDO.setScriptDetail("cid: " + qsSceneDO.getCid());
                 clientAutoScriptRunInfoDO.setExecClass(qsAppDO.getExeccClass());
                 clientAutoScriptRunInfoDO.setExecMethod(qsAppDO.getExeccMethod());
-                clientAutoScriptRunInfoDO.setExecParam(qsSceneDO.getCid() + ", " + qsSceneDO.getGmtCreate().getTime() + ", " + qsAppDO.getTestAppKey());
+                clientAutoScriptRunInfoDO.setExecParam("'" + qsSceneDO.getCid() + "'" +  "," + qsSceneDO.getGmtCreate().getTime() + "," + "'" + qsAppDO.getTestAppKey() + "'");
                 clientAutoScriptRunInfoDO.setExecStatus(ScriptRunStatus.INIT.getCode());
                 clientAutoScriptRunInfoDOList.add(clientAutoScriptRunInfoDO);
             }
@@ -91,6 +93,7 @@ public class AutoTestQsService {
         qsRelationDO.setQsTaskId(qsTaskDO.getId());
         qsRelationDO.setAutoTaskId(clientAutoTaskInfoDO.getId());
         qsRelationInfoDAO.insert(qsRelationDO);
+        autoTestTaskManagerService.setTaskReadySuccess(clientAutoTaskInfoDO.getId(),true);
         return (int) clientAutoTaskInfoDO.getId();
     }
 
