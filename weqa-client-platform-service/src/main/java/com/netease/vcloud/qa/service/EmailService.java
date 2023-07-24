@@ -8,13 +8,12 @@ import com.netease.vcloud.qa.dao.ClientAutoDeviceInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
-import com.netease.vcloud.qa.service.tc.data.MD5Util;
+import com.netease.vcloud.qa.common.MD5Util;
+import com.netease.vcloud.qa.service.auto.AutoTestService;
 import com.netease.vcloud.qa.service.tc.data.SendPOPO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.mail.internet.MimeMessage;
-import javax.xml.ws.soap.Addressing;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +47,9 @@ public class EmailService {
 
     @Autowired
     private ClientAutoDeviceInfoDAO clientAutoDeviceInfoDAO ;
+
+    @Autowired
+    private AutoTestService autoTestService;
 
     private static final Logger COMMON_LOGGER = LoggerFactory.getLogger("EmailService");
 
@@ -78,11 +79,9 @@ public class EmailService {
                 }
                 if (list.size() > 0 ){
                     List<ClientAutoDeviceInfoDO> deviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(list);
-                    for(ClientAutoDeviceInfoDO deviceInfoDO : deviceInfoDOList){
-                        if (deviceInfoDO.getRun() == 1 ){
-                            deviceInfoDO.setRun((byte)0);
-                            clientAutoDeviceInfoDAO.updateDeviceInfo(deviceInfoDO);
-                        }
+                    for (ClientAutoDeviceInfoDO deviceInfoDO : deviceInfoDOList) {
+                        deviceInfoDO.setRun((byte) 0);
+                        clientAutoDeviceInfoDAO.updateDeviceInfo(deviceInfoDO);
                     }
                 }
             }
@@ -90,10 +89,12 @@ public class EmailService {
                 try {
                     this.sendHtmlMail(infoDO.getOperator(), "Rtc自动化测试", emailText);
                     this.sendPOPO1(infoDO.getOperator(), popoText);
+                    this.sendPipeLine(infoDO.getId());
                 }catch (Exception e){
                     COMMON_LOGGER.error("[sendEmail.execute] start task exception", e);
                 }
             }) ;
+
         }
     }
 
@@ -156,6 +157,10 @@ public class EmailService {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void sendPipeLine(long taskId){
+        autoTestService.onTaskFinish(taskId);
     }
 }
 

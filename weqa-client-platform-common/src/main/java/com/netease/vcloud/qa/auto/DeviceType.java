@@ -6,8 +6,17 @@ package com.netease.vcloud.qa.auto;
  */
 public class DeviceType {
 
+    /**
+     * 本地设备
+     */
     public static final byte LOCAL_DEVICE_TYPE = 0 ;
-
+    /**
+     * 远端设备
+     */
     public static final byte REMOTE_DEVICE_TYPE = 1 ;
+    /**
+     * 音频设备
+     */
+    public static final byte AUDIO_DEVICE_TYPE = 2 ;
 
 }

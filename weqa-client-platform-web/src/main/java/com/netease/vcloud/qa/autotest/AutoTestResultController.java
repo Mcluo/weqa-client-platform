@@ -86,6 +86,20 @@ public class AutoTestResultController {
         boolean flag = autoTestResult.saveAutoTestResult(scriptId,success,result);
         return ResultUtils.build(flag);
     }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/test/task/finish?task=22
+     * @param taskId
+     * @return
+     */
+    @RequestMapping("/test/task/finish")
+    @ResponseBody
+    public ResultVO notifyTaskFinish(@RequestParam(name = "task")Long taskId){
+         autoTestResult.onTaskFinish(taskId);
+         ResultVO resultVO = ResultUtils.build(true);
+         return resultVO ;
+    }
+
     /**
      * http://127.0.0.1:8788/g2-client/auto/covered/add
      * 批量标记tc的覆盖情况

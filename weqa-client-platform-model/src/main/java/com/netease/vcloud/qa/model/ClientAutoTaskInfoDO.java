@@ -43,6 +43,8 @@ public class ClientAutoTaskInfoDO {
 
     private Integer email;
 
+    private String buildGroupId ;
+
     public Integer getEmail() {
         return email;
     }
@@ -153,5 +155,13 @@ public class ClientAutoTaskInfoDO {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public String getBuildGroupId() {
+        return buildGroupId;
+    }
+
+    public void setBuildGroupId(String buildGroupId) {
+        this.buildGroupId = buildGroupId;
     }
 }

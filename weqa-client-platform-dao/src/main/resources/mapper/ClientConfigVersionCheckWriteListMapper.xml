@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientConfigVersionCheckWriteListDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientConfigVersionCheckWriteListDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="config_type" jdbcType="VARCHAR" property="configType"/>
+        <result column="config_version" jdbcType="VARCHAR" property="configVersion"/>
+    </resultMap>
+
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,config_type,config_version
+    </sql>
+
+    <select id="getClientConfigVersionCheckWriteListByType" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_config_version_check_write_list
+        WHERE config_type = #{type}
+    </select>
+
+    <insert id="patchInsertWriteList" parameterType="com.netease.vcloud.qa.model.ClientConfigVersionCheckWriteListDO">
+        insert into vcloud_client_config_version_check_write_list (gmt_create,gmt_update,config_type,config_version)
+        VALUES
+        <foreach collection="list" item="config" separator=",">
+            (now(),now(),#{config.configType},#{config.configVersion})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        gmt_update = now()
+    </insert>
+
+</mapper>

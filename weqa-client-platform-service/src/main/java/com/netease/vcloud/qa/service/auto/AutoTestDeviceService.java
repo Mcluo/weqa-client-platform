@@ -7,6 +7,7 @@ import com.netease.vcloud.qa.auto.DevicePlatform;
 import com.netease.vcloud.qa.dao.ClientAutoDeviceInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoDeviceInfoDO;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
+import com.netease.vcloud.qa.result.view.UserInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -142,6 +143,11 @@ public class AutoTestDeviceService {
         UserInfoBO userInfoBO = userInfoMap.get(clientAutoDeviceInfoDO.getOwner()) ;
         if (userInfoBO!=null) {
             deviceInfoVO.setOperator(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        }else{
+            UserInfoVO userInfoVO = new UserInfoVO() ;
+            userInfoVO.setEmail(clientAutoDeviceInfoDO.getOwner());
+            userInfoVO.setName(clientAutoDeviceInfoDO.getOwner());
+            deviceInfoVO.setOperator(userInfoVO);
         }
         deviceInfoVO.setRun((clientAutoDeviceInfoDO.getRun()!=null && clientAutoDeviceInfoDO.getRun()==(byte)1) ? true:false);
         deviceInfoVO.setAlive((clientAutoDeviceInfoDO.getAlive()==null||clientAutoDeviceInfoDO.getAlive()==(byte)1)?true:false);
