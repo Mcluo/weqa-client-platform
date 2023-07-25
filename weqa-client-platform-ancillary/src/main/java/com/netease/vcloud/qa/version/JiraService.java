@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +87,60 @@ public class JiraService {
         return list;
     }
 
+
+    public String createJiraIssue(String projectKey, String summary, String issuetype, String desc, String reporter, String checkUser, String handleUser, String priority, String version, String fixVersion){
+        try {
+            String url = "http://jira.netease.com/rest/api/2/issue";
+            Map<String, String> headers = new HashMap<>();
+//            headers.put("Content-Type","application/json; charset=UTF-8") ;
+            headers.put("Authorization",getAuth());
+            Map<String, Object> body = new HashMap<>();
+            Map<String, Object> fields = new HashMap<>();
+            fields.put("summary",summary);
+            fields.put("description",desc);
+            Map<String,String> project = new HashMap<>();
+            project.put("key",projectKey);
+            fields.put("project",project);
+            Map<String,String> issue = new HashMap<>();
+            issue.put("name",issuetype);
+            fields.put("issuetype",issue);
+            Map<String,String> report = new HashMap<>();
+            report.put("name",reporter);
+            fields.put("reporter",report);
+            Map<String,String> checker = new HashMap<>();
+            checker.put("name",checkUser);
+            fields.put("customfield_10301",checker);
+            Map<String,String> assignee = new HashMap<>();
+            assignee.put("name",handleUser);
+            fields.put("assignee",assignee);
+            Map<String,String> p = new HashMap<>();
+            p.put("id",priority);
+            fields.put("priority",p);
+            Map<String,String> versionMap = new HashMap<>();
+            versionMap.put("id",version);
+            List<Map<String,String>> versionList = new ArrayList<>() ;
+            versionList.add(versionMap) ;
+            fields.put("versions",versionList);
+            Map<String,String> fixVersionMap = new HashMap<>();
+            fixVersionMap.put("id",fixVersion);
+            List<Map<String,String>> fixVersionList = new ArrayList<>() ;
+            fixVersionList.add(fixVersionMap) ;
+            fields.put("fixVersions",fixVersionList);
+            body.put("fields",fields);
+//            System.out.println(JSON.toJSONString(body));
+            JSONObject res = HttpUtils.getInstance().jsonPost(url,headers,JSONObject.toJSONString(body));
+//            System.out.println(res);
+            if (res == null){
+                COMMON_LOGGER.error("[JiraService.createJiraIssue]result is null");
+                return null ;
+            }
+            String issKey = res.getString("key") ;
+            return issKey ;
+        }catch (Exception e){
+            COMMON_LOGGER.error("[JiraService.createJiraIssue]create jira exception",e);
+        }
+        return null;
+    }
 
     private String getAuth() {
         return "Basic " + encodeCredentials(this.jiraUsername, this.jiraPassword);

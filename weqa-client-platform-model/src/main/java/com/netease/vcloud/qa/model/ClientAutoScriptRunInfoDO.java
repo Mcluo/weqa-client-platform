@@ -43,6 +43,8 @@ public class ClientAutoScriptRunInfoDO {
 
     private String logInfo ;
 
+    private String bugInfo ;
+
     public long getId() {
         return id;
     }
@@ -153,5 +155,13 @@ public class ClientAutoScriptRunInfoDO {
 
     public void setLogInfo(String logInfo) {
         this.logInfo = logInfo;
+    }
+
+    public String getBugInfo() {
+        return bugInfo;
+    }
+
+    public void setBugInfo(String bugInfo) {
+        this.bugInfo = bugInfo;
     }
 }
