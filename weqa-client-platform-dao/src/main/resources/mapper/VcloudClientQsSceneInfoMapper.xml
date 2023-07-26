@@ -67,7 +67,9 @@
     select
     count(*)
     from vcloud_client_qs_scene_info
-    where #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime}
+    where
+    qs_id=#{qsId} and
+    #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
