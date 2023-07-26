@@ -130,6 +130,10 @@ public class JiraService {
 //            System.out.println(JSON.toJSONString(body));
             JSONObject res = HttpUtils.getInstance().jsonPost(url,headers,JSONObject.toJSONString(body));
 //            System.out.println(res);
+//            JSONObject res = new JSONObject();
+//            res.put("key","NRTCG2-27973") ;
+//            res.put("id","1762862") ;
+//            res.put("self","http://jira.netease.com/rest/api/2/issue/1762862") ;
             if (res == null){
                 COMMON_LOGGER.error("[JiraService.createJiraIssue]result is null");
                 return null ;

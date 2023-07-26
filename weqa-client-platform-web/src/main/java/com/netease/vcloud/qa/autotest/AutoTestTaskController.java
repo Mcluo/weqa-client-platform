@@ -347,6 +347,7 @@ public class AutoTestTaskController {
 
     /**
      * http://127.0.0.1:8788/g2-client/auto/task/bug/create?summary=test&desc=test&reporter=luqiuwei@corp.netease.com&check=luqiuwei@corp.netease.com&handle=luqiuwei@corp.netease.com&version=76343&fixVersion=76343
+     * http://127.0.0.1:8788/g2-client/auto/task/bug/create?summary=test&desc=test&reporter=luqiuwei@corp.netease.com&check=luqiuwei@corp.netease.com&handle=luqiuwei@corp.netease.com&version=76343&fixVersion=76343&script=2726
      * @param summary
      * @param desc
      * @param reporter
