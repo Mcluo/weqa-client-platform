@@ -2,12 +2,14 @@ package com.netease.vcloud.qa.datacenter;
 
 import com.netease.vcloud.qa.data.ApiCallResultService;
 import com.netease.vcloud.qa.data.data.ApiCallData;
+import com.netease.vcloud.qa.data.data.ApiCallResultVO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -41,4 +43,34 @@ public class ApiCallResultController {
         return resultVO ;
     }
 
+
+    /**
+     * http://127.0.0.1:8788/g2-client/data/api/result/query?caseId=122313
+     * @param caseId
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/query")
+    @ResponseBody
+    public ResultVO queryApiCallResult(@RequestParam("caseId") Long caseId ,
+                                       @RequestParam(name="userId",required = false) Long userId) {
+        ResultVO resultVO = null ;
+        List<ApiCallResultVO> apiCallResultList = apiCallResultService.queryApiCallResult(caseId,userId) ;
+        if (apiCallResultList!= null) {
+            resultVO = ResultUtils.buildSuccess(apiCallResultList) ;
+        }else{
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResultVO deleteApiCallResult(@RequestParam("caseId") Long caseId ){
+        ResultVO resultVO = null ;
+        boolean clearFlag = apiCallResultService.clearApiCallResult(caseId) ;
+        resultVO = ResultUtils.build(clearFlag);
+        return resultVO;
+    }
 }

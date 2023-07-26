@@ -10,9 +10,9 @@ public class ApiCallData {
 
     private String platform;
 
-    private Integer taskCaseId;
+    private Long taskCaseId;
 
-    private Integer userId;
+    private Long userId;
 
     private String channelName;
 
@@ -26,19 +26,19 @@ public class ApiCallData {
         this.platform = platform;
     }
 
-    public Integer getTaskCaseId() {
+    public Long getTaskCaseId() {
         return taskCaseId;
     }
 
-    public void setTaskCaseId(Integer taskCaseId) {
+    public void setTaskCaseId(Long taskCaseId) {
         this.taskCaseId = taskCaseId;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
