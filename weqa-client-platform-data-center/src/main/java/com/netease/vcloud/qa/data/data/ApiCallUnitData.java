@@ -12,6 +12,8 @@ public class ApiCallUnitData {
 
     private String params ;
 
+    private Long timeStamp ; ;
+
     public String getMethod() {
         return method;
     }
@@ -34,5 +36,13 @@ public class ApiCallUnitData {
 
     public void setParams(String params) {
         this.params = params;
+    }
+
+    public Long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }
