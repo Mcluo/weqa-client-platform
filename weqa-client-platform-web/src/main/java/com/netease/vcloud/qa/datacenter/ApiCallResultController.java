@@ -64,4 +64,13 @@ public class ApiCallResultController {
         return resultVO ;
     }
 
+
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResultVO deleteApiCallResult(@RequestParam("caseId") Long caseId ){
+        ResultVO resultVO = null ;
+        boolean clearFlag = apiCallResultService.clearApiCallResult(caseId) ;
+        resultVO = ResultUtils.build(clearFlag);
+        return resultVO;
+    }
 }

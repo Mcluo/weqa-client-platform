@@ -17,4 +17,6 @@ public interface ClientDataCenterApiCallResultDAO {
 
      List<ClientDataCenterApiCallResultDO> queryApiCallResult(@Param("caseId") Long testCaseId ,@Param("userId") Long userId)  ;
 
+     int deleteApiCallResult(@Param("caseId") Long testCaseId)  ;
+
 }

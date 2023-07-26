@@ -37,4 +37,9 @@
         </if>
     </select>
 
+    <delete id="deleteApiCallResult" >
+        DELETE FROM vcloud_client_api_call_result
+        WHERE task_case_id = #{caseId}
+    </delete>
+
 </mapper>

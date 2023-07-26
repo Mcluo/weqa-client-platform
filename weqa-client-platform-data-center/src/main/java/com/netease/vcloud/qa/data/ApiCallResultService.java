@@ -66,12 +66,12 @@ public class ApiCallResultService {
         return apiCallResultList ;
     }
 
-    public List<ApiCallResultVO> queryApiCallResult(Long testCaseId ,Long userId) {
-        if (testCaseId==null){
+    public List<ApiCallResultVO> queryApiCallResult(Long caseId ,Long userId) {
+        if (caseId==null){
             return null ;
         }
         List<ApiCallResultVO> apiCallResultVOList = new ArrayList<>();
-        List<ClientDataCenterApiCallResultDO> resultDOList = clientDataCenterApiCallResultDAO.queryApiCallResult(testCaseId,userId) ;
+        List<ClientDataCenterApiCallResultDO> resultDOList = clientDataCenterApiCallResultDAO.queryApiCallResult(caseId,userId) ;
         for (ClientDataCenterApiCallResultDO clientDataCenterApiCallResultDO : resultDOList){
             if (clientDataCenterApiCallResultDO == null){
                 continue;
@@ -91,5 +91,14 @@ public class ApiCallResultService {
         }
         Collections.sort(apiCallResultVOList);
         return apiCallResultVOList ;
+    }
+
+
+    public boolean clearApiCallResult(Long caseId) {
+        if (caseId==null){
+            return false ;
+        }
+        int count = clientDataCenterApiCallResultDAO.deleteApiCallResult(caseId) ;
+        return true ;
     }
 }
