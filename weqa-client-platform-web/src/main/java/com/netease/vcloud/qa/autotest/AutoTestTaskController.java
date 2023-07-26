@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.autotest;
 
 import com.alibaba.fastjson.JSONArray;
+import com.netease.vcloud.qa.model.VcloudClientQsApiInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientQsAppDO;
 import com.netease.vcloud.qa.model.VcloudClientQsTaskDO;
 import com.netease.vcloud.qa.model.VcloudClientScheduledTaskInfoDO;
@@ -295,6 +296,27 @@ public class AutoTestTaskController {
         }else {
             resultVO = ResultUtils.buildFail() ;
         }
+        return resultVO ;
+    }
+
+    @RequestMapping("/qs/start")
+    public ResultVO createQsStart(@RequestParam("taskId") Long taskId) throws ParseException {
+        int id = qsService.addQsStart(taskId);
+        ResultVO resultVO = null;
+        if (id > 0){
+            resultVO = ResultUtils.buildSuccess(id) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+
+    @RequestMapping("/qs/getApiInfo")
+    public ResultVO getApiInfo(@RequestParam("cid") String cid) throws ParseException {
+        List<VcloudClientQsApiInfoDO> apiInfoDOList = qsService.getApiInfo(cid);
+        ResultVO resultVO = null;
+        resultVO = ResultUtils.buildSuccess(apiInfoDOList) ;
         return resultVO ;
     }
 
