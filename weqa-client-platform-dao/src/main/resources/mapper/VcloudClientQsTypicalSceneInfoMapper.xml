@@ -81,7 +81,7 @@
     *
     from vcloud_client_qs_typical_scene_info
     where qs_id=#{qsId} and num=#{num}
-<!--    and #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime} -->
+    and #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime}
     ORDER BY RAND() LIMIT #{randNum};
   </select>
   <select id="queryAutoRandQsSceneCount" resultType="java.util.Map">
@@ -90,7 +90,7 @@
     from vcloud_client_qs_typical_scene_info
     where
     qs_id=#{qsId}
-<!--    and #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime} ;-->
+    and #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime} ;
     group by num
   </select>
 
@@ -100,7 +100,7 @@
     from vcloud_client_qs_typical_scene_info
     where
     qs_id=#{qsId}
-    <!--    and #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime} ;-->
+        and #{startTime} &lt; gmt_create and gmt_create &lt; #{endTime} ;
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

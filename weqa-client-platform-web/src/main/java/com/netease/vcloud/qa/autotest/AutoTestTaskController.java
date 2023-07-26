@@ -326,10 +326,23 @@ public class AutoTestTaskController {
                                 @RequestParam(name = "startTime" , required = false )Long startTime ,
                                 @RequestParam(name = "endTime" , required = false ) Long endTime){
         ResultVO resultVO = null;
-
-        int count =qsService.getQsSceneCount(appId,new Date(startTime),new Date(endTime));
-        resultVO = ResultUtils.buildSuccess(count) ;
+        QsSceneCountVO qsSceneCountVO = new QsSceneCountVO();
+        int sample =qsService.getQsSceneCount(appId,new Date(startTime),new Date(endTime));
+        qsSceneCountVO.setSample(sample);
+        int typicalScene = qsService.queryAutoQsTypicalSceneCount(appId, new Date(startTime), new Date(endTime));
+        qsSceneCountVO.setTypicalScene(typicalScene);
+        resultVO = ResultUtils.buildSuccess(qsSceneCountVO) ;
         return resultVO ;
+    }
+
+    @RequestMapping("/qs/queryQsTypicalSceneCount")
+    public ResultVO queryQsTypicalSceneCount(@RequestParam(name = "appId", required = false) Long appId,
+                                             @RequestParam(name = "startTime", required = false) Long startTime,
+                                             @RequestParam(name = "endTime", required = false) Long endTime) {
+        ResultVO resultVO = null;
+        int count = qsService.queryAutoQsTypicalSceneCount(appId, new Date(startTime), new Date(endTime));
+        resultVO = ResultUtils.buildSuccess(count);
+        return resultVO;
     }
 
     @RequestMapping("/qs/getAppInfo")

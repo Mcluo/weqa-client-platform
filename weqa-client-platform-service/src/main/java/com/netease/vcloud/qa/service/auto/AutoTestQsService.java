@@ -198,6 +198,11 @@ public class AutoTestQsService {
         return clientQsApiInfoDAO.selectByCid(cid);
     }
 
+    public int  queryAutoQsTypicalSceneCount(Long appId, Date startTime, Date endTime){
+        return typicalSceneInfoDAO.queryAutoQsSceneCount(appId, startTime, endTime);
+    }
+
+
     public List<VcloudClientQsTypicalSceneInfoDO> queryAutoRandQsTypicalSceneInfo(VcloudClientQsTaskDO qsTaskDO){
         ArrayList<VcloudClientQsTypicalSceneInfoDO> typicalSceneInfoDOList = new ArrayList<>();
 
