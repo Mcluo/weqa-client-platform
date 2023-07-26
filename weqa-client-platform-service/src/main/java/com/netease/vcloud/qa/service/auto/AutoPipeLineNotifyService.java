@@ -32,7 +32,7 @@ public class AutoPipeLineNotifyService {
 
     private static final Logger TC_LOGGER = LoggerFactory.getLogger("TCLog");
 
-    private static final String PIPELINE_URL = "http://10.246.152.73:8081/channel/qa/test/state" ;
+    private static final String PIPELINE_URL = "http://100.64.0.24:8081/channel/qa/test/state" ;
 
     private static final String WEQA_TASK_DETAIL_URL = "http://weqa.netease.com/#/client-g2/detail/" ;
 
