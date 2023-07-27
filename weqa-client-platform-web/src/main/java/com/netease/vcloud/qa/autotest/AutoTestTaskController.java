@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.autotest;
 
 import com.alibaba.fastjson.JSONArray;
+import com.netease.vcloud.qa.model.VcloudClientQsApiInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientQsAppDO;
 import com.netease.vcloud.qa.model.VcloudClientQsTaskDO;
 import com.netease.vcloud.qa.model.VcloudClientScheduledTaskInfoDO;
@@ -302,16 +303,50 @@ public class AutoTestTaskController {
         return resultVO ;
     }
 
+    @RequestMapping("/qs/start")
+    public ResultVO createQsStart(@RequestParam("taskId") Long taskId) throws ParseException {
+        int id = qsService.addQsStart(taskId);
+        ResultVO resultVO = null;
+        if (id > 0){
+            resultVO = ResultUtils.buildSuccess(id) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+
+    @RequestMapping("/qs/getApiInfo")
+    public ResultVO getApiInfo(@RequestParam("cid") String cid) throws ParseException {
+        List<VcloudClientQsApiInfoDO> apiInfoDOList = qsService.getApiInfo(cid);
+        ResultVO resultVO = null;
+        resultVO = ResultUtils.buildSuccess(apiInfoDOList) ;
+        return resultVO ;
+    }
+
 
     @RequestMapping("/qs/queryQsSceneCount")
     public ResultVO queryQsSceneCount(@RequestParam(name = "appId",required = false) Long appId,
                                 @RequestParam(name = "startTime" , required = false )Long startTime ,
                                 @RequestParam(name = "endTime" , required = false ) Long endTime){
         ResultVO resultVO = null;
-
-        int count =qsService.getQsSceneCount(appId,new Date(startTime),new Date(endTime));
-        resultVO = ResultUtils.buildSuccess(count) ;
+        QsSceneCountVO qsSceneCountVO = new QsSceneCountVO();
+        int sample =qsService.getQsSceneCount(appId,new Date(startTime),new Date(endTime));
+        qsSceneCountVO.setSample(sample);
+        int typicalScene = qsService.queryAutoQsTypicalSceneCount(appId, new Date(startTime), new Date(endTime));
+        qsSceneCountVO.setTypicalScene(typicalScene);
+        resultVO = ResultUtils.buildSuccess(qsSceneCountVO) ;
         return resultVO ;
+    }
+
+    @RequestMapping("/qs/queryQsTypicalSceneCount")
+    public ResultVO queryQsTypicalSceneCount(@RequestParam(name = "appId", required = false) Long appId,
+                                             @RequestParam(name = "startTime", required = false) Long startTime,
+                                             @RequestParam(name = "endTime", required = false) Long endTime) {
+        ResultVO resultVO = null;
+        int count = qsService.queryAutoQsTypicalSceneCount(appId, new Date(startTime), new Date(endTime));
+        resultVO = ResultUtils.buildSuccess(count);
+        return resultVO;
     }
 
     @RequestMapping("/qs/getAppInfo")

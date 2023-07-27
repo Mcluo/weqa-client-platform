@@ -21,7 +21,7 @@
     select
     <include refid="Base_Column_List" />
     from vcloud_client_qs_relation_info
-    where qs_task_id = #{id}
+    where qs_task_id = #{id} ORDER BY id desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from vcloud_client_qs_relation_info

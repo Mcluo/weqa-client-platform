@@ -16,6 +16,7 @@
         <module>weqa-client-platform-dao</module>
         <module>weqa-client-platform-service</module>
         <module>weqa-client-platform-ancillary</module>
+        <module>weqa-client-platform-data-center</module>
     </modules>
 
     <properties>
@@ -58,6 +59,11 @@
             <dependency>
                 <groupId>com.netease.vcloud.qa</groupId>
                 <artifactId>weqa-client-platform-ancillary</artifactId>
+                <version>${module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netease.vcloud.qa</groupId>
+                <artifactId>weqa-client-platform-data-center</artifactId>
                 <version>${module.version}</version>
             </dependency>
         <dependency>
