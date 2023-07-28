@@ -21,9 +21,9 @@ public interface VcloudClientQsSceneInfoDAO {
 
     int updateByPrimaryKey(VcloudClientQsSceneDO record);
 
-    List<VcloudClientQsSceneDO> queryAutoQsSceneInfo(@Param("appId") Long appId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+    List<VcloudClientQsSceneDO> queryAutoQsSceneInfo(@Param("qsId") Long qsId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
-    List<VcloudClientQsSceneDO> queryAutoRandQsSceneInfo(@Param("appId") Long appId, @Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("randNum") int randNum);
+    List<VcloudClientQsSceneDO> queryAutoRandQsSceneInfo(@Param("qsId") Long qsId, @Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("randNum") int randNum);
 
     int queryAutoQsSceneCount(@Param("qsId") Long qsId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
