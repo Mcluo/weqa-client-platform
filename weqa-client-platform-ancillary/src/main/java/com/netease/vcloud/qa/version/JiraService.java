@@ -4,13 +4,17 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.PropertiesConfig;
 import com.netease.vcloud.qa.common.HttpUtils;
+import com.netease.vcloud.qa.dao.ClientG2JiraVersionInfoDAO;
+import com.netease.vcloud.qa.model.ClientG2JiraVersionInfoDO;
 import com.netease.vcloud.qa.version.data.JiraVersion;
+import com.netease.vcloud.qa.version.data.JiraVersionVO;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
@@ -32,6 +36,9 @@ public class JiraService {
 
     @Autowired
     private PropertiesConfig propertiesConfig;
+
+    @Autowired
+    private ClientG2JiraVersionInfoDAO g2JiraVersionInfoDAO ;
 
     private  String jiraUsername ;
 
@@ -86,7 +93,56 @@ public class JiraService {
         } catch (Exception e) {
             COMMON_LOGGER.error("Remote JIRA service getProjectVersions failed", e);
         }
+
+        this.saveOrUpdateJiraVersion(list) ;
         return list;
+    }
+
+
+    /**
+     * 保存/更新Jira信息，用于数据上报。
+     * @param jiraVersionList
+     * @return
+     */
+    private void saveOrUpdateJiraVersion(List<JiraVersion> jiraVersionList){
+        if (CollectionUtils.isEmpty(jiraVersionList )){
+            return;
+        }
+        List<ClientG2JiraVersionInfoDO> jiraVersionInfoDOList = new ArrayList<>() ;
+        for (JiraVersion jiraVersion : jiraVersionList){
+            ClientG2JiraVersionInfoDO clientG2JiraVersionInfoDO = new ClientG2JiraVersionInfoDO() ;
+            clientG2JiraVersionInfoDO.setJiraId(jiraVersion.getId());
+            clientG2JiraVersionInfoDO.setJiraName(jiraVersion.getName());
+            clientG2JiraVersionInfoDO.setJiraKey(jiraVersion.getJiraKey());
+            clientG2JiraVersionInfoDO.setProjectId(jiraVersion.getProjectId());
+            jiraVersionInfoDOList.add(clientG2JiraVersionInfoDO) ;
+        }
+        int count = g2JiraVersionInfoDAO.patchSaveAndUpdateJiraVersionDO(jiraVersionInfoDOList) ;
+        if (count < jiraVersionList.size()){
+            COMMON_LOGGER.error("[JiraService.saveOrUpdateJiraVersion]save jira version failed");
+        }
+    }
+
+    public List<JiraVersionVO> queryJiraVersion(String jiraKey) {
+        List<JiraVersionVO> jiraVersionVOList = new ArrayList<>();
+        if (StringUtils.isBlank(jiraKey)){
+            return jiraVersionVOList ;
+        }
+        List<ClientG2JiraVersionInfoDO> jiraVersionInfoDOList = g2JiraVersionInfoDAO.queryJiraVersionInfo(jiraKey) ;
+        if (CollectionUtils.isEmpty(jiraVersionInfoDOList)){
+            return jiraVersionVOList ;
+        }
+        for(ClientG2JiraVersionInfoDO clientG2JiraVersionInfoDO : jiraVersionInfoDOList){
+            if (clientG2JiraVersionInfoDO!= null){
+                JiraVersionVO jiraVersionVO = new JiraVersionVO() ;
+                jiraVersionVO.setJiraId(clientG2JiraVersionInfoDO.getJiraId());
+                jiraVersionVO.setJiraName(clientG2JiraVersionInfoDO.getJiraName());
+                jiraVersionVO.setJiraKey(clientG2JiraVersionInfoDO.getJiraKey());
+                jiraVersionVO.setProjectId(clientG2JiraVersionInfoDO.getProjectId());
+                jiraVersionVOList.add(jiraVersionVO) ;
+            }
+        }
+        return jiraVersionVOList ;
     }
 
 

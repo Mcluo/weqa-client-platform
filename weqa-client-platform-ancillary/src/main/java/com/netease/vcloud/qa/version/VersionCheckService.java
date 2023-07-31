@@ -128,7 +128,7 @@ public class VersionCheckService{
         }
     }
 
-    private String getJiraKey(){
+    public String getJiraKey(){
         String jiraKeyStr = propertiesConfig.getProperty(PropertiesConfig.JIRA_KEY) ;
         return jiraKeyStr ;
     }
