@@ -28,6 +28,8 @@ public class JiraService {
 
     private static final Logger COMMON_LOGGER = LoggerFactory.getLogger("CommonLog");
 
+    private static final String JIRA_BROWSE_URL= "https://jira.netease.com/browse/" ;
+
     @Autowired
     private PropertiesConfig propertiesConfig;
 
@@ -153,5 +155,10 @@ public class JiraService {
     private String encodeCredentials(String username, String password) {
         byte[] credentials = (username + ':' + password).getBytes();
         return new String(Base64.encodeBase64(credentials));
+    }
+
+
+    public static String buildJiraUrl(String jiraKey) {
+        return JIRA_BROWSE_URL + jiraKey;
     }
 }

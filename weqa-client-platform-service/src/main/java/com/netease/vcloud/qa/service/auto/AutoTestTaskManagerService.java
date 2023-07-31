@@ -24,6 +24,7 @@ import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
 import com.netease.vcloud.qa.service.auto.view.*;
 import com.netease.vcloud.qa.service.risk.RiskCheckException;
 import com.netease.vcloud.qa.service.risk.process.RiskProjectService;
+import com.netease.vcloud.qa.version.JiraService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,6 +344,10 @@ public class AutoTestTaskManagerService {
                 if (StringUtils.isNotBlank(clientAutoScriptRunInfoDO.getLogInfo())){
                     String nosUrl = nosService.getDownFileUrl(clientAutoScriptRunInfoDO.getLogInfo()) ;
                     taskRunScriptInfoVO.setLogUrl(nosUrl);
+                }
+                if (StringUtils.isNotBlank(clientAutoScriptRunInfoDO.getBugInfo())){
+                    String jiraURL = JiraService.buildJiraUrl(clientAutoScriptRunInfoDO.getBugInfo()) ;
+                    taskRunScriptInfoVO.setJiraUrl(jiraURL);
                 }
                 scriptList.add(taskRunScriptInfoVO) ;
             }
