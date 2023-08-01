@@ -19,4 +19,8 @@ public class DeviceType {
      */
     public static final byte AUDIO_DEVICE_TYPE = 2 ;
 
+    /**
+     * 远程音频设备
+     */
+    public static final byte REMOTE_AUDIO_DEVICE_TYPE = 3 ;
 }

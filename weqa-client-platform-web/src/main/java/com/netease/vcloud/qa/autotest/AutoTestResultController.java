@@ -59,9 +59,8 @@ public class AutoTestResultController {
                 CONTROLLER_LOGGER.error("[AutoTestResultController.addResultTest] parse result exception",e);
             }
         }
-//        boolean flag = autoTestResult.saveAutoTestResult(runInfo,caseName,caseDetail,success,fail,resultJson,testCase);
-        //自动化大盘上线后，将自动不再统计本地自动化上报
-        boolean flag = true ;
+        boolean flag = autoTestResult.saveAutoTestResult(runInfo,caseName,caseDetail,success,fail,resultJson,testCase);
+//        boolean flag = true ;
         return ResultUtils.build(flag);
     }
 
