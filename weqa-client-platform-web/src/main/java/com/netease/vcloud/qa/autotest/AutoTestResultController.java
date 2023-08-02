@@ -60,7 +60,7 @@ public class AutoTestResultController {
             }
         }
         boolean flag = autoTestResult.saveAutoTestResult(runInfo,caseName,caseDetail,success,fail,resultJson,testCase);
-
+//        boolean flag = true ;
         return ResultUtils.build(flag);
     }
 

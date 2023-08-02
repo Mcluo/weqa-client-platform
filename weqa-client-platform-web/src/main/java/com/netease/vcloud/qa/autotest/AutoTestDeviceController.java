@@ -27,15 +27,40 @@ public class AutoTestDeviceController {
     @Autowired
     private AutoTestDeviceService autoTestDeviceService ;
 
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/device/query?user=system&type=0
+     * @param useInfo
+     * @param deviceType
+     * @return
+     */
+    @RequestMapping("/query")
+    @ResponseBody
+    public ResultVO getAllDevice(@RequestParam(name = "user" ,required = false) String useInfo,
+                              @RequestParam(name = "type" , required = false,defaultValue = "0") byte deviceType){
+        ResultVO resultVO = null ;
+        try {
+            List<DeviceInfoVO> deviceInfoVOList = autoTestDeviceService.getAllDeviceList(useInfo,deviceType);
+            if (deviceInfoVOList!=null){
+                resultVO = ResultUtils.buildSuccess(deviceInfoVOList) ;
+            }else {
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+
     /**
      * http://127.0.0.1:8788/g2-client/auto/device/get
      * 获取可用设备列表
      * @return
      */
-    // TODO: 2023/1/3 增加获取远端设备和本地设备的区别
     @RequestMapping("/get")
     @ResponseBody
-    public ResultVO getAllDevice(@RequestParam(name = "user" ,required = false) String useInfo,
+    public ResultVO getDevice(@RequestParam(name = "user" ,required = false) String useInfo,
                                  @RequestParam(name = "type" , required = false,defaultValue = "0") byte deviceType){
         ResultVO resultVO = null ;
         try {
@@ -68,10 +93,11 @@ public class AutoTestDeviceController {
                                  @RequestParam(name = "user" ,required = false) String userId ,
                                  @RequestParam(name = "cpu" ,required = false) String cpu,
                                  @RequestParam(name = "owner", required = false,defaultValue = "system") String owner,
-                                 @RequestParam(name = "alias" ,required = false,defaultValue = "")String alias){
+                                 @RequestParam(name = "alias" ,required = false,defaultValue = "")String alias,
+                                 @RequestParam(name = "type" ,required = false,defaultValue = "0")int type){
         ResultVO resultVO = null ;
         try {
-            boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu,owner,alias);
+            boolean flag = autoTestDeviceService.addNewDeviceInfo(ip, port, platform, userId, cpu,owner,alias,type);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
@@ -92,10 +118,11 @@ public class AutoTestDeviceController {
                                      @RequestParam(name = "user" ,required = false) String userId ,
                                      @RequestParam(name = "cpu" ,required = false) String cpu,
                                      @RequestParam(name = "owner", required = false,defaultValue = "system") String owner,
-                                     @RequestParam(name = "alias" ,required = false,defaultValue = "")String alias){
+                                     @RequestParam(name = "alias" ,required = false,defaultValue = "")String alias,
+                                     @RequestParam(name = "type" ,required = false,defaultValue = "0")int type){
         ResultVO resultVO = null ;
         try{
-            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner,alias);
+            boolean flag = autoTestDeviceService.updateDeviceInfo(id,ip, port, platform, userId, cpu,owner,alias,type);
             resultVO = ResultUtils.build(flag) ;
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
@@ -118,7 +145,8 @@ public class AutoTestDeviceController {
                         clientAutoDeviceInfoDO.getUserId(),
                         clientAutoDeviceInfoDO.getCpu(),
                         clientAutoDeviceInfoDO.getOwner(),
-                        clientAutoDeviceInfoDO.getAlias());
+                        clientAutoDeviceInfoDO.getAlias(),
+                        clientAutoDeviceInfoDO.getDeviceType());
             }
             resultVO = ResultUtils.build(true);
         }catch (AutoTestRunException e){

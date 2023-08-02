@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientG2JiraVersionInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientG2JiraVersionInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="jira_id" jdbcType="BIGINT" property="jiraId"/>
+        <result column="jira_name" jdbcType="VARCHAR" property="jiraName"/>
+        <result column="jira_key" jdbcType="VARCHAR" property="jiraKey"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,jira_id,jira_name,jira_key,project_id
+    </sql>
+
+    <insert id="patchSaveAndUpdateJiraVersionDO" parameterType="com.netease.vcloud.qa.model.ClientG2JiraVersionInfoDO" >
+        insert into vcloud_client_g2_jira_version_info(gmt_create,gmt_update,jira_id,jira_name,jira_key,project_id)
+        values
+        <foreach collection="list" item="info" separator=",">
+            (now(),now(),#{info.jiraId},#{info.jiraName},#{info.jiraKey},#{info.projectId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        gmt_update=now()
+    </insert>
+
+    <select id="queryJiraVersionInfo" resultMap="BaseResultMap" >
+        <include refid="baseSql"/>
+        FROM vcloud_client_g2_jira_version_info
+        WHERE jira_name LIKE  CONCAT('%',#{key},'%')
+        OR jira_key LIKE  CONCAT('%',#{key},'%')
+    </select>
+
+</mapper>

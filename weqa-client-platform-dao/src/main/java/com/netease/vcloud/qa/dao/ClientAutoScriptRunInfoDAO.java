@@ -50,4 +50,9 @@ public interface ClientAutoScriptRunInfoDAO {
 
 	ClientAutoScriptRunInfoDO getClientAutoScriptRunInfoById(@Param("id") long id) ;
 
+
+    /*****************以下附属功能使用*****************/
+
+    int updateScriptBugInfo(@Param("scriptId") Long scriptId,@Param("bugInfo") String bugInfo) ;
+
 }

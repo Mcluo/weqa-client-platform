@@ -8,6 +8,7 @@ import com.netease.vcloud.qa.model.VcloudClientScheduledTaskInfoDO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.*;
+import com.netease.vcloud.qa.service.auto.data.AutoTestBugDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.view.*;
@@ -44,6 +45,9 @@ public class AutoTestTaskController {
 
     @Autowired
     private AutoTestQsService qsService;
+
+    @Autowired
+    private AutoTestSupportService autoTestSupportService ;
 
     /**
      * 创建自动化测试任务
@@ -375,5 +379,48 @@ public class AutoTestTaskController {
         return resultVO ;
     }
 
+
+    /**
+     * http://127.0.0.1:8788/g2-client/auto/task/bug/create?summary=test&desc=test&reporter=luqiuwei@corp.netease.com&check=luqiuwei@corp.netease.com&handle=luqiuwei@corp.netease.com&version=76343&fixVersion=76343
+     * http://127.0.0.1:8788/g2-client/auto/task/bug/create?summary=test&desc=test&reporter=luqiuwei@corp.netease.com&check=luqiuwei@corp.netease.com&handle=luqiuwei@corp.netease.com&version=76343&fixVersion=76343&script=2726
+     * @param summary
+     * @param desc
+     * @param reporter
+     * @param checkUser
+     * @param handleUser
+     * @param priority
+     * @return
+     */
+    @RequestMapping("/bug/create")
+    public ResultVO createAutoTaskScriptBug(@RequestParam(name="task" ,required = false)Long taskId,
+                                            @RequestParam(name="script",required = false)Long scriptRunId,
+                                            @RequestParam("summary")String summary,
+                                            @RequestParam("desc")String desc,
+                                            @RequestParam("reporter") String reporter,
+                                            @RequestParam("check") String checkUser,
+                                            @RequestParam("handle") String handleUser,
+                                            @RequestParam(name = "priority" ,required = false,defaultValue = "3") int priority,
+                                            @RequestParam("version")String version,
+                                            @RequestParam("fixVersion")String fixVersion){
+        ResultVO resultVO = null ;
+        AutoTestBugDTO autoTestBugDTO = new AutoTestBugDTO();
+        autoTestBugDTO.setTaskId(taskId);
+        autoTestBugDTO.setScriptRunId(scriptRunId);
+        autoTestBugDTO.setSummary(summary);
+        autoTestBugDTO.setDesc(desc);
+        autoTestBugDTO.setReporter(reporter);
+        autoTestBugDTO.setCheckUser(checkUser);
+        autoTestBugDTO.setHandleUser(handleUser);
+        autoTestBugDTO.setPriority(priority);
+        autoTestBugDTO.setVersion(version);
+        autoTestBugDTO.setFixVersion(fixVersion);
+        try {
+            boolean flag = autoTestSupportService.createAutoTestBug(autoTestBugDTO);
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e) {
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
 
 }

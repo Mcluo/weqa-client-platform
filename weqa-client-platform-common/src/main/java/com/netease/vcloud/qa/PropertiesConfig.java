@@ -3,6 +3,7 @@ package com.netease.vcloud.qa;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ import java.util.Properties;
 @Service
 public class PropertiesConfig {
 
+    @Value("${spring.profiles.active}")
+    private String env ;
     /**
      * 基础环境
      */
@@ -48,6 +51,7 @@ public class PropertiesConfig {
 
     @PostConstruct
     public void init(){
+        System.out.println("current env:" + env);
         this.loadAllProperties(ENV_PROPERTIES);
     }
 
@@ -75,6 +79,10 @@ public class PropertiesConfig {
 
     public String getProperty(String name) {
         return propertiesMap.get(name);
+    }
+
+    public String getEnv(){
+        return env;
     }
 
     public Map<String, String> getAllProperty() {

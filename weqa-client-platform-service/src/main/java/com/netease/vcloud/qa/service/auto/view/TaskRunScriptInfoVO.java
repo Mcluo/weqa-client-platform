@@ -28,6 +28,8 @@ public class TaskRunScriptInfoVO {
 
     private String logUrl ;
 
+    private String jiraUrl ;
+
     public long getTaskId() {
         return taskId;
     }
@@ -122,5 +124,13 @@ public class TaskRunScriptInfoVO {
 
     public void setLogUrl(String logUrl) {
         this.logUrl = logUrl;
+    }
+
+    public String getJiraUrl() {
+        return jiraUrl;
+    }
+
+    public void setJiraUrl(String jiraUrl) {
+        this.jiraUrl = jiraUrl;
     }
 }

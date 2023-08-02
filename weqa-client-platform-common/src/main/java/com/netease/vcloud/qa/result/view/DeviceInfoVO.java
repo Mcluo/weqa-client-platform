@@ -29,6 +29,9 @@ public class DeviceInfoVO {
 
     private String deviceId ;
 
+    private byte deviceType ;
+
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -123,5 +126,13 @@ public class DeviceInfoVO {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    public byte getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(byte deviceType) {
+        this.deviceType = deviceType;
     }
 }

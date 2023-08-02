@@ -27,6 +27,10 @@
             <artifactId>weqa-client-platform-dao</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.netease.vcloud.qa</groupId>
+            <artifactId>weqa-client-platform-ancillary</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.offbytwo.jenkins</groupId>
             <artifactId>jenkins-client</artifactId>
             <version>0.3.8</version>

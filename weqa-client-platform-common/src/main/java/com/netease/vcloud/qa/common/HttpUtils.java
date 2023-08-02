@@ -211,7 +211,7 @@ public class HttpUtils {
     }
 
     private static JSONObject buildJSONResult(CloseableHttpResponse response){
-        if (response != null && response.getStatusLine() != null && response.getStatusLine().getStatusCode() == 200) {
+        if (response != null && response.getStatusLine() != null && response.getStatusLine().getStatusCode() >= 200&& response.getStatusLine().getStatusCode() < 300) {
             try {
                 String body = EntityUtils.toString(response.getEntity());
                 COMMON_LOGGER.info("[HttpRequest.buildJSONResult]response body :"+ body);

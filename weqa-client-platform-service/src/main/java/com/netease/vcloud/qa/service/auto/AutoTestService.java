@@ -50,6 +50,7 @@ public class AutoTestService {
     @Autowired
     private AutoPipeLineNotifyService autoPipeLineNotifyService ;
 
+    @Deprecated
     public boolean saveAutoTestResult(String runInfo, String caseName, String caseDetail, int success, int fail , JSONObject result,Long tcId) {
         if (StringUtils.isBlank(runInfo)||runInfo.startsWith("auto")){
             TC_LOGGER.warn("[AutoTestService.saveAutoTestResult] run info is invalid");
