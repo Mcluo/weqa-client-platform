@@ -67,6 +67,9 @@ public class VersionCheckService{
 
     @Scheduled(cron = "0 0 10 * * ? ")
     public void versionCheckSchedule() {
+        if ("local".equals(propertiesConfig.getEnv())){
+            return;
+        }
         this.updateWriteList();
         String jiraKey = this.getJiraKey();
         if (StringUtils.isBlank(jiraKey)) {

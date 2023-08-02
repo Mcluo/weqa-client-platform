@@ -35,6 +35,8 @@ public class ClientAutoDeviceInfoDO {
 
     private String deviceId;
 
+    private byte deviceType ;
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -138,5 +140,13 @@ public class ClientAutoDeviceInfoDO {
 
     public void setCpuInfo(String cpuInfo) {
         this.cpuInfo = cpuInfo;
+    }
+
+    public byte getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(byte deviceType) {
+        this.deviceType = deviceType;
     }
 }

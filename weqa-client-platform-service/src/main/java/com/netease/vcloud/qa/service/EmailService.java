@@ -3,6 +3,7 @@ package com.netease.vcloud.qa.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.PropertiesConfig;
 import com.netease.vcloud.qa.common.HttpUtils;
 import com.netease.vcloud.qa.dao.ClientAutoDeviceInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
@@ -51,6 +52,9 @@ public class EmailService {
     @Autowired
     private AutoTestService autoTestService;
 
+    @Autowired
+    private PropertiesConfig propertiesConfig ;
+
     private static final Logger COMMON_LOGGER = LoggerFactory.getLogger("EmailService");
 
 
@@ -62,6 +66,9 @@ public class EmailService {
 
     @Scheduled(cron = "0/5 * * * * ? ")
     public void sendEmail(){
+        if ("local".equals(propertiesConfig.getEnv())){
+            return;
+        }
         List<ClientAutoTaskInfoDO> infoDOList =  clientAutoTaskInfoDAO.queryAutoTaskInfo1(0);
         for (ClientAutoTaskInfoDO infoDO: infoDOList){
             String emailText= "<a href=\"http://weqa.netease.com/#/client-g2/detail/" + infoDO.getId() +"\">自动化测试已完成，点击查看详情!</a>";
