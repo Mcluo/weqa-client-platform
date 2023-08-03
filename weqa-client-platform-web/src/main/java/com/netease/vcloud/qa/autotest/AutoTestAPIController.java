@@ -56,7 +56,7 @@ public class AutoTestAPIController {
         }catch (Exception e){
             e.printStackTrace();
         }
-        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(autoTaskAPIDTO.getBuildID(), jenkinsBuildDTO) ;
+        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(autoTaskAPIDTO.getBuildID(), jenkinsBuildDTO, extendInfoObject) ;
         if(CollectionUtils.isEmpty(apiTaskBuildDataList)){
             resultVO = ResultUtils.buildFail("缺少合适运行给设备") ;
         }
@@ -98,15 +98,20 @@ public class AutoTestAPIController {
         String gitBranch = autoTaskApiService.getGitBranchByVersion(version) ;
         JSONObject extendInfoObject = JSONObject.parseObject(buildExtendInfo) ;
         List<Long> runCasedIds = autoTaskApiService.getTCIds(extendInfoObject) ;
+        if (CollectionUtils.isEmpty(runCasedIds)){
+            resultVO = ResultUtils.buildFail("对应执行集为空") ;
+            return resultVO ;
+        }
         JenkinsBuildDTO jenkinsBuildDTO = null ;
         try {
             jenkinsBuildDTO = JSONObject.parseObject(url, JenkinsBuildDTO.class);
         }catch (Exception e){
             e.printStackTrace();
         }
-        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(buildID,jenkinsBuildDTO) ;
+        List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(buildID,jenkinsBuildDTO,extendInfoObject) ;
         if(CollectionUtils.isEmpty(apiTaskBuildDataList)){
             resultVO = ResultUtils.buildFail("缺少合适运行给设备") ;
+            return resultVO ;
         }
         for(int i = 1 ; i <= apiTaskBuildDataList.size() ; i++) {
             String name = taskName +"【"+i+"】" ;

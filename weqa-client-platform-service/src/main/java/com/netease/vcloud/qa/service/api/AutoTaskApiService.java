@@ -41,8 +41,17 @@ public class AutoTaskApiService {
 
     private static final String DEFAULT_GIT_BRANCH = "master" ;
 
+    /**
+     * 最小回归集
+     */
     private static final Long TEST_SUIT_ID = 93L ;
-//    private static final Long TEST_SUIT_ID = 3L ;
+    //    private static final Long TEST_SUIT_ID = 3L ;
+
+    /**
+     * 音频回归集
+     */
+    private static final Long AUDIO_TEST_SUIT_ID = 176L ;
+//    private static final Long AUDIO_TEST_SUIT_ID = 3L ;
 
 
     @Autowired
@@ -103,11 +112,14 @@ public class AutoTaskApiService {
     public List<Long> getTCIds(JSONObject extentJsonObject){
         List<Long> tcIdList = new ArrayList<Long>() ;
         try {
-            List<AutoScriptInfoVO> autoScriptInfoVOList = autoTestTestSuitService.getTestSuitScriptInfo(TEST_SUIT_ID);
-            if (!CollectionUtils.isEmpty(autoScriptInfoVOList)){
-                for (AutoScriptInfoVO autoScriptInfoVO : autoScriptInfoVOList){
-                    if (autoScriptInfoVO!=null){
-                        tcIdList.add(autoScriptInfoVO.getId());
+            List<Long> tcSuidIdList = this.getTCSuitId(extentJsonObject) ;
+            for (Long tcSuidId : tcSuidIdList) {
+                List<AutoScriptInfoVO> autoScriptInfoVOList = autoTestTestSuitService.getTestSuitScriptInfo(tcSuidId);
+                if (!CollectionUtils.isEmpty(autoScriptInfoVOList)) {
+                    for (AutoScriptInfoVO autoScriptInfoVO : autoScriptInfoVOList) {
+                        if (autoScriptInfoVO != null) {
+                            tcIdList.add(autoScriptInfoVO.getId());
+                        }
                     }
                 }
             }
@@ -117,7 +129,20 @@ public class AutoTaskApiService {
         return tcIdList ;
     }
 
-    public List<ApiTaskBuildData> getTaskBuildData(Long buildId,JenkinsBuildDTO jenkinsBuildDTO) {
+    private List<Long> getTCSuitId(JSONObject extendJsonObject) {
+        List<Long> tcSuidIdList = new ArrayList<Long>() ;
+        Boolean disableVideo =  extendJsonObject.getBoolean("disable_video") ;
+        if (disableVideo != null && disableVideo.equals(true)){
+            //视频构建不存在，则运行音频用例
+            tcSuidIdList.add(AUDIO_TEST_SUIT_ID);
+        }else{
+            //运行最小回归集合
+            tcSuidIdList.add(TEST_SUIT_ID);
+        }
+        return tcSuidIdList ;
+    }
+
+    public List<ApiTaskBuildData> getTaskBuildData(Long buildId,JenkinsBuildDTO jenkinsBuildDTO, JSONObject extendJsonObject) {
         String urls = null ;
         if(jenkinsBuildDTO == null){
             //仅可以在办公网络使用
@@ -127,24 +152,41 @@ public class AutoTaskApiService {
             urls = this.buildUrlList(jenkinsBuildDTO);
         }
         List<ApiTaskBuildData>  apiTaskBuildDataList = new ArrayList<ApiTaskBuildData>() ;
-        List<List<Long>> deviceList = this.getDeviceList() ;
-        if (deviceList!=null){
-            for (List<Long> devicePairs : deviceList){
-                ApiTaskBuildData apiTaskBuildData = new ApiTaskBuildData() ;
-                apiTaskBuildData.setUrls(urls);
-                apiTaskBuildData.setDeviceList(devicePairs);
-                apiTaskBuildDataList.add(apiTaskBuildData) ;
+        Boolean disableVideo =  extendJsonObject.getBoolean("disable_video") ;
+        if (disableVideo!= null && disableVideo.equals(true)){
+            //纯音频
+            List<List<Long>> deviceList = this.getDeviceList(DeviceType.REMOTE_AUDIO_DEVICE_TYPE) ;
+            if (deviceList != null) {
+                for (List<Long> devicePairs : deviceList) {
+                    ApiTaskBuildData apiTaskBuildData = new ApiTaskBuildData();
+                    apiTaskBuildData.setDeviceType(DeviceType.REMOTE_AUDIO_DEVICE_TYPE);
+                    apiTaskBuildData.setUrls(urls);
+                    apiTaskBuildData.setDeviceList(devicePairs);
+                    apiTaskBuildDataList.add(apiTaskBuildData);
+                }
+            }
+        }else {
+            //视频任务
+            List<List<Long>> deviceList = this.getDeviceList(DeviceType.REMOTE_DEVICE_TYPE) ;
+            if (deviceList != null) {
+                for (List<Long> devicePairs : deviceList) {
+                    ApiTaskBuildData apiTaskBuildData = new ApiTaskBuildData();
+                    apiTaskBuildData.setDeviceType(DeviceType.REMOTE_DEVICE_TYPE);
+                    apiTaskBuildData.setUrls(urls);
+                    apiTaskBuildData.setDeviceList(devicePairs);
+                    apiTaskBuildDataList.add(apiTaskBuildData);
+                }
             }
         }
         return apiTaskBuildDataList ;
     }
 
-    public List<List<Long>> getDeviceList(){
+    public List<List<Long>> getDeviceList(byte deviceType){
         List<List<Long>> deviceList = new ArrayList<List<Long>>() ;
         try {
             int count = 2 ;
             List<Long> deviceIds = new ArrayList<Long>() ;
-            List<DeviceInfoVO>  deviceInfoVOList = autoTestDeviceService.getDeviceList(null, DeviceType.REMOTE_DEVICE_TYPE);
+            List<DeviceInfoVO>  deviceInfoVOList = autoTestDeviceService.getDeviceList(null, deviceType);
             for (DeviceInfoVO deviceInfoVO : deviceInfoVOList){
                 if (deviceInfoVO==null){
                     continue;
