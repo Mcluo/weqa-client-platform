@@ -184,6 +184,14 @@ public class JiraService {
             List<Map<String,String>> fixVersionList = new ArrayList<>() ;
             fixVersionList.add(fixVersionMap) ;
             fields.put("fixVersions",fixVersionList);
+            //特殊字段
+            Map<String,String> bugFrom = new HashMap<>();
+            bugFrom.put("id","17165");
+            fields.put("customfield_15325",bugFrom);
+            Map<String,String> findWay = new HashMap<>();
+            findWay.put("id","19829");
+            fields.put("customfield_15805",findWay);
+
             body.put("fields",fields);
 //            System.out.println(JSON.toJSONString(body));
             JSONObject res = HttpUtils.getInstance().jsonPost(url,headers,JSONObject.toJSONString(body));
