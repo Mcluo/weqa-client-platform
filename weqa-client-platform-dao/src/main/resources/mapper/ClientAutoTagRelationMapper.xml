@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientAutoTagRelationDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoTagRelationDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="tag_id" jdbcType="BIGINT" property="tagId"/>
+        <result column="relation_type" jdbcType="TINYINT" property="relationType"/>
+        <result column="relation_id" jdbcType="BIGINT" property="relationId"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,tag_name,tag_type,creator
+    </sql>
+
+
+
+</mapper>
