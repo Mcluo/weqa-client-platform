@@ -8,17 +8,17 @@ import java.util.List;
  */
 public class ApiTaskBuildData {
 
-    private int deviceType ;
+    private byte deviceType ;
 
     private List<Long> deviceList ;
 
     private String  urls ;
 
-    public int getDeviceType() {
+    public byte getDeviceType() {
         return deviceType;
     }
 
-    public void setDeviceType(int deviceType) {
+    public void setDeviceType(byte deviceType) {
         this.deviceType = deviceType;
     }
 
