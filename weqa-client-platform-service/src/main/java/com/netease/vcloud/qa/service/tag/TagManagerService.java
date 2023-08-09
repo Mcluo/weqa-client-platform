@@ -2,8 +2,8 @@ package com.netease.vcloud.qa.service.tag;
 
 import com.netease.vcloud.qa.dao.ClientAutoTagBaseInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO;
-import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.tag.data.TagDTO;
+import com.netease.vcloud.qa.service.tag.data.TagTypeVO;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 import com.netease.vcloud.qa.tag.TagType;
 import org.apache.commons.collections.CollectionUtils;
@@ -17,13 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 标签管理
  * Created by luqiuwei@corp.netease.com
  * on 2023/8/8 13:51
  */
 @Service
 public class TagManagerService {
 
-    private final Logger logger = LoggerFactory.getLogger("tag");
+    private static final Logger logger = LoggerFactory.getLogger("tagLog");
 
     @Autowired
     private ClientAutoTagBaseInfoDAO clientAutoTagBaseInfoDAO ;
@@ -41,7 +42,7 @@ public class TagManagerService {
         clientAutoTagBaseInfoDO = new ClientAutoTagBaseInfoDO();
         clientAutoTagBaseInfoDO.setTagName(tagDTO.getName());
         TagType tagType = TagType.getTagTypeByCode(tagDTO.getType()) ;
-        if (tagType == null){
+        if (tagType != null){
             clientAutoTagBaseInfoDO.setTagType(tagType.getCode());
         }
         clientAutoTagBaseInfoDO.setCreator(tagDTO.getCreator());
@@ -56,16 +57,18 @@ public class TagManagerService {
     public boolean updateTag(TagDTO tagDTO) throws AutoTestTagException {
         if (tagDTO == null || tagDTO.getId() == null|| StringUtils.isBlank(tagDTO.getName())){
             logger.error("[AutoTestTaskProducer.addTag] tagDTO is null");
-            throw  new AutoTestTagException(AutoTestTagException.AUTO_TAG_DEFAULT_EXCEPTION) ;
+            throw  new AutoTestTagException(AutoTestTagException.AUTO_TAG_PARAM_EXCEPTION) ;
         }
-        ClientAutoTagBaseInfoDO  clientAutoTagBaseInfoDO = new ClientAutoTagBaseInfoDO();
-        clientAutoTagBaseInfoDO.setId(tagDTO.getId());
+        ClientAutoTagBaseInfoDO  clientAutoTagBaseInfoDO = clientAutoTagBaseInfoDAO.getAutoTagByID(tagDTO.getId()) ;
+        if (clientAutoTagBaseInfoDO == null){
+            throw new AutoTestTagException(AutoTestTagException.AUTO_TAG_PARAM_EXCEPTION) ;
+        }
         clientAutoTagBaseInfoDO.setTagName(tagDTO.getName());
         TagType tagType = TagType.getTagTypeByCode(tagDTO.getType()) ;
-        if (tagType == null){
+        if (tagType != null){
             clientAutoTagBaseInfoDO.setTagType(tagType.getCode());
         }
-        clientAutoTagBaseInfoDO.setCreator(tagDTO.getCreator());
+//        clientAutoTagBaseInfoDO.setCreator(tagDTO.getCreator());
         int count = clientAutoTagBaseInfoDAO.updateAutoTag(clientAutoTagBaseInfoDO) ;
         if (count > 0){
             return true ;
@@ -74,12 +77,12 @@ public class TagManagerService {
         }
     }
 
-    public List<TagVO> getTagListByKey(String key) throws AutoTestTagException{
+    public List<TagVO> queryTagListByKey(String key) throws AutoTestTagException{
         if (StringUtils.isBlank(key)){
             logger.error("[AutoTestTaskProducer.getTagListByKey] query key is null");
             throw new AutoTestTagException(AutoTestTagException.AUTO_TAG_PARAM_EXCEPTION) ;
         }
-        List<ClientAutoTagBaseInfoDO>  baseInfoDOList = clientAutoTagBaseInfoDAO.getAutoTagByKey(key) ;
+        List<ClientAutoTagBaseInfoDO>  baseInfoDOList = clientAutoTagBaseInfoDAO.queryAutoTagByKey(key) ;
         List<TagVO> tagVOList = new ArrayList<>() ;
         if (!CollectionUtils.isEmpty(baseInfoDOList)){
             for (ClientAutoTagBaseInfoDO clientAutoTagBaseInfoDO : baseInfoDOList){
@@ -117,6 +120,18 @@ public class TagManagerService {
         }else {
             return false ;
         }
+    }
+
+    public List<TagTypeVO> getTypeList(){
+        TagType[] tagTypeArray = TagType.values() ;
+        List<TagTypeVO> tagTypeVOList = new ArrayList<>() ;
+        for (TagType tagType : tagTypeArray){
+            TagTypeVO tagTypeVO = new TagTypeVO() ;
+            tagTypeVO.setCode(tagType.getCode());
+            tagTypeVO.setName(tagType.getName());
+            tagTypeVOList.add(tagTypeVO) ;
+        }
+        return tagTypeVOList ;
     }
 
 }

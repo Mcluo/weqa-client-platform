@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -17,12 +18,16 @@ public interface ClientAutoTagBaseInfoDAO {
 
     int updateAutoTag(@Param("info") ClientAutoTagBaseInfoDO clientAutoTagBaseInfoDO) ;
 
-    List<ClientAutoTagBaseInfoDO> getAutoTagByKey(@Param("key") String key) ;
+    List<ClientAutoTagBaseInfoDO> queryAutoTagByKey(@Param("key") String key) ;
 
     List<ClientAutoTagBaseInfoDO> getAutoTagByType(@Param("type") String type) ;
+    ClientAutoTagBaseInfoDO getAutoTagByID(@Param("id") Long id) ;
 
     ClientAutoTagBaseInfoDO getAutoTagByName(@Param("name") String name) ;
 
     int deleteAutoTagById(@Param("id") long id) ;
+
+    List<ClientAutoTagBaseInfoDO> getAutoTagByIDSet(@Param("idSet") Set<Long> idSet) ;
+
 
 }

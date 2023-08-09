@@ -34,4 +34,17 @@ public enum TagRelationType {
     public byte getCode() {
         return code;
     }
+
+
+    public static TagRelationType getTagRelationTypeByCode(Byte code) {
+        if(code == null){
+            return null;
+        }
+        for (TagRelationType tagRelationType : values()){
+            if(tagRelationType.getCode() == code){
+                return tagRelationType;
+            }
+        }
+        return null ;
+    }
 }

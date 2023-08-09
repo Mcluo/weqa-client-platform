@@ -8,7 +8,9 @@ public class AutoTestTagException extends RuntimeException {
 
     public static final String AUTO_TAG_DEFAULT_EXCEPTION = "AutoTagRunException" ;
 
-    public static final String AUTO_TAG_PARAM_EXCEPTION = "AutoTagParamException" ;
+    public static final String AUTO_TAG_PARAM_EXCEPTION = "参数错误" ;
+
+    public static final String TAG_NOT_EXIST_EXCEPTION = "标签不存在" ;
 
 
 

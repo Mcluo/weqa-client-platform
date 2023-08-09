@@ -14,5 +14,44 @@
         select id,gmt_create,gmt_update,tag_name,tag_type,creator
     </sql>
 
+    <insert id="insertNewAutoTag" parameterType="com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO" keyProperty="info.id" useGeneratedKeys="true" >
+        insert into vcloud_client_auto_tag_base_info(gmt_create,gmt_update,tag_name,tag_type,creator)
+        values(now(),now(),#{info.tagName},#{info.tagType},#{info.creator})
+    </insert>
+
+    <update id="updateAutoTag" parameterType="com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO">
+        update vcloud_client_auto_tag_base_info
+        set gmt_update=now(),tag_name=#{info.tagName},tag_type=#{info.tagType},creator=#{info.creator}
+        where id=#{info.id}
+    </update>
+
+    <select id="queryAutoTagByKey" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE tag_name LIKE CONCAT('%',#{key},'%')
+    </select>
+
+    <select id="getAutoTagByKey" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE tag_type = #{type}
+    </select>
+
+    <select id="getAutoTagByID" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE id = #{id}
+    </select>
+
+    <select id="getAutoTagByName" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE tag_name = #{name}
+    </select>
+
+    <delete id="deleteAutoTagById" parameterType="java.lang.Long">
+        delete vcloud_client_auto_tag_base_info
+        where id=#{id}
+    </delete>
 
 </mapper>

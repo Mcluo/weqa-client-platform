@@ -9,14 +9,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum TagType {
 
-        DEFAULT("无分类","default"),
+        DEFAULT("默认分类","default"),
 
         TEST_TYPE("测试类型","test_type") ,
-        TEST_SCENE("测试场景","test_SCENE") ,
+        TEST_SCENE("测试场景","test_scene") ,
         MODEL_TYPE("模块划分","model_type"),
         ROLE_PROCESS("角色流程","role_process") ,
         COOPERATION_METHOD("配合方式","cooperation_method") ,
-        BASE_CASE("基础用例","base_case");
+        BASE_CASE("基础用例","base_case"),
      ;
     private String name ;
 
