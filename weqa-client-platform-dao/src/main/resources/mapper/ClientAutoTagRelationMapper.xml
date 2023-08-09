@@ -15,6 +15,49 @@
         select id,gmt_create,gmt_update,tag_id,relation_type,relation_id,operator
     </sql>
 
+    <select id="getAutoTagRelation" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_relation
+        WHERE 1=1
+        <if test="tagId!= null">
+        AND tag_id = #{tagId}
+        </if>
+        <if test="type!= null">
+        AND relation_type = #{type}
+        </if>
+        <if test="relationId!= null">
+        AND relation_id = #{relationId}
+        </if>
+    </select>
 
+    <insert id="insertAutoTagRelation" parameterType="com.netease.vcloud.qa.model.ClientAutoTagRelationDO">
+        INSERT INTO vcloud_client_auto_tag_relation(gmt_create,gmt_update,tag_id,relation_type,relation_id,operator)
+        VALUES(now(),now(),#{relation.tagId},#{relation.relationType},#{relation.relationId},#{relation.operator})
+    </insert>
 
+    <select id="queryAutoTagRelationBySet" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_relation
+        WHERE tag_id IN
+        <foreach collection="tagSet" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryAutoTagRelationByRelationIds" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_relation
+        WHERE relation_type  = #{type}
+        AND relation_id IN
+        <foreach collection="idSet" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteAutoTagRelation" >
+        DELETE vcloud_client_auto_tag_relation
+        WHERE  tag_id = #{tagId}
+        AND relation_type = #{type}
+        AND relation_id = #{relationId}
+    </delete>
 </mapper>

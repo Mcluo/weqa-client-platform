@@ -33,16 +33,16 @@ public class AutoTestTagService {
 
     public boolean testCaseAddTag(long scriptId , long tagId , String operator) throws AutoTestTagException{
         //检查脚本
-        return this.buildTagAndTest(tagId , TagRelationType.TEST_CASE, scriptId,operator);
+        return this.bindTagAndTest(tagId , TagRelationType.TEST_CASE, scriptId,operator);
     }
 
     public  boolean testSuitAddTag(long suitId , long tagId , String operator) throws AutoTestTagException{
         //检查用例集
-        return this.buildTagAndTest(tagId , TagRelationType.TEST_SUITE, suitId , operator) ;
+        return this.bindTagAndTest(tagId , TagRelationType.TEST_SUITE, suitId , operator) ;
     }
 
 
-    public boolean buildTagAndTest(long tagId , TagRelationType relationType , long testId,String operator) throws AutoTestTagException{
+    public boolean bindTagAndTest(long tagId , TagRelationType relationType , long testId, String operator) throws AutoTestTagException{
         //检查标签
         ClientAutoTagBaseInfoDO clientAutoTagBaseInfoDO = clientAutoTagBaseInfoDAO.getAutoTagByID(tagId) ;
         if (clientAutoTagBaseInfoDO == null){
@@ -65,6 +65,25 @@ public class AutoTestTagService {
             return false ;
         }
     }
+
+    public boolean testCaseDeleteTag(long scriptId , long tagId ) throws AutoTestTagException{
+        //检查脚本
+        return this.unbindTagAndTest(tagId , TagRelationType.TEST_CASE, scriptId);
+    }
+
+    public  boolean testSuitDeleteTag(long suitId , long tagId ) throws AutoTestTagException{
+        //检查用例集
+        return this.unbindTagAndTest(tagId , TagRelationType.TEST_SUITE, suitId) ;
+    }
+
+    public boolean unbindTagAndTest(long tagId , TagRelationType relationType , long testId) throws AutoTestTagException{
+        if (relationType == null ){
+            throw  new AutoTestTagException(AutoTestTagException.AUTO_TAG_PARAM_EXCEPTION) ;
+        }
+        int count = clientAutoTagRelationDAO.deleteAutoTagRelation(tagId, relationType.getCode(), testId) ;
+        return count > 0 ;
+    }
+
 
     /**
      * 根据标签的ID集合，查询对应的关联项目，以Map形式返回(map的key为类型，value为具体值的列表)

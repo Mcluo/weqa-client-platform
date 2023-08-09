@@ -22,4 +22,6 @@ public interface ClientAutoTagRelationDAO {
 
 
     List<ClientAutoTagRelationDO> queryAutoTagRelationByRelationIds( @Param("type") byte type, @Param("idSet") Set<Long> idSet) ;
+
+    int deleteAutoTagRelation(@Param("tagId") Long tagId, @Param("type") Byte type, @Param("relationId")Long relationId) ;
 }

@@ -54,4 +54,13 @@
         where id=#{id}
     </delete>
 
+    <select id="getAutoTagByIDSet" resultMap="BaseResultMap" >
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE id IN
+        <foreach collection="idSet" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>
