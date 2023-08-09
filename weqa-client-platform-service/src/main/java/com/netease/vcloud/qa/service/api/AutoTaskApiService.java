@@ -50,7 +50,7 @@ public class AutoTaskApiService {
     /**
      * 音频回归集
      */
-    private static final Long AUDIO_TEST_SUIT_ID = 176L ;
+    private static final Long AUDIO_TEST_SUIT_ID = 209L ;
 //    private static final Long AUDIO_TEST_SUIT_ID = 3L ;
 
 
