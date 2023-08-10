@@ -9,10 +9,7 @@ import com.netease.vcloud.qa.service.tag.data.TagDTO;
 import com.netease.vcloud.qa.service.tag.data.TagTypeVO;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -114,6 +111,29 @@ public class TagManagerController {
         }
         return resultVO ;
     }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/manager/type/query?type=default
+     * @param type
+     * @return
+     */
+    @RequestMapping("/type/query")
+    @ResponseBody
+    public  ResultVO queryTagByType(@RequestParam("type") String type) {
+        ResultVO resultVO = null ;
+        try {
+            List<TagVO> tagVOList = tagManagerService.getTagListByType(type);
+            if (tagVOList!= null){
+                resultVO = ResultUtils.buildSuccess(tagVOList) ;
+            }else{
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (AutoTestTagException e) {
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
+        }
+        return resultVO ;
+    }
+
 
     /**
      * http://127.0.0.1:8788/g2-client/tag/manager/type/get

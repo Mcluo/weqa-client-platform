@@ -31,7 +31,7 @@
         WHERE tag_name LIKE CONCAT('%',#{key},'%')
     </select>
 
-    <select id="getAutoTagByKey" resultMap="BaseResultMap">
+    <select id="getAutoTagByType" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_tag_base_info
         WHERE tag_type = #{type}

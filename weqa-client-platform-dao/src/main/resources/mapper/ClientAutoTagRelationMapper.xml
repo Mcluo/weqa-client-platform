@@ -55,7 +55,7 @@
     </select>
 
     <delete id="deleteAutoTagRelation" >
-        DELETE vcloud_client_auto_tag_relation
+        DELETE FROM vcloud_client_auto_tag_relation
         WHERE  tag_id = #{tagId}
         AND relation_type = #{type}
         AND relation_id = #{relationId}
