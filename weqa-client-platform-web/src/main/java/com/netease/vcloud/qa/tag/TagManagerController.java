@@ -83,6 +83,11 @@ public class TagManagerController {
         return resultVO ;
     }
 
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/manager/delete?id=2
+     * @param id
+     * @return
+     */
     @RequestMapping("/delete")
     @ResponseBody
     public ResultVO deleteTag(@RequestParam("id") long id) {
@@ -141,7 +146,7 @@ public class TagManagerController {
      */
     @RequestMapping("/type/get")
     @ResponseBody
-    public ResultVO getTagType(){
+    public ResultVO getAllTagType(){
         ResultVO resultVO = null ;
         List<TagTypeVO> tagTypeVOList = tagManagerService.getTypeList() ;
         resultVO = ResultUtils.buildSuccess(tagTypeVOList) ;

@@ -50,7 +50,7 @@
     </select>
 
     <delete id="deleteAutoTagById" parameterType="java.lang.Long">
-        delete vcloud_client_auto_tag_base_info
+        DELETE FROM vcloud_client_auto_tag_base_info
         where id=#{id}
     </delete>
 
