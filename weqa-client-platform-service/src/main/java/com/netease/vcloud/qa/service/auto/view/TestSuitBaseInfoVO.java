@@ -1,6 +1,9 @@
 package com.netease.vcloud.qa.service.auto.view;
 
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+import com.netease.vcloud.qa.service.tag.data.TagVO;
+
+import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -19,6 +22,10 @@ public class TestSuitBaseInfoVO {
      * 测试集归属人
      */
     private UserInfoVO owner ;
+    /**
+     * 标签信息
+     */
+    private List<TagVO> tags ;
 
     public Long getId() {
         return id;
@@ -42,5 +49,13 @@ public class TestSuitBaseInfoVO {
 
     public void setOwner(UserInfoVO owner) {
         this.owner = owner;
+    }
+
+    public List<TagVO> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagVO> tags) {
+        this.tags = tags;
     }
 }
