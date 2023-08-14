@@ -25,6 +25,8 @@ public interface ClientAutoTagBaseInfoDAO {
 
     ClientAutoTagBaseInfoDO getAutoTagByName(@Param("name") String name) ;
 
+    List<ClientAutoTagBaseInfoDO> getAllAutoTag() ;
+
     int deleteAutoTagById(@Param("id") long id) ;
 
     List<ClientAutoTagBaseInfoDO> getAutoTagByIDSet(@Param("idSet") Set<Long> idSet) ;

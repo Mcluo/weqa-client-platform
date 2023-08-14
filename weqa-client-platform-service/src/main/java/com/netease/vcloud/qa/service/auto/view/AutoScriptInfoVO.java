@@ -1,6 +1,9 @@
 package com.netease.vcloud.qa.service.auto.view;
 
 import com.netease.vcloud.qa.result.view.UserInfoVO;
+import com.netease.vcloud.qa.service.tag.data.TagVO;
+
+import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -23,6 +26,9 @@ public class AutoScriptInfoVO {
     private Long tcId ;
 
     private UserInfoVO userInfo;
+
+    private List<TagVO> tags;
+
 
     public Long getId() {
         return id;
@@ -86,5 +92,13 @@ public class AutoScriptInfoVO {
 
     public void setUserInfo(UserInfoVO userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public List<TagVO> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagVO> tags) {
+        this.tags = tags;
     }
 }

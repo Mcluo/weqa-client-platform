@@ -6,6 +6,7 @@ import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.tag.AutoTestTagException;
 import com.netease.vcloud.qa.service.tag.TagManagerService;
 import com.netease.vcloud.qa.service.tag.data.TagDTO;
+import com.netease.vcloud.qa.service.tag.data.TagSelectVO;
 import com.netease.vcloud.qa.service.tag.data.TagTypeVO;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,4 +153,22 @@ public class TagManagerController {
         resultVO = ResultUtils.buildSuccess(tagTypeVOList) ;
         return resultVO ;
     }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/manager/tag/getAll
+     * @return
+     */
+    @RequestMapping("/tag/getAll")
+    @ResponseBody
+    public ResultVO queryAllTag(){
+        ResultVO resultVO = null ;
+        List<TagSelectVO> tagSelectVOList = tagManagerService.getTageSelect() ;
+        if (tagSelectVOList!= null){
+            resultVO = ResultUtils.buildSuccess(tagSelectVOList) ;
+        }else {
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
 }

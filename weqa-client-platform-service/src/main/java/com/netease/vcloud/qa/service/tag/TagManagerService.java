@@ -3,6 +3,7 @@ package com.netease.vcloud.qa.service.tag;
 import com.netease.vcloud.qa.dao.ClientAutoTagBaseInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO;
 import com.netease.vcloud.qa.service.tag.data.TagDTO;
+import com.netease.vcloud.qa.service.tag.data.TagSelectVO;
 import com.netease.vcloud.qa.service.tag.data.TagTypeVO;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 import com.netease.vcloud.qa.tag.TagType;
@@ -134,4 +135,29 @@ public class TagManagerService {
         return tagTypeVOList ;
     }
 
+
+    public List<TagSelectVO> getTageSelect(){
+        List<TagSelectVO> tagSelectVOList = new ArrayList<>() ;
+        TagType[] tagTypeArray = TagType.values() ;
+//        List<ClientAutoTagBaseInfoDO> clientAutoTagBaseInfoDOList = clientAutoTagBaseInfoDAO.getAllAutoTag() ;
+        //这边简单处理，直接循环内调用DB了，改方法对速度不敏感
+        for (TagType tagType : tagTypeArray){
+           List<ClientAutoTagBaseInfoDO> clientAutoTagBaseInfoDOList = clientAutoTagBaseInfoDAO.getAutoTagByType(tagType.getCode()) ;
+           TagSelectVO parentTagSelectVO = new TagSelectVO() ;
+           parentTagSelectVO.setLabel(tagType.getName());
+           parentTagSelectVO.setValue(tagType.getCode());
+           tagSelectVOList.add(parentTagSelectVO) ;
+           List<TagSelectVO> chileTagSelectVOList = new ArrayList<>() ;
+           if (CollectionUtils.isNotEmpty(clientAutoTagBaseInfoDOList)){
+                for (ClientAutoTagBaseInfoDO clientAutoTagBaseInfoDO : clientAutoTagBaseInfoDOList){
+                    TagSelectVO tagSelectVO = new TagSelectVO() ;
+                    tagSelectVO.setLabel(clientAutoTagBaseInfoDO.getTagName());
+                    tagSelectVO.setValue(clientAutoTagBaseInfoDO.getId()+"");
+                    chileTagSelectVOList.add(tagSelectVO) ;
+                }
+           }
+           parentTagSelectVO.setChildren(chileTagSelectVOList);
+        }
+        return tagSelectVOList ;
+    }
 }

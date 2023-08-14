@@ -63,4 +63,9 @@
         </foreach>
     </select>
 
+    <select id="getAllAutoTag" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+    </select>
+
 </mapper>
