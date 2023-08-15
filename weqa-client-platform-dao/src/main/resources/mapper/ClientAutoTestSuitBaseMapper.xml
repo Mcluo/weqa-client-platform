@@ -27,6 +27,15 @@
         AND is_delete=0
     </select>
 
+    <select id="queryAutoTestSuitByIdSet" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_test_suit_base_info
+        WHERE id IN
+        <foreach collection="idSet" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="getAutoTestSuitByName" resultMap="BaseResultMap">
         <include refid="baseSql"/>
         FROM vcloud_client_auto_test_suit_base_info

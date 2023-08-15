@@ -106,6 +106,26 @@ public class AutoTestDeviceController {
     }
 
     /**
+     * http://127.0.0.1:8788/g2-client/auto/device/delete?id=1&operator=system
+     * @param id
+     * @param operator
+     * @return
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResultVO deleteDeviceInfo(@RequestParam("id")long id, @RequestParam("operator") String operator) {
+        ResultVO resultVO = null ;
+        try {
+            boolean flag = autoTestDeviceService.deleteDeviceInfo(id,operator);
+            resultVO = ResultUtils.build(flag) ;
+        }catch (AutoTestRunException e){
+            resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+
+    /**
      *http://127.0.0.1:8788/g2-client/auto/device/update?id=1&ip=127.0.0.1&port=5001&platform=pc&user=44944
      * @return
      */

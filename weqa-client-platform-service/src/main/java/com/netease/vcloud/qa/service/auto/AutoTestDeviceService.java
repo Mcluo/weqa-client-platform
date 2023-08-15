@@ -151,6 +151,23 @@ public class AutoTestDeviceService {
         return count > 0;
     }
 
+
+    public boolean deleteDeviceInfo(Long id,String operator) throws AutoTestRunException{
+        ClientAutoDeviceInfoDO clientAutoDeviceInfoDO = clientAutoDeviceInfoDAO.getClientAutoDeviceInfoById(id) ;
+        if (clientAutoDeviceInfoDO == null){
+            return true ;
+        }
+        if (!clientAutoDeviceInfoDO.getOwner().equals(operator)){
+            throw new AutoTestRunException(AutoTestRunException.USER_OPERATOR_PERMISSION) ;
+        }
+        int count = clientAutoDeviceInfoDAO.deleteDeviceInfoById(id) ;
+        if (count > 0){
+            return true ;
+        }else{
+            return false ;
+        }
+    }
+
     public boolean addDevice(ClientAutoDeviceInfoDO clientAutoDeviceInfoDO) throws AutoTestRunException{
         int count = clientAutoDeviceInfoDAO.insertNewDeviceInfo(clientAutoDeviceInfoDO) ;
         return count > 0;

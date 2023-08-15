@@ -20,8 +20,8 @@ public interface ClientAutoTagRelationDAO {
 
     List<ClientAutoTagRelationDO> queryAutoTagRelationBySet(@Param("tagSet") Set<Long> tagSet) ;
 
-
     List<ClientAutoTagRelationDO> queryAutoTagRelationByRelationIds( @Param("type") byte type, @Param("idSet") Set<Long> idSet) ;
+    List<ClientAutoTagRelationDO> queryAutoTagRelationByTagIds( @Param("type") byte type, @Param("tagSet") Set<Long> tagSet) ;
 
     int deleteAutoTagRelation(@Param("tagId") Long tagId, @Param("type") Byte type, @Param("relationId")Long relationId) ;
 }

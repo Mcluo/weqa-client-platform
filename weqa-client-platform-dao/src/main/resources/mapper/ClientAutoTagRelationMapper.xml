@@ -54,6 +54,16 @@
         </foreach>
     </select>
 
+    <select id="queryAutoTagRelationByTagIds" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_relation
+        WHERE relation_type  = #{type}
+        AND tag_id IN
+        <foreach collection="tagSet" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <delete id="deleteAutoTagRelation" >
         DELETE FROM vcloud_client_auto_tag_relation
         WHERE  tag_id = #{tagId}

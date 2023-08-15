@@ -2,13 +2,15 @@ package com.netease.vcloud.qa.tag;
 
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
+import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
+import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
+import com.netease.vcloud.qa.service.tag.AutoBuildTestService;
 import com.netease.vcloud.qa.service.tag.AutoTestTagException;
 import com.netease.vcloud.qa.service.tag.AutoTestTagService;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
 import java.util.*;
 
 /**
@@ -21,6 +23,9 @@ public class TestTagBindController {
 
     @Autowired
     private AutoTestTagService autoTestTagService ;
+
+    @Autowired
+    private AutoBuildTestService autoBuildTestService ;
 
     /**
      * http://127.0.0.1:8788/g2-client/tag/bind/test/add?testId=1&tagId=1&operator=luqiuwei@corp.netease.com
@@ -148,6 +153,42 @@ public class TestTagBindController {
            resultVO = ResultUtils.buildSuccess(tagVOListMap);
         }catch (AutoTestTagException e) {
             resultVO = ResultUtils.buildFail(e.getExceptionInfo()) ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/bind/suit/query?tagId=1
+     * @param tagId
+     * @return
+     */
+    @RequestMapping("/suit/query")
+    @ResponseBody
+    public ResultVO queryTestSuitByTagId(@RequestParam("tagId") long tagId) {
+        ResultVO resultVO = null;
+        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = autoBuildTestService.getAutoSuitListByTagId(tagId);
+        if (testSuitBaseInfoVOList!= null){
+            resultVO = ResultUtils.buildSuccess(testSuitBaseInfoVOList) ;
+        }else{
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/bind/script/query?tagId=1
+     * @param tagId
+     * @return
+     */
+    @RequestMapping("/script/query")
+    @ResponseBody
+    public ResultVO queryTestScriptByTagId(@RequestParam("tagId") long tagId) {
+        ResultVO resultVO = null;
+        Set<AutoScriptInfoVO> autoScriptInfoVOSet = autoBuildTestService.getAutoScriptInfoVOListByTagId(tagId);
+        if (autoScriptInfoVOSet!= null){
+            resultVO = ResultUtils.buildSuccess(autoScriptInfoVOSet) ;
+        }else{
+            resultVO = ResultUtils.buildFail() ;
         }
         return resultVO ;
     }

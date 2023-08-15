@@ -34,6 +34,8 @@ public class AutoTestRunException extends Exception{
 
     public static String TEST_BASELINE_IS_NOT_EXIST = "性能基线不存在" ;
 
+    public static String USER_OPERATOR_PERMISSION = "用户操作受限" ;
+
     private String exceptionInfo ;
 
     public AutoTestRunException() {
