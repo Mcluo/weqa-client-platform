@@ -7,6 +7,7 @@ import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
 import com.netease.vcloud.qa.service.tag.AutoBuildTestService;
 import com.netease.vcloud.qa.service.tag.AutoTestTagException;
 import com.netease.vcloud.qa.service.tag.AutoTestTagService;
+import com.netease.vcloud.qa.service.tag.data.TagSuitInfoVO;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -166,7 +167,7 @@ public class TestTagBindController {
     @ResponseBody
     public ResultVO queryTestSuitByTagId(@RequestParam("tagId") long tagId) {
         ResultVO resultVO = null;
-        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = autoBuildTestService.getAutoSuitListByTagId(tagId);
+        List<TagSuitInfoVO> testSuitBaseInfoVOList = autoBuildTestService.getAutoSuitListByTagId(tagId);
         if (testSuitBaseInfoVOList!= null){
             resultVO = ResultUtils.buildSuccess(testSuitBaseInfoVOList) ;
         }else{
@@ -188,6 +189,25 @@ public class TestTagBindController {
         if (autoScriptInfoVOSet!= null){
             resultVO = ResultUtils.buildSuccess(autoScriptInfoVOSet) ;
         }else{
+            resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/bind/script/all?tagId=1
+     * @param tagId
+     * @return
+     */
+    @RequestMapping("/script/all")
+    @ResponseBody
+    public ResultVO queryRunScriptByTagId(@RequestParam("tagId")long tagId) {
+        ResultVO resultVO = null;
+        List<AutoScriptInfoVO> autoScriptInfoVOList = autoBuildTestService.getAllScriptByTagId(tagId) ;
+        if (autoScriptInfoVOList!= null) {
+            resultVO = ResultUtils.buildSuccess(autoScriptInfoVOList);
+        }else {
             resultVO = ResultUtils.buildFail() ;
         }
         return resultVO ;

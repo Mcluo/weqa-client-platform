@@ -1,26 +1,22 @@
 package com.netease.vcloud.qa.service.tag;
 
-import com.netease.vcloud.qa.CommonUtils;
-import com.netease.vcloud.qa.UserInfoBO;
-import com.netease.vcloud.qa.dao.ClientAutoTagBaseInfoDAO;
-import com.netease.vcloud.qa.dao.ClientAutoTagRelationDAO;
-import com.netease.vcloud.qa.dao.ClientAutoTestSuitBaseInfoDAO;
-import com.netease.vcloud.qa.dao.ClientScriptTcInfoDAO;
+import com.netease.vcloud.qa.dao.*;
 import com.netease.vcloud.qa.model.ClientAutoTagRelationDO;
 import com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO;
+import com.netease.vcloud.qa.model.ClientAutoTestSuitRelationDO;
 import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
 
+import com.netease.vcloud.qa.service.auto.AutoTestTestSuitService;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
-import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
+import com.netease.vcloud.qa.service.tag.data.TagSuitInfoVO;
 import com.netease.vcloud.qa.tag.TagRelationType;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -29,6 +25,8 @@ import java.util.Set;
 @Service
 public class AutoBuildTestService {
 
+    private static final Logger logger = LoggerFactory.getLogger("tagLog");
+
     @Autowired
     private ClientAutoTagRelationDAO clientAutoTagRelationDAO ;
 
@@ -36,9 +34,14 @@ public class AutoBuildTestService {
     @Autowired
     private ClientAutoTestSuitBaseInfoDAO clientAutoTestSuitBaseInfoDAO ;
 
+    @Autowired
+    private ClientAutoTestSuitRelationDAO clientAutoTestSuitRelationDAO ;
 
     @Autowired
     private ClientScriptTcInfoDAO clientScriptTcInfoDAO ;
+
+    @Autowired
+    private AutoTestTestSuitService autoTestSuitService ;
     /**
      * 获取全量用例
      * 不含执行集用例
@@ -84,13 +87,13 @@ public class AutoBuildTestService {
      * 获取全量用例集合
      * @return
      */
-    public List<TestSuitBaseInfoVO> getAutoSuitListByTagId(long tagId) {
+    public List<TagSuitInfoVO> getAutoSuitListByTagId(long tagId) {
         Set<Long> tagIdSet = new HashSet<Long>() ;
-        List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = new ArrayList<>() ;
+        List<TagSuitInfoVO> tagSuitInfoVOList = new ArrayList<>() ;
         tagIdSet.add(tagId) ;
         List<ClientAutoTagRelationDO> clientAutoTagRelationDOList = clientAutoTagRelationDAO.queryAutoTagRelationByTagIds(TagRelationType.TEST_SUITE.getCode(), tagIdSet) ;
         if (CollectionUtils.isEmpty(clientAutoTagRelationDOList)){
-            return testSuitBaseInfoVOList ;
+            return tagSuitInfoVOList ;
         }
         Set<Long> suitIdList = new HashSet<>() ; ;
         for (ClientAutoTagRelationDO clientAutoTagRelationDO : clientAutoTagRelationDOList) {
@@ -104,16 +107,74 @@ public class AutoBuildTestService {
             if (clientAutoTestSuitBaseInfoDO == null){
                 continue;
             }
-            TestSuitBaseInfoVO testSuitBaseInfoVO = new TestSuitBaseInfoVO() ;
-            testSuitBaseInfoVO.setId(clientAutoTestSuitBaseInfoDO.getId());
-            testSuitBaseInfoVO.setName(clientAutoTestSuitBaseInfoDO.getSuitName());
+            TagSuitInfoVO testSuitInfoVO = new TagSuitInfoVO() ;
+            testSuitInfoVO.setId(clientAutoTestSuitBaseInfoDO.getId());
+            testSuitInfoVO.setName(clientAutoTestSuitBaseInfoDO.getSuitName());
 //            UserInfoBO userInfoBO = userInfoBOMap.get(clientAutoTestSuitBaseInfoDO.getSuitOwner()) ;
 //            UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
 //            testSuitBaseInfoVO.setOwner(userInfoVO);
 //            List<TagVO> tagVOList = tagListMap.get(clientAutoTestSuitBaseInfoDO.getId());
 //            testSuitBaseInfoVO.setTags(tagVOList);
-            testSuitBaseInfoVOList.add(testSuitBaseInfoVO) ;
+            //for 循环内查询，效率较为低下
+            List<AutoScriptInfoVO> autoScriptInfoVOSet = this.getAutoScriptInfoVOListBySuidId(clientAutoTestSuitBaseInfoDO.getId()) ;
+            testSuitInfoVO.setScripts(autoScriptInfoVOSet);
+            tagSuitInfoVOList.add(testSuitInfoVO) ;
         }
-        return testSuitBaseInfoVOList ;
+        return tagSuitInfoVOList ;
+    }
+
+
+    private List<AutoScriptInfoVO> getAutoScriptInfoVOListBySuidId(Long suitId){
+        List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<>() ;
+//        try {
+//            autoScriptInfoVOList = autoTestSuitService.getTestSuitScriptInfo(suitId);
+//        }catch (AutoTestRunException e){
+//            logger.error("[AutoBuildTestService.getAUtoScriptInfoVOListBySuidId] get test suit error", e);
+//        }
+        List<ClientAutoTestSuitRelationDO> clientAutoTestSuitRelationDOList = clientAutoTestSuitRelationDAO.getAutoTestSuitRelationListBySuit(suitId) ;
+        if (CollectionUtils.isEmpty(clientAutoTestSuitRelationDOList)){
+            return autoScriptInfoVOList ;
+        }
+        Set<Long> clientAutoTestScriptSet = new HashSet<Long>() ;
+        for (ClientAutoTestSuitRelationDO clientAutoTestSuitRelationDO : clientAutoTestSuitRelationDOList){
+            clientAutoTestScriptSet.add(clientAutoTestSuitRelationDO.getScriptId()) ;
+        }
+        List<ClientScriptTcInfoDO> clientScriptTcInfoDOList = clientScriptTcInfoDAO.getClientScriptSet(clientAutoTestScriptSet) ;
+        if (CollectionUtils.isEmpty(clientScriptTcInfoDOList)){
+            return autoScriptInfoVOList ;
+        }
+        for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOList){
+            if (clientScriptTcInfoDO == null){
+                continue;
+            }
+            AutoScriptInfoVO autoScriptInfoVO = new AutoScriptInfoVO() ;
+            autoScriptInfoVO.setId(clientScriptTcInfoDO.getId());
+            autoScriptInfoVO.setName(clientScriptTcInfoDO.getScriptName());
+            autoScriptInfoVO.setDetail(clientScriptTcInfoDO.getScriptDetail());
+            autoScriptInfoVO.setExecClass(clientScriptTcInfoDO.getExecClass());
+            autoScriptInfoVO.setExecMethod(clientScriptTcInfoDO.getExecMethod());
+            autoScriptInfoVO.setExecParam(clientScriptTcInfoDO.getExecParam());
+            autoScriptInfoVOList.add(autoScriptInfoVO) ;
+        }
+        return autoScriptInfoVOList ;
+    }
+
+    public List<AutoScriptInfoVO> getAllScriptByTagId(long tagId){
+        Set<AutoScriptInfoVO> autoScriptInfoVOSet = this.getAutoScriptInfoVOListByTagId(tagId) ;
+        List<TagSuitInfoVO> autoScriptInfoVOList = this.getAutoSuitListByTagId(tagId) ;
+        if (CollectionUtils.isEmpty(autoScriptInfoVOList)){
+            return new ArrayList<AutoScriptInfoVO> (autoScriptInfoVOSet) ;
+        }
+        for (TagSuitInfoVO tagSuitInfoVO : autoScriptInfoVOList) {
+            if (tagSuitInfoVO == null || CollectionUtils.isEmpty(tagSuitInfoVO.getScripts())){
+                continue;
+            }
+            for (AutoScriptInfoVO autoScriptInfoVO : tagSuitInfoVO.getScripts()) {
+                autoScriptInfoVOSet.add(autoScriptInfoVO) ;
+            }
+        }
+        List<AutoScriptInfoVO> autoScriptInfoVOArrayList =  new ArrayList<AutoScriptInfoVO> (autoScriptInfoVOSet) ;
+        Collections.sort(autoScriptInfoVOArrayList);
+        return autoScriptInfoVOArrayList ;
     }
 }

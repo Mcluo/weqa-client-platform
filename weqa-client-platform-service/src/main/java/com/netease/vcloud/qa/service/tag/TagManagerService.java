@@ -1,11 +1,11 @@
 package com.netease.vcloud.qa.service.tag;
 
+import com.netease.vcloud.qa.CommonUtils;
+import com.netease.vcloud.qa.UserInfoBO;
+import com.netease.vcloud.qa.UserInfoService;
 import com.netease.vcloud.qa.dao.ClientAutoTagBaseInfoDAO;
 import com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO;
-import com.netease.vcloud.qa.service.tag.data.TagDTO;
-import com.netease.vcloud.qa.service.tag.data.TagSelectVO;
-import com.netease.vcloud.qa.service.tag.data.TagTypeVO;
-import com.netease.vcloud.qa.service.tag.data.TagVO;
+import com.netease.vcloud.qa.service.tag.data.*;
 import com.netease.vcloud.qa.tag.TagType;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +30,8 @@ public class TagManagerService {
     @Autowired
     private ClientAutoTagBaseInfoDAO clientAutoTagBaseInfoDAO ;
 
+    @Autowired
+    private UserInfoService userInfoService ;
 
     public Long addTag(TagDTO tagDTO) throws AutoTestTagException {
         if (tagDTO == null || StringUtils.isBlank(tagDTO.getName())){
@@ -159,5 +161,27 @@ public class TagManagerService {
            parentTagSelectVO.setChildren(chileTagSelectVOList);
         }
         return tagSelectVOList ;
+    }
+
+    public TagDetailVO getTagDetail(long id) throws AutoTestTagException{
+        ClientAutoTagBaseInfoDO clientAutoTagBaseInfoDO = clientAutoTagBaseInfoDAO.getAutoTagByID(id) ;
+        if (clientAutoTagBaseInfoDO == null){
+            throw new AutoTestTagException(AutoTestTagException.TAG_NOT_EXIST_EXCEPTION) ;
+        }
+        TagDetailVO tagDetailVO = new TagDetailVO() ;
+        tagDetailVO.setId(clientAutoTagBaseInfoDO.getId());
+        tagDetailVO.setName(clientAutoTagBaseInfoDO.getTagName());
+        if (clientAutoTagBaseInfoDO.getTagType() !=null) {
+            TagType tagType = TagType.getTagTypeByCode(clientAutoTagBaseInfoDO.getTagType()) ;
+            if (tagType!= null) {
+                tagDetailVO.setType(tagType.getName());
+            }
+        }
+        tagDetailVO.setCreateTime(clientAutoTagBaseInfoDO.getGmtCreate().getTime());
+        UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientAutoTagBaseInfoDO.getCreator()) ;
+        if (userInfoBO!= null){
+            tagDetailVO.setOwner(CommonUtils.buildUserInfoVOByBO(userInfoBO));
+        }
+        return tagDetailVO ;
     }
 }

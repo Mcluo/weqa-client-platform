@@ -5,10 +5,7 @@ import com.netease.vcloud.qa.result.ResultVO;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.tag.AutoTestTagException;
 import com.netease.vcloud.qa.service.tag.TagManagerService;
-import com.netease.vcloud.qa.service.tag.data.TagDTO;
-import com.netease.vcloud.qa.service.tag.data.TagSelectVO;
-import com.netease.vcloud.qa.service.tag.data.TagTypeVO;
-import com.netease.vcloud.qa.service.tag.data.TagVO;
+import com.netease.vcloud.qa.service.tag.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -167,6 +164,41 @@ public class TagManagerController {
             resultVO = ResultUtils.buildSuccess(tagSelectVOList) ;
         }else {
             resultVO = ResultUtils.buildFail() ;
+        }
+        return resultVO ;
+    }
+
+//    @RequestMapping("/tag/query")
+//    @ResponseBody
+//    public ResultVO queryLeafTag(@RequestParam("key") String queryKey){
+//        ResultVO resultVO = null ;
+//        List<TagSelectVO> tagSelectVOList = tagManagerService.getTageLeafSelect(queryKey) ;
+//        if (tagSelectVOList!= null){
+//            resultVO = ResultUtils.buildSuccess(tagSelectVOList) ;
+//        }else {
+//            resultVO = ResultUtils.buildFail() ;
+//        }
+//        return resultVO ;
+//    }
+
+    /**
+     * http://127.0.0.1:8788/g2-client/tag/manager/tag/detail?id=1
+     * @param id
+     * @return
+     */
+    @RequestMapping("/tag/detail")
+    @ResponseBody
+    public ResultVO getTagDetailInfo(long  id){
+        ResultVO resultVO = null ;
+        try{
+            TagDetailVO tagDetailVO = tagManagerService.getTagDetail(id) ;
+            if (tagDetailVO != null){
+                resultVO = ResultUtils.buildSuccess(tagDetailVO) ;
+            }else {
+                resultVO = ResultUtils.buildFail() ;
+            }
+        }catch (AutoTestTagException e){
+            resultVO = ResultUtils.buildFail(e.getMessage()) ;
         }
         return resultVO ;
     }

@@ -4,12 +4,13 @@ import com.netease.vcloud.qa.result.view.UserInfoVO;
 import com.netease.vcloud.qa.service.tag.data.TagVO;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2022/11/22 15:08
  */
-public class AutoScriptInfoVO {
+public class AutoScriptInfoVO implements Comparable<AutoScriptInfoVO>{
 
     private Long id  ;
 
@@ -100,5 +101,23 @@ public class AutoScriptInfoVO {
 
     public void setTags(List<TagVO> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AutoScriptInfoVO that = (AutoScriptInfoVO) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public int compareTo(AutoScriptInfoVO o) {
+        return (int)(this.id - o.id);
     }
 }
