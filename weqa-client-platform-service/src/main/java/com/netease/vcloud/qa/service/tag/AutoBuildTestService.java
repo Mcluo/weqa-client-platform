@@ -1,16 +1,18 @@
 package com.netease.vcloud.qa.service.tag;
 
+import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.dao.*;
-import com.netease.vcloud.qa.model.ClientAutoTagRelationDO;
-import com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO;
-import com.netease.vcloud.qa.model.ClientAutoTestSuitRelationDO;
-import com.netease.vcloud.qa.model.ClientScriptTcInfoDO;
+import com.netease.vcloud.qa.model.*;
 
 import com.netease.vcloud.qa.service.auto.AutoTestTestSuitService;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
+import com.netease.vcloud.qa.service.tag.data.ArgsConditionBO;
+import com.netease.vcloud.qa.service.tag.data.TagAutoArgsDTO;
+import com.netease.vcloud.qa.service.tag.data.TagAutoArgsRelationVO;
 import com.netease.vcloud.qa.service.tag.data.TagSuitInfoVO;
 import com.netease.vcloud.qa.tag.TagRelationType;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class AutoBuildTestService {
 
     @Autowired
     private ClientAutoTestSuitRelationDAO clientAutoTestSuitRelationDAO ;
+
+    @Autowired
+    private ClientAutoBuildTagRelationDAO clientAutoBuildTagRelationDAO ;
 
     @Autowired
     private ClientScriptTcInfoDAO clientScriptTcInfoDAO ;
@@ -176,5 +181,138 @@ public class AutoBuildTestService {
         List<AutoScriptInfoVO> autoScriptInfoVOArrayList =  new ArrayList<AutoScriptInfoVO> (autoScriptInfoVOSet) ;
         Collections.sort(autoScriptInfoVOArrayList);
         return autoScriptInfoVOArrayList ;
+    }
+
+    //以下处理自动化相关构建
+    public List<TagAutoArgsRelationVO> getTagAutoArgsRelationByTagId(long tagId) {
+        List<ClientAutoBuildTagRelationDO> clientAutoBuildTagRelationDOList = clientAutoBuildTagRelationDAO.getAutoBuildTagRelationByTag(tagId) ;
+        List<TagAutoArgsRelationVO> tagAutoArgsRelationVOList = new ArrayList<TagAutoArgsRelationVO>() ;
+        if (CollectionUtils.isEmpty(clientAutoBuildTagRelationDOList)){
+            return tagAutoArgsRelationVOList ;
+        }
+        for (ClientAutoBuildTagRelationDO clientAutoBuildTagRelationDO : clientAutoBuildTagRelationDOList){
+            TagAutoArgsRelationVO tagAutoArgsRelationVO =  this.buildTagAutoArgsRelationVOByDO(clientAutoBuildTagRelationDO);
+            tagAutoArgsRelationVOList.add(tagAutoArgsRelationVO) ;
+        }
+        return tagAutoArgsRelationVOList ;
+    }
+
+    private TagAutoArgsRelationVO buildTagAutoArgsRelationVOByDO(ClientAutoBuildTagRelationDO clientAutoBuildTagRelationDO) {
+        if (clientAutoBuildTagRelationDO == null){
+            return null ;
+        }
+        TagAutoArgsRelationVO tagAutoArgsRelationVO = new TagAutoArgsRelationVO() ;
+        tagAutoArgsRelationVO.setId(clientAutoBuildTagRelationDO.getId());
+        tagAutoArgsRelationVO.setCreateTime(clientAutoBuildTagRelationDO.getGmtCreate().getTime());
+        tagAutoArgsRelationVO.setBuildArgs(clientAutoBuildTagRelationDO.getBuildArgs());
+        tagAutoArgsRelationVO.setArgsCondition(clientAutoBuildTagRelationDO.getArgsCondition());
+        tagAutoArgsRelationVO.setTagId(clientAutoBuildTagRelationDO.getTagId());
+        return tagAutoArgsRelationVO ;
+    }
+
+
+    public boolean insertTagAutoArgsRelation(TagAutoArgsDTO tagAutoArgsDTO) {
+        ArgsConditionBO argsConditionBO = parseArgsCondition(tagAutoArgsDTO) ;
+        if (argsConditionBO == null){
+            return false ;
+        }
+        ClientAutoBuildTagRelationDO clientAutoBuildTagRelationDO = this.buildClientAutoBuildTagRelationDOByBO(argsConditionBO) ;
+        int count = clientAutoBuildTagRelationDAO.insertAutoBuildTagRelation(clientAutoBuildTagRelationDO) ;
+        if (count > 0){
+            return true ;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean updateTagAutoArgsRelation(TagAutoArgsDTO tagAutoArgsDTO) {
+        ArgsConditionBO argsConditionBO = parseArgsCondition(tagAutoArgsDTO) ;
+        if (argsConditionBO == null){
+            return false ;
+        }
+        ClientAutoBuildTagRelationDO clientAutoBuildTagRelationDO = this.buildClientAutoBuildTagRelationDOByBO(argsConditionBO) ;
+        int count = clientAutoBuildTagRelationDAO.updateAutoBuildTagRelation(tagAutoArgsDTO.getId(), clientAutoBuildTagRelationDO) ;
+        if (count > 0){
+            return true ;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean deleteTagAutoArgsRelation(long relationId) {
+        int count = clientAutoBuildTagRelationDAO.deleteAutoBuildTagRelation(relationId) ;
+        if (count > 0) {
+            return true ;
+        }else{
+            return false ;
+        }
+    }
+
+    private ArgsConditionBO parseArgsCondition(TagAutoArgsDTO tagAutoArgsDTO) {
+        if (tagAutoArgsDTO==null){
+            return null ;
+        }
+        ArgsConditionBO argsConditionBO = new ArgsConditionBO();
+        if (tagAutoArgsDTO.getId()!=null) {
+            argsConditionBO.setId(tagAutoArgsDTO.getId());
+        }
+        if (tagAutoArgsDTO.getTagId()!=null) {
+            argsConditionBO.setTagId(tagAutoArgsDTO.getTagId());
+        }
+        if (tagAutoArgsDTO.getOperator()!=null){
+            argsConditionBO.setOperator(tagAutoArgsDTO.getOperator()) ;
+        }
+        String args = tagAutoArgsDTO.getBuildArgs() ;
+        if (StringUtils.isNotBlank(args)) {
+            argsConditionBO.setArgs(args);
+        }
+        JSONObject jsonObject = tagAutoArgsDTO.getArgsCondition() ;
+        if (jsonObject!=null){
+            String typeStr = jsonObject.getString("type") ;
+            String operatorStr = jsonObject.getString("operate") ;
+            String valueStr = jsonObject.getString("value") ;
+            ArgsType type = ArgsType.getType(typeStr) ;
+            if (type==null){
+                //没有类型，无法操作
+                return null ;
+            }
+            argsConditionBO.setType(type);
+            ArgsOperate operate = ArgsOperate.getOperate(operatorStr) ;
+            if (operate==null){
+                return null ;
+            }
+            argsConditionBO.setOperate(operate);
+            if (type == ArgsType.BOOLEAN){
+                argsConditionBO.setValue(Boolean.parseBoolean(valueStr));
+            }else if(type == ArgsType.NUMBER){
+                argsConditionBO.setValue(Integer.parseInt(valueStr));
+            }else {
+                argsConditionBO.setValue(valueStr);
+            }
+        }
+        return argsConditionBO;
+    }
+
+    private ClientAutoBuildTagRelationDO buildClientAutoBuildTagRelationDOByBO(ArgsConditionBO argsConditionBO){
+        if (argsConditionBO == null){
+            return null ;
+        }
+        ClientAutoBuildTagRelationDO clientAutoBuildTagRelationDO = new ClientAutoBuildTagRelationDO() ;
+        if (argsConditionBO.getId()!=null) {
+            clientAutoBuildTagRelationDO.setId(argsConditionBO.getId());
+        }
+        clientAutoBuildTagRelationDO.setOperator(argsConditionBO.getOperator());
+        clientAutoBuildTagRelationDO.setTagId(argsConditionBO.getTagId());
+        clientAutoBuildTagRelationDO.setBuildArgs(argsConditionBO.getArgs());
+        clientAutoBuildTagRelationDO.setArgsCondition(this.buildArgsConditionJson(argsConditionBO));
+        return clientAutoBuildTagRelationDO ;
+    }
+
+    private String buildArgsConditionJson(ArgsConditionBO argsConditionBO) {
+        JSONObject json = new JSONObject();
+        json.put("type", argsConditionBO.getType().getType());
+        json.put("operate", argsConditionBO.getOperate().getOperate());
+        json.put("value", argsConditionBO.getValue());
+        return  json.toJSONString();
     }
 }

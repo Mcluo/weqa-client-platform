@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.netease.vcloud.qa.dao.ClientAutoBuildTagRelationDAO">
-    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoTagRelationDO" >
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoBuildTagRelationDO" >
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
@@ -15,7 +15,27 @@
         select id,gmt_create,gmt_update,build_args,args_condition,tag_id,operator
     </sql>
 
+    <insert id="insertAutoBuildTagRelation" parameterType="com.netease.vcloud.qa.model.ClientAutoBuildTagRelationDO">
+        insert into vcloud_client_auto_build_tag_relation(gmt_create,gmt_update,build_args,args_condition,tag_id,operator)
+        values(now(),now(),#{relation.buildArgs},#{relation.argsCondition},#{relation.tagId},#{relation.operator})
+    </insert>
 
 
+    <update id="updateAutoBuildTagRelation">
+        update vcloud_client_auto_build_tag_relation
+        set gmt_update = now(),build_args = #{relation.buildArgs},args_condition = #{relation.argsCondition},tag_id = #{relation.tagId},operator = #{relation.operator}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAutoBuildTagRelation">
+        delete from vcloud_client_auto_build_tag_relation
+        where id = #{id}
+    </delete>
+
+    <select id="getAutoBuildTagRelationByTag" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_build_tag_relation
+        WHERE tag_id = #{tag}
+    </select>
 
 </mapper>
