@@ -38,4 +38,10 @@
         WHERE tag_id = #{tag}
     </select>
 
+    <select id="getAutoBuildTagRelationByArgs" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_build_tag_relation
+        WHERE build_args = #{args}
+    </select>
+
 </mapper>

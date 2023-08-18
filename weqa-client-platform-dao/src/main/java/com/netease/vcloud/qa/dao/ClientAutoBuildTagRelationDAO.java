@@ -20,4 +20,8 @@ public interface ClientAutoBuildTagRelationDAO {
     int deleteAutoBuildTagRelation(@Param("id") long id) ;
 
     List<ClientAutoBuildTagRelationDO> getAutoBuildTagRelationByTag(@Param("tag") long tagId) ;
+
+
+    List<ClientAutoBuildTagRelationDO> getAutoBuildTagRelationByArgs(@Param("args") String buildArgs) ;
+
 }

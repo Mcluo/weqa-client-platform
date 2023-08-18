@@ -315,4 +315,80 @@ public class AutoBuildTestService {
         json.put("value", argsConditionBO.getValue());
         return  json.toJSONString();
     }
+
+    public Set<Long> getTagIdsByAutoArgs(String key , Object value) {
+        List<ClientAutoBuildTagRelationDO> clientAutoBuildTagRelationDOList = clientAutoBuildTagRelationDAO.getAutoBuildTagRelationByArgs(key) ;
+        if (CollectionUtils.isEmpty(clientAutoBuildTagRelationDOList)){
+            return null ;
+        }
+        Set<Long> tagIdSet = new HashSet<>();
+        for (ClientAutoBuildTagRelationDO clientAutoBuildTagRelationDO : clientAutoBuildTagRelationDOList){
+            if(StringUtils.isBlank(clientAutoBuildTagRelationDO.getArgsCondition())){
+                continue ;
+            }
+            JSONObject jsonObject = JSONObject.parseObject(clientAutoBuildTagRelationDO.getArgsCondition());
+            if(jsonObject != null){
+                Object assertValue = jsonObject.get("value");
+                ArgsType argsType  = ArgsType.getType(jsonObject.getString("type")) ;
+                ArgsOperate argsOperate = ArgsOperate.getOperate(jsonObject.getString("operate")) ;
+                boolean conditionMatchFlag = this.isConditionChecked(argsType , argsOperate ,  assertValue, value) ;
+                if (conditionMatchFlag){
+                    //匹配 则进行下一步操作
+                    tagIdSet.add(clientAutoBuildTagRelationDO.getTagId()) ;
+                }
+
+            }
+        }
+        if (CollectionUtils.isEmpty(tagIdSet)) {
+            return null;
+        }
+        Set<Long> scriptIdSet = new HashSet<>();
+        for (Long tagId : tagIdSet){
+            List<AutoScriptInfoVO> scriptInfoVOS = this.getAllScriptByTagId(tagId) ;
+            if (!CollectionUtils.isEmpty(scriptInfoVOS)){
+                for (AutoScriptInfoVO autoScriptInfoVO : scriptInfoVOS) {
+                    scriptIdSet.add(autoScriptInfoVO.getId());
+                }
+            }
+        }
+        return scriptIdSet ;
+    }
+
+    private boolean isConditionChecked(ArgsType argsType , ArgsOperate argsOperate, Object assertValue ,Object value){
+        if (argsType == null || argsOperate == null || assertValue == null || value == null){
+            return false ;
+        }
+        String assertValueStr = assertValue.toString() ;
+        String valueStr = value.toString() ;
+        if (argsType == ArgsType.BOOLEAN){
+            return assertValueStr.equalsIgnoreCase(valueStr) ;
+        }
+        if (argsType == ArgsType.NUMBER){
+            if(ArgsOperate.EQUALS == argsOperate){
+                return assertValueStr.equals(valueStr) ;
+            }
+            double assertValueDouble = Double.parseDouble(assertValueStr) ;
+            double valueDouble = Double.parseDouble(valueStr) ;
+            if(ArgsOperate.GREATER_THAN == argsOperate){
+                return valueDouble > assertValueDouble ;
+            }
+            if(ArgsOperate.LESS_THAN == argsOperate){
+                return valueDouble < assertValueDouble ;
+            }
+        }
+        if (argsType == ArgsType.STRING){
+            if(ArgsOperate.EQUALS == argsOperate){
+                return StringUtils.equals(assertValueStr, valueStr) ;
+            }
+            int strCompare = valueStr.compareTo(assertValueStr) ;
+            if(ArgsOperate.GREATER_THAN == argsOperate){
+                return strCompare > 0 ;
+            }
+            if(ArgsOperate.LESS_THAN == argsOperate){
+                return strCompare < 0 ;
+            }
+        }
+        return false ;
+    }
+
 }
