@@ -14,6 +14,9 @@ import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.AutoTCSuitInfoDTO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
+import com.netease.vcloud.qa.service.tag.AutoTestTagService;
+import com.netease.vcloud.qa.service.tag.data.TagVO;
+import com.netease.vcloud.qa.tag.TagRelationType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,9 @@ public class AutoTestTestSuitService {
     private ClientScriptTcInfoDAO clientScriptTcInfoDAO ;
     @Autowired
     private AutoTcScriptService autoTcScriptService ;
+
+    @Autowired
+    private AutoTestTagService autoTestTagService ;
 
     public Long addNewTestSuit(String suitName,String creator) throws  AutoTestRunException{
         if (StringUtils.isBlank(suitName)){
@@ -145,13 +151,16 @@ public class AutoTestTestSuitService {
         List<TestSuitBaseInfoVO> testSuitBaseInfoVOList = new ArrayList<TestSuitBaseInfoVO>() ;
         if (!CollectionUtils.isEmpty(clientAutoTestSuitBaseInfoDOList)){
             Set<String> userSet = new HashSet<>() ;
+            Set<Long> idSet = new HashSet<>() ;
             for (ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO : clientAutoTestSuitBaseInfoDOList){
                 if (clientAutoTestSuitBaseInfoDO == null || StringUtils.isBlank(clientAutoTestSuitBaseInfoDO.getSuitOwner())){
                     continue;
                 }
                 userSet.add(clientAutoTestSuitBaseInfoDO.getSuitOwner()) ;
+                idSet.add(clientAutoTestSuitBaseInfoDO.getId()) ;
             }
             Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userSet) ;
+            Map<Long,List<TagVO>> tagListMap = autoTestTagService.getTagListByRelation(TagRelationType.TEST_SUITE,idSet) ;
             for (ClientAutoTestSuitBaseInfoDO clientAutoTestSuitBaseInfoDO : clientAutoTestSuitBaseInfoDOList){
                 if (clientAutoTestSuitBaseInfoDO == null){
                     continue;
@@ -162,6 +171,8 @@ public class AutoTestTestSuitService {
                 UserInfoBO userInfoBO = userInfoBOMap.get(clientAutoTestSuitBaseInfoDO.getSuitOwner()) ;
                 UserInfoVO userInfoVO = CommonUtils.buildUserInfoVOByBO(userInfoBO) ;
                 testSuitBaseInfoVO.setOwner(userInfoVO);
+                List<TagVO> tagVOList = tagListMap.get(clientAutoTestSuitBaseInfoDO.getId());
+                testSuitBaseInfoVO.setTags(tagVOList);
                 testSuitBaseInfoVOList.add(testSuitBaseInfoVO) ;
             }
         }

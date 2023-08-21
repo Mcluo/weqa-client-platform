@@ -3,6 +3,7 @@ package com.netease.vcloud.qa.service.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.netease.vcloud.qa.PropertiesConfig;
 import com.netease.vcloud.qa.auto.DeviceType;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.AutoTestDeviceService;
@@ -11,8 +12,8 @@ import com.netease.vcloud.qa.service.auto.AutoTestTestSuitService;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.git.GitInfoService;
+import com.netease.vcloud.qa.service.tag.AutoBuildTestService;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,13 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by luqiuwei@corp.netease.com
@@ -44,13 +43,13 @@ public class AutoTaskApiService {
     /**
      * 最小回归集
      */
-    private static final Long TEST_SUIT_ID = 93L ;
+    private Long TEST_SUIT_ID = 93L ;
     //    private static final Long TEST_SUIT_ID = 3L ;
 
     /**
      * 音频回归集
      */
-    private static final Long AUDIO_TEST_SUIT_ID = 209L ;
+    private Long AUDIO_TEST_SUIT_ID = 209L ;
 //    private static final Long AUDIO_TEST_SUIT_ID = 3L ;
 
 
@@ -62,6 +61,27 @@ public class AutoTaskApiService {
 
     @Autowired
     private AutoTestDeviceService autoTestDeviceService ;
+
+    @Autowired
+    private PropertiesConfig propertiesConfig ;
+
+    @Autowired
+    private AutoBuildTestService autoBuildTestService ;
+    @PostConstruct
+    public void init(){
+
+        String baseTestSuitIdStr  = propertiesConfig.getProperty(PropertiesConfig.BASE_TEST_SUIT_ID);
+
+        String baseAutoSuitIdStr =  propertiesConfig.getProperty(PropertiesConfig.BASE_AUTO_SUIT_ID);
+
+        if (StringUtils.isNotBlank(baseTestSuitIdStr)){
+            TEST_SUIT_ID = Long.parseLong(baseTestSuitIdStr) ;
+        }
+        if (StringUtils.isNotBlank(baseAutoSuitIdStr)){
+            AUDIO_TEST_SUIT_ID = Long.parseLong(baseAutoSuitIdStr) ;
+        }
+    }
+
     /**
      * 根据版本获取分支信息
      * @param version
@@ -109,27 +129,35 @@ public class AutoTaskApiService {
      * @param extentJsonObject
      * @return
      */
-    public List<Long> getTCIds(JSONObject extentJsonObject){
-        List<Long> tcIdList = new ArrayList<Long>() ;
-        try {
-            List<Long> tcSuidIdList = this.getTCSuitId(extentJsonObject) ;
-            for (Long tcSuidId : tcSuidIdList) {
+    public List<Long> getTCIds(JSONObject extentJsonObject) {
+        Set<Long> tcIdSet = new HashSet<Long>();
+
+        List<Long> tcSuidIdList = this.getBaseTCSuitId(extentJsonObject);
+        for (Long tcSuidId : tcSuidIdList) {
+            try {
                 List<AutoScriptInfoVO> autoScriptInfoVOList = autoTestTestSuitService.getTestSuitScriptInfo(tcSuidId);
                 if (!CollectionUtils.isEmpty(autoScriptInfoVOList)) {
                     for (AutoScriptInfoVO autoScriptInfoVO : autoScriptInfoVOList) {
                         if (autoScriptInfoVO != null) {
-                            tcIdList.add(autoScriptInfoVO.getId());
+                            tcIdSet.add(autoScriptInfoVO.getId());
                         }
                     }
                 }
+            } catch (AutoTestRunException e) {
+                AUTO_LOGGER.error("[AutoTaskApiService.getTCIds] getTestSuitScriptInfo exception", e);
             }
-        }catch (AutoTestRunException e){
-            AUTO_LOGGER.error("[AutoTaskApiService.getTCIds] getTestSuitScriptInfo exception" ,e);
         }
-        return tcIdList ;
+        Set<Long> scriptIdSet = this.getTcScriptSetByTag(extentJsonObject);
+        tcIdSet.addAll(scriptIdSet);
+        return new ArrayList<>(tcIdSet);
     }
 
-    private List<Long> getTCSuitId(JSONObject extendJsonObject) {
+    /**
+     * 获取基础执行集
+     * @param extendJsonObject
+     * @return
+     */
+    private List<Long> getBaseTCSuitId(JSONObject extendJsonObject) {
         List<Long> tcSuidIdList = new ArrayList<Long>() ;
         Boolean disableVideo =  extendJsonObject.getBoolean("disable_video") ;
         if (disableVideo != null && disableVideo.equals(true)){
@@ -141,6 +169,24 @@ public class AutoTaskApiService {
         }
         return tcSuidIdList ;
     }
+
+    private Set<Long> getTcScriptSetByTag(JSONObject extendJsonObject){
+        Set<Long> scriptIdSet = new HashSet<Long>() ;
+        if (extendJsonObject == null || extendJsonObject.isEmpty()){
+            return scriptIdSet ;
+        }
+        for (Map.Entry<String,Object> entry : extendJsonObject.entrySet()){
+            String key = entry.getKey() ;
+            Object value = entry.getValue() ;
+            Set<Long> tcScriptIdSet = autoBuildTestService.getTagIdsByAutoArgs(key,value) ;
+            if (tcScriptIdSet!= null) {
+                scriptIdSet.addAll(tcScriptIdSet) ;
+            }
+        }
+        return scriptIdSet ;
+    }
+
+
 
     public List<ApiTaskBuildData> getTaskBuildData(Long buildId,JenkinsBuildDTO jenkinsBuildDTO, JSONObject extendJsonObject) {
         String urls = null ;

@@ -40,6 +40,11 @@ public class PropertiesConfig {
 
     public static final String CONFIG_NOTIFY_USER = "config_download_notify_user";
 
+    public static final String BASE_TEST_SUIT_ID = "base_test_suit_id" ;
+
+    public static final String BASE_AUTO_SUIT_ID = "base_auto_suit_id" ;
+
+
     /**
      * 配置文件名
      */

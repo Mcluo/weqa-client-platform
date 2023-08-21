@@ -58,7 +58,7 @@ public class AutoTestAPIController {
         }
         List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(autoTaskAPIDTO.getBuildID(), jenkinsBuildDTO, extendInfoObject) ;
         if(CollectionUtils.isEmpty(apiTaskBuildDataList)){
-            resultVO = ResultUtils.buildFail("缺少合适运行给设备") ;
+            resultVO = ResultUtils.buildFail("缺少合适运行的设备") ;
         }
         for(int i = 1 ; i <= apiTaskBuildDataList.size() ; i++) {
             String name = autoTaskAPIDTO.getName() +"【"+i+"】" ;
@@ -110,7 +110,7 @@ public class AutoTestAPIController {
         }
         List<ApiTaskBuildData> apiTaskBuildDataList = autoTaskApiService.getTaskBuildData(buildID,jenkinsBuildDTO,extendInfoObject) ;
         if(CollectionUtils.isEmpty(apiTaskBuildDataList)){
-            resultVO = ResultUtils.buildFail("缺少合适运行给设备") ;
+            resultVO = ResultUtils.buildFail("缺少合适运行的设备") ;
             return resultVO ;
         }
         for(int i = 1 ; i <= apiTaskBuildDataList.size() ; i++) {

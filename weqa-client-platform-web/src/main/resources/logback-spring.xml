@@ -92,6 +92,18 @@
         <appender-ref ref="PerfLogAppender"/>
     </logger>
 
+    <appender name="tagLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/tagLogs.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %level [%thread] %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <logger name="tagLog" additivity="false" level="INFO">
+        <appender-ref ref="tagLogAppender"/>
+    </logger>
 
     <root level="info">
         <appender-ref ref="console" />

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.vcloud.qa.dao.ClientAutoTagBaseInfoDAO">
+    <resultMap id="BaseResultMap" type="com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO" >
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="tag_name" jdbcType="VARCHAR" property="tagName"/>
+        <result column="tag_type" jdbcType="VARCHAR" property="tagType"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        select id,gmt_create,gmt_update,tag_name,tag_type,creator
+    </sql>
+
+    <insert id="insertNewAutoTag" parameterType="com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO" keyProperty="info.id" useGeneratedKeys="true" >
+        insert into vcloud_client_auto_tag_base_info(gmt_create,gmt_update,tag_name,tag_type,creator)
+        values(now(),now(),#{info.tagName},#{info.tagType},#{info.creator})
+    </insert>
+
+    <update id="updateAutoTag" parameterType="com.netease.vcloud.qa.model.ClientAutoTagBaseInfoDO">
+        update vcloud_client_auto_tag_base_info
+        set gmt_update=now(),tag_name=#{info.tagName},tag_type=#{info.tagType},creator=#{info.creator}
+        where id=#{info.id}
+    </update>
+
+    <select id="queryAutoTagByKey" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE tag_name LIKE CONCAT('%',#{key},'%')
+    </select>
+
+    <select id="getAutoTagByType" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE tag_type = #{type}
+    </select>
+
+    <select id="getAutoTagByID" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE id = #{id}
+    </select>
+
+    <select id="getAutoTagByName" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE tag_name = #{name}
+    </select>
+
+    <delete id="deleteAutoTagById" parameterType="java.lang.Long">
+        DELETE FROM vcloud_client_auto_tag_base_info
+        where id=#{id}
+    </delete>
+
+    <select id="getAutoTagByIDSet" resultMap="BaseResultMap" >
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+        WHERE id IN
+        <foreach collection="idSet" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getAllAutoTag" resultMap="BaseResultMap">
+        <include refid="baseSql"/>
+        FROM vcloud_client_auto_tag_base_info
+    </select>
+
+</mapper>

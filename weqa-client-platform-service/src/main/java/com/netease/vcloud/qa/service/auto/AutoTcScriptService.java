@@ -10,6 +10,10 @@ import com.netease.vcloud.qa.service.auto.data.AutoTCScriptInfoDTO;
 import com.netease.vcloud.qa.service.auto.data.TaskScriptRunInfoBO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 import com.netease.vcloud.qa.service.auto.view.AutoScriptListVO;
+import com.netease.vcloud.qa.service.tag.AutoTestTagService;
+import com.netease.vcloud.qa.service.tag.TagManagerService;
+import com.netease.vcloud.qa.service.tag.data.TagVO;
+import com.netease.vcloud.qa.tag.TagRelationType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +37,9 @@ public class AutoTcScriptService {
 
     @Autowired
     private UserInfoService userInfoService ;
+
+    @Autowired
+    private AutoTestTagService autoTestTagService ;
     /**
      * 根据ID，获取对应的脚本信息
      * @param scriptIdSet
@@ -176,15 +183,23 @@ public class AutoTcScriptService {
         }
         List<AutoScriptInfoVO> autoScriptInfoVOList = new ArrayList<AutoScriptInfoVO>();
         Set<String> userInfoSet = new HashSet<String>();
+        Set<Long> caseIDSet = new HashSet<Long>();
         for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOCollection) {
-            if (clientScriptTcInfoDO != null && StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner())) {
+            if (clientScriptTcInfoDO == null){
+                continue;
+            }
+            if ( StringUtils.isNotBlank(clientScriptTcInfoDO.getScriptOwner())) {
                 userInfoSet.add(clientScriptTcInfoDO.getScriptOwner());
             }
+            caseIDSet.add(clientScriptTcInfoDO.getId());
         }
         Map<String, UserInfoBO> userInfoBOMap = userInfoService.queryUserInfoBOMap(userInfoSet);
+        Map<Long,List<TagVO>> tagListMap = autoTestTagService.getTagListByRelation(TagRelationType.TEST_CASE,caseIDSet) ;
         for (ClientScriptTcInfoDO clientScriptTcInfoDO : clientScriptTcInfoDOCollection) {
             AutoScriptInfoVO autoScriptInfoVO = this.buildScriptListVOByDO(clientScriptTcInfoDO, userInfoBOMap);
             if (autoScriptInfoVO != null) {
+                List<TagVO> tagVOList = tagListMap.get(clientScriptTcInfoDO.getId()) ;
+                autoScriptInfoVO.setTags(tagVOList);
                 autoScriptInfoVOList.add(autoScriptInfoVO);
             }
         }

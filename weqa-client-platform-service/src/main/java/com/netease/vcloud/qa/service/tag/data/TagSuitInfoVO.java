@@ -1,15 +1,15 @@
-package com.netease.vcloud.qa.service.auto.view;
+package com.netease.vcloud.qa.service.tag.data;
 
 import com.netease.vcloud.qa.result.view.UserInfoVO;
-import com.netease.vcloud.qa.service.tag.data.TagVO;
+import com.netease.vcloud.qa.service.auto.view.AutoScriptInfoVO;
 
 import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
- * on 2022/12/10 10:38
+ * on 2023/8/16 14:44
  */
-public class TestSuitBaseInfoVO {
+public class TagSuitInfoVO {
     /**
      * 用例ID
      */
@@ -23,9 +23,9 @@ public class TestSuitBaseInfoVO {
      */
     private UserInfoVO owner ;
     /**
-     * 标签信息
+     * 脚本信息
      */
-    private List<TagVO> tags ;
+    private List<AutoScriptInfoVO> scripts ;
 
     public Long getId() {
         return id;
@@ -51,11 +51,11 @@ public class TestSuitBaseInfoVO {
         this.owner = owner;
     }
 
-    public List<TagVO> getTags() {
-        return tags;
+    public List<AutoScriptInfoVO> getScripts() {
+        return scripts;
     }
 
-    public void setTags(List<TagVO> tags) {
-        this.tags = tags;
+    public void setScripts(List<AutoScriptInfoVO> scripts) {
+        this.scripts = scripts;
     }
 }
