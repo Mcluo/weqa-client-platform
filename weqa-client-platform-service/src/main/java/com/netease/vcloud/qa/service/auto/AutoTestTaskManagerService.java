@@ -5,16 +5,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.netease.vcloud.qa.CommonUtils;
 import com.netease.vcloud.qa.UserInfoBO;
 import com.netease.vcloud.qa.UserInfoService;
+import com.netease.vcloud.qa.auto.DevicePlatform;
 import com.netease.vcloud.qa.auto.ScriptRunStatus;
 import com.netease.vcloud.qa.auto.ScriptType;
 import com.netease.vcloud.qa.auto.TaskRunStatus;
 import com.netease.vcloud.qa.common.HttpUtils;
+import com.netease.vcloud.qa.dao.ClientAutoDeviceInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoScriptRunInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTaskInfoDAO;
-import com.netease.vcloud.qa.model.ClientAutoScriptRunInfoDO;
-import com.netease.vcloud.qa.model.ClientAutoTaskExtendInfoDO;
-import com.netease.vcloud.qa.model.ClientAutoTaskInfoDO;
-import com.netease.vcloud.qa.model.ClientRiskProjectDO;
+import com.netease.vcloud.qa.model.*;
 import com.netease.vcloud.qa.nos.NosService;
 import com.netease.vcloud.qa.result.view.DeviceInfoVO;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoBO;
@@ -84,6 +83,9 @@ public class AutoTestTaskManagerService {
 
     @Autowired
     private RiskProjectService riskProjectService ;
+
+    @Autowired
+    private ClientAutoDeviceInfoDAO clientAutoDeviceInfoDAO ;
 
     @PostConstruct
     public void init(){
@@ -436,6 +438,44 @@ public class AutoTestTaskManagerService {
         clientAutoScriptRunInfoDAO.updateStatusByTaskAndStatus(taskId,ScriptRunStatus.INIT.getCode(),ScriptRunStatus.CANCEL.getCode()) ;
         return true ;
     }
+
+    public boolean updatePrepareStatus(Long taskId , DevicePlatform platform, int code){
+        int count = 0 ;
+        if (code == 200|| code ==0){
+            count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus(taskId,TaskRunStatus.PREPARED.getCode()) ;
+        }else {
+            count = clientAutoTaskInfoDAO.updateClientAutoTaskStatus(taskId,TaskRunStatus.PREPARE_ERROR.getCode()) ;
+            this.updateDeviceRun(taskId);
+        }
+        return count > 0 ;
+    }
+
+    public void updateDeviceRun(Long taskId){
+        ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        ArrayList<Long> ids = new ArrayList<>();
+        if (clientAutoTaskInfoDO != null){
+            List<DeviceInfoVO> deviceInfoVOList = JSONArray.parseArray(clientAutoTaskInfoDO.getDeviceInfo(),DeviceInfoVO.class) ;
+            for(DeviceInfoVO deviceInfoVO : deviceInfoVOList){
+                ids.add(deviceInfoVO.getId());
+            }
+        }
+        if (ids.size() > 0 ){
+            this.updateDeviceRun(ids, (byte)0);
+        }
+    }
+
+    public boolean updateDeviceRun(List<Long> ids, Byte isRun){
+        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByIds(ids);
+        if (clientAutoDeviceInfoDOList.size() > 0 ){
+            for(ClientAutoDeviceInfoDO autoDeviceInfoDO : clientAutoDeviceInfoDOList){
+                autoDeviceInfoDO.setRun(isRun);
+                clientAutoDeviceInfoDAO.updateDeviceRun(autoDeviceInfoDO) ;
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     public List<Long> getDeviceIds(Long taskId) throws AutoTestRunException{
         ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
