@@ -1,6 +1,7 @@
 package com.netease.vcloud.qa.autotest;
 
 import com.alibaba.fastjson.JSONArray;
+import com.netease.vcloud.qa.auto.DevicePlatform;
 import com.netease.vcloud.qa.model.VcloudClientQsApiInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientQsAppDO;
 import com.netease.vcloud.qa.model.VcloudClientQsTaskDO;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
@@ -192,6 +194,26 @@ public class AutoTestTaskController {
         }catch (AutoTestRunException e){
             resultVO = ResultUtils.build(false,e.getExceptionInfo()) ;
         }
+        return resultVO ;
+    }
+
+
+    /**
+     * 内部使用，判断状态是否准备成功
+     * http://127.0.0.1:8788/g2-client/auto/task/prepare?taskId=39&code=200
+     * @param tasKId
+     * @param platform
+     * @param code
+     * @return
+     */
+    @RequestMapping("/prepare")
+    @ResponseBody
+    public ResultVO reportTaskPrepare(@RequestParam(name = "taskId")Long tasKId ,
+                                      @RequestParam(name = "platform",required = false) String platform,
+                                      @RequestParam(name = "code") int code){
+        DevicePlatform devicePlatform = DevicePlatform.getDevicePlatformByName(platform) ;
+        boolean flag = autoTestTaskManagerService.updatePrepareStatus(tasKId,devicePlatform,code) ;
+        ResultVO resultVO = ResultUtils.build(flag) ;
         return resultVO ;
     }
 
