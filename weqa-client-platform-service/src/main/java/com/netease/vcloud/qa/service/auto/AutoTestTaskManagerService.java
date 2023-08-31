@@ -297,6 +297,9 @@ public class AutoTestTaskManagerService {
         //基础信息
         TaskDetailInfoVO taskDetailInfoVO = new TaskDetailInfoVO() ;
         ClientAutoTaskInfoDO clientAutoTaskInfoDO = clientAutoTaskInfoDAO.getClientAutoTaskInfoById(taskId) ;
+        if (clientAutoTaskInfoDO==null){
+            throw new AutoTestRunException(AutoTestRunException.AUTO_TEST_TASK_IS_NOT_EXIST) ;
+        }
         List<TaskUrlInfoVO> taskUrlInfoVOList = autoTestTaskUrlService.getTaskUrlInfoList(taskId) ;
         taskDetailInfoVO.setPackageInfo(taskUrlInfoVOList);
         UserInfoBO userInfoBO = userInfoService.getUserInfoByEmail(clientAutoTaskInfoDO.getOperator()) ;

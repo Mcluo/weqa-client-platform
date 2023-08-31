@@ -47,6 +47,7 @@ public class PerfTaskIOSDetailListVO {
      */
     private Long times;
 
+
     public Float getVoltage() {
         return voltage;
     }
@@ -94,4 +95,5 @@ public class PerfTaskIOSDetailListVO {
     public void setTimes(Long times) {
         this.times = times;
     }
+
 }

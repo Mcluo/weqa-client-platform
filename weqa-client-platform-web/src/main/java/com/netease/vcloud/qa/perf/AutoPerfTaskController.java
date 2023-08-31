@@ -103,7 +103,9 @@ public class AutoPerfTaskController {
             @RequestParam(name = "gitInfo" ,required = false) String gitInfo,
             @RequestParam(name = "gitBranch") String gitBranch,
             @RequestParam(name = "device") List<Long> deviceList,
-            @RequestParam(name = "operator") String operator){
+            @RequestParam(name = "operator") String operator,
+            @RequestParam(name = "deviceType", required = false, defaultValue = "4") byte deviceType,
+            @RequestParam(name = "urls" ,required = false ) String urls){
         AutoPerfTaskDTO autoPerfTaskDTO = new AutoPerfTaskDTO()  ;
         autoPerfTaskDTO.setName(name);
         autoPerfTaskDTO.setCpuInfo(cpuInfo);
@@ -117,6 +119,8 @@ public class AutoPerfTaskController {
         autoPerfTaskDTO.setGitBranch(gitBranch);
         autoPerfTaskDTO.setDeviceList(deviceList);
         autoPerfTaskDTO.setSuitId(suitId);
+        autoPerfTaskDTO.setDeviceType(deviceType);
+        autoPerfTaskDTO.setUrls(urls);
         ResultVO resultVO = null ;
         try{
             Long code = autoPerfRunService.createNewPerfTest(autoPerfTaskDTO,operator) ;

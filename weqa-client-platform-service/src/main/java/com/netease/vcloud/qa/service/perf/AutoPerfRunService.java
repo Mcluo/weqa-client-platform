@@ -1,5 +1,6 @@
 package com.netease.vcloud.qa.service.perf;
 
+import com.alibaba.fastjson.JSONArray;
 import com.netease.vcloud.qa.dao.ClientAutoTestSuitBaseInfoDAO;
 import com.netease.vcloud.qa.dao.ClientAutoTestSuitRelationDAO;
 import com.netease.vcloud.qa.dao.VcloudClientAutoPerfTaskDAO;
@@ -7,9 +8,12 @@ import com.netease.vcloud.qa.model.ClientAutoTaskExtendInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTestSuitBaseInfoDO;
 import com.netease.vcloud.qa.model.ClientAutoTestSuitRelationDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO;
+import com.netease.vcloud.qa.service.auto.AutoTestDeviceService;
 import com.netease.vcloud.qa.service.auto.AutoTestRunException;
 import com.netease.vcloud.qa.service.auto.AutoTestTaskManagerService;
+import com.netease.vcloud.qa.service.auto.AutoTestTaskUrlService;
 import com.netease.vcloud.qa.service.auto.data.AutoTestTaskInfoDTO;
+import com.netease.vcloud.qa.service.auto.data.AutoTestTaskUrlDTO;
 import com.netease.vcloud.qa.service.auto.view.TestSuitBaseInfoVO;
 import com.netease.vcloud.qa.service.perf.data.AutoPerfTaskDTO;
 import org.slf4j.Logger;
@@ -44,6 +48,11 @@ public class AutoPerfRunService {
     @Autowired
     private ClientAutoTestSuitRelationDAO clientAutoTestSuitRelationDAO ;
 
+    @Autowired
+    private AutoTestDeviceService autoTestDeviceService ;
+
+    @Autowired
+    private AutoTestTaskUrlService autoTestTaskUrlService ;
 
     public Long createNewPerfTest(AutoPerfTaskDTO autoPerfTaskDTO,String operator)  throws AutoTestRunException {
         VcloudClientAutoPerfTaskDO clientAutoPerfTaskDO = buildClientAutoPerfTaskDOByDTO(autoPerfTaskDTO) ;
@@ -60,7 +69,14 @@ public class AutoPerfRunService {
         //创建自动化任务
         AutoTestTaskInfoDTO autoTestTaskInfoDTO = this.buildAutoTestTaskInfoDTOByAutoPerfTest(autoPerfTaskDTO,operator) ;
         Long autoTaskID = autoTestTaskManagerService.addNewTaskInfo(autoTestTaskInfoDTO) ;
-        if (autoTaskID !=null){
+        autoTestDeviceService.updateDeviceRun(autoPerfTaskDTO.getDeviceList(), (byte)1);
+        List<AutoTestTaskUrlDTO> taskUrlList = JSONArray.parseArray(autoPerfTaskDTO.getUrls(), AutoTestTaskUrlDTO.class);
+        if (!CollectionUtils.isEmpty(taskUrlList)) {
+            for (AutoTestTaskUrlDTO dto : taskUrlList) {
+                autoTestTaskUrlService.addTaskUrl(dto.getPlatform(), autoTaskID, dto.getUrl());
+            }
+        }
+        if (autoTaskID != null){
             //直接置为ready触发调度
             autoTestTaskManagerService.setTaskReadySuccess(autoTaskID,true);
         }
@@ -92,10 +108,10 @@ public class AutoPerfRunService {
         autoTestTaskInfoDTO.setTaskName(autoPerfTaskDTO.getName());
         autoTestTaskInfoDTO.setOperator(operator);
         autoTestTaskInfoDTO.setTestCaseScriptId(scriptIdList);
-        autoTestTaskInfoDTO.setDeviceType((byte) 0);
         autoTestTaskInfoDTO.setGitInfo(autoPerfTaskDTO.getGitInfo());
         autoTestTaskInfoDTO.setGitBranch(autoPerfTaskDTO.getGitBranch());
         autoTestTaskInfoDTO.setDeviceList(autoPerfTaskDTO.getDeviceList());
+        autoTestTaskInfoDTO.setDeviceType(autoPerfTaskDTO.getDeviceType());
         return autoTestTaskInfoDTO ;
     }
 

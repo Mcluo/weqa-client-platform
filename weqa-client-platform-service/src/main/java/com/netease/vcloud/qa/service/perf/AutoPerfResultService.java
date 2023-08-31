@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -27,6 +28,9 @@ import java.util.*;
  */
 @Service
 public class AutoPerfResultService implements AutoPerfBaseReportInterface {
+
+    private SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("hh:mm:ss");
+
 
     @Autowired
     private VcloudClientAutoPerfTaskDAO  clientAutoPerfTaskDAO ;
@@ -165,32 +169,54 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
         PerfTaskStatisticBuild instantAmperageStatistic = new PerfTaskStatisticBuild() ;
         PerfTaskStatisticBuild powerStatistic = new PerfTaskStatisticBuild() ;
         PerfTaskStatisticBuild levelStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild appCpuStatistic = new PerfTaskStatisticBuild();
+        PerfTaskStatisticBuild cpuStatistic = new PerfTaskStatisticBuild();
+        PerfTaskStatisticBuild gpuStatistic = new PerfTaskStatisticBuild() ;
         for (VcloudClientAutoAndroidPrefInfoDO clientAutoAndroidPrefInfoDO : vcloudClientAutoAndroidPrefInfoDOList) {
             if (clientAutoAndroidPrefInfoDO == null){
                 continue;
             }
             PerfTaskAndroidDetailListVO perfTaskAndroidDetailListVO = new PerfTaskAndroidDetailListVO() ;
             perfTaskAndroidDetailListVO.setTimes(clientAutoAndroidPrefInfoDO.getTimes());
+            String timeStr = SIMPLE_DATE_FORMAT.format(new Date (clientAutoAndroidPrefInfoDO.getTimes())) ; ;
             perfTaskAndroidDetailListVO.setMemory(clientAutoAndroidPrefInfoDO.getMemory());
-            memoryStatistic.add(clientAutoAndroidPrefInfoDO.getMemory());
+            memoryStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getMemory());
             perfTaskAndroidDetailListVO.setTemperature(clientAutoAndroidPrefInfoDO.getTemperature());
-            temperatureStatistic.add(clientAutoAndroidPrefInfoDO.getTemperature());
+            temperatureStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getTemperature());
             perfTaskAndroidDetailListVO.setVoltage(clientAutoAndroidPrefInfoDO.getVoltage());
-            voltageStatistic.add(clientAutoAndroidPrefInfoDO.getVoltage());
+            voltageStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getVoltage());
             perfTaskAndroidDetailListVO.setInstantAmperage(clientAutoAndroidPrefInfoDO.getInstantamperage());
-            instantAmperageStatistic.add(clientAutoAndroidPrefInfoDO.getInstantamperage());
+            instantAmperageStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getInstantamperage());
             perfTaskAndroidDetailListVO.setPower(clientAutoAndroidPrefInfoDO.getPower());
-            powerStatistic.add(clientAutoAndroidPrefInfoDO.getPower());
+            powerStatistic.add(timeStr , clientAutoAndroidPrefInfoDO.getPower());
             perfTaskAndroidDetailListVO.setLevel(clientAutoAndroidPrefInfoDO.getLevel());
-            levelStatistic.add(clientAutoAndroidPrefInfoDO.getLevel());
+            levelStatistic.add(timeStr , clientAutoAndroidPrefInfoDO.getLevel());
+            perfTaskAndroidDetailListVO.setAppCPU(clientAutoAndroidPrefInfoDO.getAppCpu());
+            appCpuStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getAppCpu());
+            perfTaskAndroidDetailListVO.setCpu(clientAutoAndroidPrefInfoDO.getCpu());
+            cpuStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getCpu());
+            perfTaskAndroidDetailListVO.setGpu(clientAutoAndroidPrefInfoDO.getGpu());
+            gpuStatistic.add(timeStr,clientAutoAndroidPrefInfoDO.getGpu());
             detailList.add(perfTaskAndroidDetailListVO);
         }
         perfTaskAndroidDetailVO.setMemory(memoryStatistic.build());
+        perfTaskAndroidDetailVO.setMemoryDetail(memoryStatistic.buildDetailList());
         perfTaskAndroidDetailVO.setTemperature(temperatureStatistic.build());
+        perfTaskAndroidDetailVO.setTemperatureDetail(temperatureStatistic.buildDetailList());
         perfTaskAndroidDetailVO.setVoltage(voltageStatistic.build());
+        perfTaskAndroidDetailVO.setVoltageDetail(voltageStatistic.buildDetailList());
         perfTaskAndroidDetailVO.setInstantAmperage(instantAmperageStatistic.build());
+        perfTaskAndroidDetailVO.setInstantAmperageDetail(instantAmperageStatistic.buildDetailList());
         perfTaskAndroidDetailVO.setPower(powerStatistic.build());
+        perfTaskAndroidDetailVO.setPowerDetail(powerStatistic.buildDetailList());
         perfTaskAndroidDetailVO.setLevel(levelStatistic.build());
+        perfTaskAndroidDetailVO.setLevelDetail(levelStatistic.buildDetailList());
+        perfTaskAndroidDetailVO.setAppCPU(appCpuStatistic.build());
+        perfTaskAndroidDetailVO.setAppCPUDetail(appCpuStatistic.buildDetailList());
+        perfTaskAndroidDetailVO.setCpu(cpuStatistic.build());
+        perfTaskAndroidDetailVO.setCpuDetail(cpuStatistic.buildDetailList());
+        perfTaskAndroidDetailVO.setGpu(gpuStatistic.build());
+        perfTaskAndroidDetailVO.setGpuDetail(gpuStatistic.buildDetailList());
         return perfTaskAndroidDetailVO ;
     }
 
@@ -211,22 +237,26 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
         PerfTaskStatisticBuild instantAmperageStatistic = new PerfTaskStatisticBuild() ;
         PerfTaskStatisticBuild powerStatistic = new PerfTaskStatisticBuild() ;
         PerfTaskStatisticBuild levelStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild deviceGPUStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild tilerGPUStatistic = new PerfTaskStatisticBuild() ;
+        PerfTaskStatisticBuild renderGPUStatistic = new PerfTaskStatisticBuild() ;
         if (!CollectionUtils.isEmpty(autoIosPrefInfoDOList)){
             for (VcloudClientAutoIosPrefInfoDO vcloudClientAutoIosPrefInfoDO : autoIosPrefInfoDOList){
                 if (vcloudClientAutoIosPrefInfoDO == null){
                     continue;
                 }
+                String timeStr = SIMPLE_DATE_FORMAT.format(new Date (vcloudClientAutoIosPrefInfoDO.getTimes())) ; ;
                 PerfTaskIOSDetailListVO perfTaskIOSDetailListVO = new PerfTaskIOSDetailListVO() ;
                 perfTaskIOSDetailListVO.setInstantAmperage(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
-                instantAmperageStatistic.add(vcloudClientAutoIosPrefInfoDO.getInstantamperage());
+                instantAmperageStatistic.add(timeStr,vcloudClientAutoIosPrefInfoDO.getInstantamperage());
                 perfTaskIOSDetailListVO.setLevel(vcloudClientAutoIosPrefInfoDO.getLevel());
-                levelStatistic.add(vcloudClientAutoIosPrefInfoDO.getLevel());
+                levelStatistic.add(timeStr,vcloudClientAutoIosPrefInfoDO.getLevel());
                 perfTaskIOSDetailListVO.setTemperature(vcloudClientAutoIosPrefInfoDO.getTemperature());
-                temperatureStatistic.add(vcloudClientAutoIosPrefInfoDO.getTemperature());
+                temperatureStatistic.add(timeStr,vcloudClientAutoIosPrefInfoDO.getTemperature());
                 perfTaskIOSDetailListVO.setPower(vcloudClientAutoIosPrefInfoDO.getPower());
-                powerStatistic.add(vcloudClientAutoIosPrefInfoDO.getPower());
+                powerStatistic.add(timeStr,vcloudClientAutoIosPrefInfoDO.getPower());
                 perfTaskIOSDetailListVO.setVoltage(vcloudClientAutoIosPrefInfoDO.getVoltage());
-                voltageStatistic.add(vcloudClientAutoIosPrefInfoDO.getVoltage());
+                voltageStatistic.add(timeStr,vcloudClientAutoIosPrefInfoDO.getVoltage());
                 perfTaskIOSDetailListVO.setTimes(vcloudClientAutoIosPrefInfoDO.getTimes());
                 perfTaskIOSDetailListVOList.add(perfTaskIOSDetailListVO) ;
             }
@@ -236,14 +266,21 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
                 if (vcloudClientAutoIosPrefMemoryInfoDO == null){
                     continue;
                 }
+                String timeStr = SIMPLE_DATE_FORMAT.format(new Date (vcloudClientAutoIosPrefMemoryInfoDO.getTimes())) ; ;
                 PerfTaskIOSDetailMemoryListVO perfTaskIOSDetailMemoryListVO = new PerfTaskIOSDetailMemoryListVO() ;
                 perfTaskIOSDetailMemoryListVO.setTimes(vcloudClientAutoIosPrefMemoryInfoDO.getTimes());
                 perfTaskIOSDetailMemoryListVO.setMemory(vcloudClientAutoIosPrefMemoryInfoDO.getMemory());
-                memoryStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getMemory());
+                memoryStatistic.add(timeStr,vcloudClientAutoIosPrefMemoryInfoDO.getMemory());
                 perfTaskIOSDetailMemoryListVO.setAppCpu(vcloudClientAutoIosPrefMemoryInfoDO.getAppCpu());
-                userCpuStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getAppCpu());
+                userCpuStatistic.add(timeStr,vcloudClientAutoIosPrefMemoryInfoDO.getAppCpu());
                 perfTaskIOSDetailMemoryListVO.setSysCpu(vcloudClientAutoIosPrefMemoryInfoDO.getSysCpu());
-                sysCpuStatistic.add(vcloudClientAutoIosPrefMemoryInfoDO.getSysCpu());
+                sysCpuStatistic.add(timeStr,vcloudClientAutoIosPrefMemoryInfoDO.getSysCpu());
+                perfTaskIOSDetailMemoryListVO.setDeviceGPU(vcloudClientAutoIosPrefMemoryInfoDO.getDeviceGPU());
+                deviceGPUStatistic.add(timeStr,vcloudClientAutoIosPrefMemoryInfoDO.getDeviceGPU());
+                perfTaskIOSDetailMemoryListVO.setRenderGPU(vcloudClientAutoIosPrefMemoryInfoDO.getRenderGPU());
+                renderGPUStatistic.add(timeStr,vcloudClientAutoIosPrefMemoryInfoDO.getRenderGPU());
+                perfTaskIOSDetailMemoryListVO.setTilerGPU(vcloudClientAutoIosPrefMemoryInfoDO.getTilerGPU());
+                tilerGPUStatistic.add(timeStr,vcloudClientAutoIosPrefMemoryInfoDO.getTilerGPU());
                 perfTaskIOSDetailMemoryListVOList.add(perfTaskIOSDetailMemoryListVO);
             }
         }
@@ -251,13 +288,27 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
             return perfTaskIOSDetailVO;
         }
         perfTaskIOSDetailVO.setAppCPU(userCpuStatistic.build());
+        perfTaskIOSDetailVO.setAppCPUDetail(userCpuStatistic.buildDetailList());
         perfTaskIOSDetailVO.setSysCPU(sysCpuStatistic.build());
+        perfTaskIOSDetailVO.setSysCPUDetail(sysCpuStatistic.buildDetailList());
         perfTaskIOSDetailVO.setMemory(memoryStatistic.build());
+        perfTaskIOSDetailVO.setMemoryDetail(memoryStatistic.buildDetailList());
         perfTaskIOSDetailVO.setTemperature(temperatureStatistic.build());
+        perfTaskIOSDetailVO.setTemperatureDetail(temperatureStatistic.buildDetailList());
         perfTaskIOSDetailVO.setVoltage(voltageStatistic.build());
+        perfTaskIOSDetailVO.setVoltageDetail(voltageStatistic.buildDetailList());
         perfTaskIOSDetailVO.setInstantAmperage(instantAmperageStatistic.build());
+        perfTaskIOSDetailVO.setInstantAmperageDetail(instantAmperageStatistic.buildDetailList());
         perfTaskIOSDetailVO.setPower(powerStatistic.build());
+        perfTaskIOSDetailVO.setPowerDetail(powerStatistic.buildDetailList());
         perfTaskIOSDetailVO.setLevel(levelStatistic.build());
+        perfTaskIOSDetailVO.setLevelDetail(levelStatistic.buildDetailList());
+        perfTaskIOSDetailVO.setDeviceGPU(deviceGPUStatistic.build());
+        perfTaskIOSDetailVO.setDeviceGPUDetail(deviceGPUStatistic.buildDetailList());
+        perfTaskIOSDetailVO.setTilerGPU(tilerGPUStatistic.build());
+        perfTaskIOSDetailVO.setTilerGPUDetail(tilerGPUStatistic.buildDetailList());
+        perfTaskIOSDetailVO.setRenderGPU(renderGPUStatistic.build());
+        perfTaskIOSDetailVO.setRenderGPUDetail(renderGPUStatistic.buildDetailList());
         return perfTaskIOSDetailVO ;
     }
 

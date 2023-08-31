@@ -253,4 +253,12 @@
     where taskId = #{taskId,jdbcType=INTEGER}
     ORDER BY times ASC
   </select>
+
+  <insert id="patchInsert" parameterType="com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO">
+    insert into vcloud_client_auto_ios_pref_info(voltage, temperature, instantAmperage, power, level, times, taskId, create_time)
+    VALUES
+    <foreach collection="list" item="report" separator=",">
+      (#{report.voltage},#{report.temperature},#{report.instantAmperage},#{report.power},#{report.level},#{report.times},#{report.taskId},now())
+    </foreach>
+  </insert>
 </mapper>

@@ -1,13 +1,21 @@
 package com.netease.vcloud.qa.service.perf;
 
 import com.netease.vcloud.qa.CommonData;
+import com.netease.vcloud.qa.service.perf.view.PerfTaskDetailInfoVO;
 import com.netease.vcloud.qa.service.perf.view.PerfTaskStatisticVO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by luqiuwei@corp.netease.com
  * on 2023/3/7 20:03
  */
 public class PerfTaskStatisticBuild {
+
+    List<Number> dataList = new ArrayList<Number>() ;
+
+    List<String> xAxisList = new ArrayList<String>() ;
 
     private Number max = Integer.MIN_VALUE;
 
@@ -17,7 +25,14 @@ public class PerfTaskStatisticBuild {
 
     private int count = 0;
 
-    public void add(Number one){
+
+    public void add(String key,Number one){
+        xAxisList.add(key) ;
+        dataList.add(one) ;
+        this.add(one);
+    }
+
+    private void add(Number one){
         if (one == null){
             return;
         }
@@ -72,5 +87,13 @@ public class PerfTaskStatisticBuild {
         perfTaskStatisticVO.setCount(this.getCount());
         perfTaskStatisticVO.setTotal(this.getTotal());
         return perfTaskStatisticVO ;
+    }
+
+
+    public PerfTaskDetailInfoVO buildDetailList(){
+        PerfTaskDetailInfoVO perfTaskDetailInfoVO = new PerfTaskDetailInfoVO() ;
+        perfTaskDetailInfoVO.setxAxis(xAxisList);
+        perfTaskDetailInfoVO.setData(dataList);
+        return perfTaskDetailInfoVO ;
     }
 }

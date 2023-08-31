@@ -9,6 +9,9 @@
     <result column="times" jdbcType="BIGINT" property="times" />
     <result column="taskId" jdbcType="INTEGER" property="taskid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="device_gpu" jdbcType="FLOAT" property="deviceGpu" />
+    <result column="tiler_gpu" jdbcType="FLOAT" property="tilerGpu" />
+    <result column="render_gpu" jdbcType="FLOAT" property="renderGpu" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, memory, app_cpu, sys_cpu, times, taskId, create_time
+    id, memory, app_cpu, sys_cpu, times, taskId, create_time,device_gpu,tiler_gpu,render_gpu
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -222,4 +225,13 @@
     where taskId = #{taskId,jdbcType=INTEGER}
     ORDER BY times ASC
   </select>
+
+
+  <insert id="patchInsert" parameterType="com.netease.vcloud.qa.model.VcloudClientAutoIosPrefMemoryInfoDO">
+    insert into vcloud_client_auto_ios_pref_memory_info(memory, app_cpu, sys_cpu, times, taskId, create_time,device_gpu,tiler_gpu,render_gpu)
+    VALUES
+    <foreach collection="list" item="report" separator=",">
+      (#{report.memory},#{report.app_cpu},#{report.sys_cpu},#{report.times},#{report.taskId},now(),#{report.device_gpu},#{report.tiler_gpu},#{report.render_gpu})
+    </foreach>
+  </insert>
 </mapper>

@@ -75,6 +75,10 @@ public class AutoPerfTaskDTO {
 
     private String gitBranch ;
 
+    private byte deviceType ;
+
+    private String urls ;
+
     public String getName() {
         return name;
     }
@@ -169,5 +173,21 @@ public class AutoPerfTaskDTO {
 
     public void setGitBranch(String gitBranch) {
         this.gitBranch = gitBranch;
+    }
+
+    public byte getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(byte deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public String getUrls() {
+        return urls;
+    }
+
+    public void setUrls(String urls) {
+        this.urls = urls;
     }
 }
