@@ -195,4 +195,9 @@ public class PerfTaskAndroidDetailVO implements PerfTaskDetailInterface{
      public void setGpuDetail(PerfTaskDetailInfoVO gpuDetail) {
           this.gpuDetail = gpuDetail;
      }
+
+     @Override
+     public int getDataSizeLength() {
+          return detailList.size();
+     }
 }

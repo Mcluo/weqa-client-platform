@@ -163,7 +163,7 @@ public class AutoPerfBaseLineService {
         }
         AutoPerfBaseReportInterface autoPerfBaseReportService = autoPerfTypeServiceManager.getAutoPerfBaseReportByType(autoPerfType) ;
         if (autoPerfBaseReportService!=null) {
-            AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildResultVO(clientPerfBaseLineDO.getResultData());
+            AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildResultVO(null,null,clientPerfBaseLineDO.getResultData());
             perfBaseLineDetailVO.setBaseLineData(autoPerfBaseReportResultData);
         }
         return perfBaseLineDetailVO ;

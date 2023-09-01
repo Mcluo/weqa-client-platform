@@ -175,7 +175,7 @@ public class AutoPerfReportService {
         return clientAutoPerfTaskDAO.insert(clientAutoPerfTaskDO);
     }
 
-    public Integer getTaskId(Long autoTaskId){
+    public Integer getPerfTaskIdByAutoTask(Long autoTaskId){
         VcloudClientAutoPerfTaskDO autoPerfTaskDO = clientAutoPerfTaskDAO.selectByPrimaryAuto(autoTaskId);
         return autoPerfTaskDO.getId();
     }

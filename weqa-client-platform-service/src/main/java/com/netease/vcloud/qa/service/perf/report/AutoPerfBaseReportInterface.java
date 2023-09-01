@@ -18,6 +18,6 @@ public interface AutoPerfBaseReportInterface {
 
     AutoPerfBaseReportResultDataInterface buildBaseLineByReport(String  reportResultDataStr) ;
 
-    AutoPerfBaseReportResultDataInterface buildResultVO(String resultDataStr) ;
+    AutoPerfBaseReportResultDataInterface buildResultVO(Long  baseLine ,List<Long> taskIdList,String resultDataStr) ;
 
 }

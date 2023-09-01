@@ -199,7 +199,23 @@ public class AutoPerfBaseReportService {
         }
         AutoPerfBaseReportInterface autoPerfBaseReportService = autoPerfTypeServiceManager.getAutoPerfBaseReportByType(autoPerfType) ;
         if (autoPerfBaseReportService!=null) {
-            AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildResultVO(clientPerfReportDO.getResultData());
+            String relationTask = clientPerfReportDO.getRelationTask() ;
+            List<Long> taskIdList = new ArrayList<>() ;
+            if (StringUtils.isNotBlank(relationTask)) {
+                String[] taskStrArray = relationTask.split("\\|") ;
+                if (taskStrArray!= null && taskStrArray.length > 0){
+                    for (String taskStr : taskStrArray) {
+                        if (StringUtils.isNotBlank(taskStr)){
+                            try {
+                                taskIdList.add(Long.parseLong(taskStr));
+                            }catch (Exception e){
+                                TC_LOGGER.error("[AutoPerfBaseReportService.getPerfBaseReportDetail] taskId is not valid",e);
+                            }
+                        }
+                    }
+                }
+            }
+            AutoPerfBaseReportResultDataInterface autoPerfBaseReportResultData = autoPerfBaseReportService.buildResultVO(clientPerfReportDO.getRelationBase(),taskIdList,clientPerfReportDO.getResultData());
             perfBaseReportDetailVO.setResult(autoPerfBaseReportResultData);
         }
         return perfBaseReportDetailVO ;

@@ -1,8 +1,6 @@
 package com.netease.vcloud.qa.perf;
 
 import com.alibaba.fastjson.JSONObject;
-import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefInfoDO;
-import com.netease.vcloud.qa.model.VcloudClientAutoIosPrefMemoryInfoDO;
 import com.netease.vcloud.qa.model.VcloudClientAutoPerfTaskDO;
 import com.netease.vcloud.qa.result.ResultUtils;
 import com.netease.vcloud.qa.result.ResultVO;
@@ -41,7 +39,7 @@ public class AutoReportController {
     @ResponseBody
     public ResultVO addIosMemoryInfo(@RequestBody JSONObject jsonObject ) {
         List<PerfIOSMemoryDataDTO> list = jsonObject.getJSONArray("listData").toJavaList(PerfIOSMemoryDataDTO.class);
-        Integer taskId = autoPerfReportService.getTaskId(jsonObject.getLong("taskId"));
+        Integer taskId = autoPerfReportService.getPerfTaskIdByAutoTask(jsonObject.getLong("taskId"));
 //        for(VcloudClientAutoIosPrefMemoryInfoDO clientAutoIosPrefMemoryInfoDO : list){
 //            clientAutoIosPrefMemoryInfoDO.setTaskid(taskId);
 //            autoPerfReportService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
@@ -55,7 +53,7 @@ public class AutoReportController {
     @ResponseBody
     public ResultVO addIosPowerInfo(@RequestBody JSONObject jsonObject ) {
         List<PerfIOSDataDTO> list =  jsonObject.getJSONArray("listData").toJavaList(PerfIOSDataDTO.class);
-        Integer taskId = autoPerfReportService.getTaskId(jsonObject.getLong("taskId"));
+        Integer taskId = autoPerfReportService.getPerfTaskIdByAutoTask(jsonObject.getLong("taskId"));
 //        for(VcloudClientAutoIosPrefInfoDO clientAutoIosPrefInfoDO : list){
 //            clientAutoIosPrefInfoDO.setTaskid(taskId);
 //            autoPerfReportService.insertIosInfo(clientAutoIosPrefInfoDO);
@@ -68,7 +66,7 @@ public class AutoReportController {
     @ResponseBody
     public ResultVO addAndroidInfo(@RequestBody JSONObject jsonObject ) {
         List<PerfAndroidDataDTO> perfAndroidDataUploadDTOList =  jsonObject.getJSONArray("listData").toJavaList(PerfAndroidDataDTO.class);
-        Integer taskId = autoPerfReportService.getTaskId(jsonObject.getLong("taskId"));
+        Integer taskId = autoPerfReportService.getPerfTaskIdByAutoTask(jsonObject.getLong("taskId"));
 //        for (VcloudClientAutoAndroidPrefInfoDO clientAutoAndroidPrefInfoDO: list){
 //            clientAutoAndroidPrefInfoDO.setTaskid(taskId);
 //            autoPerfReportService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);

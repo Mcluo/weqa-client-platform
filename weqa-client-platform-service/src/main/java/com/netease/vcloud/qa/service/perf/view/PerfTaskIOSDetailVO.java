@@ -241,4 +241,9 @@ public class PerfTaskIOSDetailVO implements PerfTaskDetailInterface{
     public void setRenderGPUDetail(PerfTaskDetailInfoVO renderGPUDetail) {
         this.renderGPUDetail = renderGPUDetail;
     }
+
+    @Override
+    public int getDataSizeLength() {
+        return detailList.size();
+    }
 }
