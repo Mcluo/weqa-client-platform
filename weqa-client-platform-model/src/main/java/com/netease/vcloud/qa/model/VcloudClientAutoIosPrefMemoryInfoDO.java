@@ -48,6 +48,12 @@ public class VcloudClientAutoIosPrefMemoryInfoDO implements Serializable {
 
     private Date createTime;
 
+    private Float deviceGPU ;
+
+    private Float tilerGPU ;
+
+    private Float renderGPU ;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -104,6 +110,30 @@ public class VcloudClientAutoIosPrefMemoryInfoDO implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Float getDeviceGPU() {
+        return deviceGPU;
+    }
+
+    public void setDeviceGPU(Float deviceGPU) {
+        this.deviceGPU = deviceGPU;
+    }
+
+    public Float getTilerGPU() {
+        return tilerGPU;
+    }
+
+    public void setTilerGPU(Float tilerGPU) {
+        this.tilerGPU = tilerGPU;
+    }
+
+    public Float getRenderGPU() {
+        return renderGPU;
+    }
+
+    public void setRenderGPU(Float renderGPU) {
+        this.renderGPU = renderGPU;
     }
 
     @Override

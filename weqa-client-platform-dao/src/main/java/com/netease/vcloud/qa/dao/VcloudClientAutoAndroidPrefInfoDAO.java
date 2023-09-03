@@ -24,4 +24,6 @@ public interface VcloudClientAutoAndroidPrefInfoDAO {
 
     List<VcloudClientAutoAndroidPrefInfoDO> queryAndroidPrefInfoDOByTaskId(@Param("taskId") int taskId) ;
 
+    int patchInsert(@Param("list") List<VcloudClientAutoAndroidPrefInfoDO> recordList);
+
 }

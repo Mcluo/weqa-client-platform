@@ -1,37 +1,39 @@
-package com.netease.vcloud.qa.service.perf.view;
+package com.netease.vcloud.qa.service.perf.data;
 
 /**
  * Created by luqiuwei@corp.netease.com
- * on 2023/3/7 21:30
+ * on 2023/8/29 16:30
  */
-public class PerfTaskIOSDetailMemoryListVO {
+public class PerfIOSMemoryDataDTO {
     /**
      * 内存
      *
-     * @mbg.generated
      */
     private Float memory;
 
     /**
      * appCpu
      *
-     * @mbg.generated
      */
     private Float appCpu;
 
     /**
      * sysCpu
      *
-     * @mbg.generated
      */
     private Float sysCpu;
-
     /**
      * 采集时间
      *
-     * @mbg.generated
      */
     private Long times;
+
+    /**
+     * 绑定taskId
+     *
+     */
+    private Integer taskid;
+
 
     private Float deviceGPU ;
 
@@ -64,14 +66,6 @@ public class PerfTaskIOSDetailMemoryListVO {
         this.sysCpu = sysCpu;
     }
 
-    public Long getTimes() {
-        return times;
-    }
-
-    public void setTimes(Long times) {
-        this.times = times;
-    }
-
     public Float getDeviceGPU() {
         return deviceGPU;
     }
@@ -94,5 +88,21 @@ public class PerfTaskIOSDetailMemoryListVO {
 
     public void setRenderGPU(Float renderGPU) {
         this.renderGPU = renderGPU;
+    }
+
+    public Long getTimes() {
+        return times;
+    }
+
+    public void setTimes(Long times) {
+        this.times = times;
+    }
+
+    public Integer getTaskid() {
+        return taskid;
+    }
+
+    public void setTaskid(Integer taskid) {
+        this.taskid = taskid;
     }
 }

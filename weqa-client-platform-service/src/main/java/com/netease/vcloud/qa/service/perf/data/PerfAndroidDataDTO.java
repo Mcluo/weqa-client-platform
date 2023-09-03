@@ -1,59 +1,28 @@
-package com.netease.vcloud.qa.service.perf.view;
+package com.netease.vcloud.qa.service.perf.data;
 
 /**
  * Created by luqiuwei@corp.netease.com
- * on 2023/3/7 16:40
+ * on 2023/8/29 15:52
  */
-public class PerfTaskAndroidDetailListVO {
-    /**
-     * 内存
-     */
+public class PerfAndroidDataDTO {
+
     private Float memory;
 
-    /**
-     * 电压
-     *
-     * @mbg.generated
-     */
     private Float voltage;
 
-    /**
-     * 温度
-     *
-     * @mbg.generated
-     */
     private Float temperature;
 
-    /**
-     * 电流
-     *
-     * @mbg.generated
-     */
-    private Float instantAmperage;
+    private Float instantamperage;
 
-    /**
-     * 功率
-     *
-     * @mbg.generated
-     */
     private Float power;
 
-    /**
-     * 当前电量百分比
-     *
-     * @mbg.generated
-     */
     private Float level;
 
-    /**
-     * 采集时间
-     *
-     * @mbg.generated
-     */
     private Long times;
 
+    private Integer taskid;
 
-    private Float appCPU;
+    private Float app_cpu;
 
     private Float cpu;
 
@@ -83,12 +52,12 @@ public class PerfTaskAndroidDetailListVO {
         this.temperature = temperature;
     }
 
-    public Float getInstantAmperage() {
-        return instantAmperage;
+    public Float getInstantamperage() {
+        return instantamperage;
     }
 
-    public void setInstantAmperage(Float instantAmperage) {
-        this.instantAmperage = instantAmperage;
+    public void setInstantamperage(Float instantamperage) {
+        this.instantamperage = instantamperage;
     }
 
     public Float getPower() {
@@ -115,12 +84,20 @@ public class PerfTaskAndroidDetailListVO {
         this.times = times;
     }
 
-    public Float getAppCPU() {
-        return appCPU;
+    public Integer getTaskid() {
+        return taskid;
     }
 
-    public void setAppCPU(Float appCPU) {
-        this.appCPU = appCPU;
+    public void setTaskid(Integer taskid) {
+        this.taskid = taskid;
+    }
+
+    public Float getApp_cpu() {
+        return app_cpu;
+    }
+
+    public void setApp_cpu(Float app_cpu) {
+        this.app_cpu = app_cpu;
     }
 
     public Float getCpu() {

@@ -1,15 +1,10 @@
-package com.netease.vcloud.qa.service.perf.view;
+package com.netease.vcloud.qa.service.perf.data;
 
 /**
  * Created by luqiuwei@corp.netease.com
- * on 2023/3/7 16:40
+ * on 2023/8/29 16:45
  */
-public class PerfTaskAndroidDetailListVO {
-    /**
-     * 内存
-     */
-    private Float memory;
-
+public class PerfIOSDataDTO {
     /**
      * 电压
      *
@@ -29,10 +24,10 @@ public class PerfTaskAndroidDetailListVO {
      *
      * @mbg.generated
      */
-    private Float instantAmperage;
+    private Float instantamperage;
 
     /**
-     * 功率
+     * 电量
      *
      * @mbg.generated
      */
@@ -52,20 +47,12 @@ public class PerfTaskAndroidDetailListVO {
      */
     private Long times;
 
-
-    private Float appCPU;
-
-    private Float cpu;
-
-    private Float gpu ;
-
-    public Float getMemory() {
-        return memory;
-    }
-
-    public void setMemory(Float memory) {
-        this.memory = memory;
-    }
+    /**
+     * 绑定taskId
+     *
+     * @mbg.generated
+     */
+    private Integer taskid;
 
     public Float getVoltage() {
         return voltage;
@@ -83,12 +70,12 @@ public class PerfTaskAndroidDetailListVO {
         this.temperature = temperature;
     }
 
-    public Float getInstantAmperage() {
-        return instantAmperage;
+    public Float getInstantamperage() {
+        return instantamperage;
     }
 
-    public void setInstantAmperage(Float instantAmperage) {
-        this.instantAmperage = instantAmperage;
+    public void setInstantamperage(Float instantamperage) {
+        this.instantamperage = instantamperage;
     }
 
     public Float getPower() {
@@ -115,27 +102,11 @@ public class PerfTaskAndroidDetailListVO {
         this.times = times;
     }
 
-    public Float getAppCPU() {
-        return appCPU;
+    public Integer getTaskid() {
+        return taskid;
     }
 
-    public void setAppCPU(Float appCPU) {
-        this.appCPU = appCPU;
-    }
-
-    public Float getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(Float cpu) {
-        this.cpu = cpu;
-    }
-
-    public Float getGpu() {
-        return gpu;
-    }
-
-    public void setGpu(Float gpu) {
-        this.gpu = gpu;
+    public void setTaskid(Integer taskid) {
+        this.taskid = taskid;
     }
 }

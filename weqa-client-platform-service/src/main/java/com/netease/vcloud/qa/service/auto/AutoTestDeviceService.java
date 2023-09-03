@@ -92,9 +92,9 @@ public class AutoTestDeviceService {
     public List<DeviceInfoVO> getDeviceList(String userInfo , byte deviceType) throws AutoTestRunException{
 //        List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getAllClientAutoDevice() ;
         List<ClientAutoDeviceInfoDO> clientAutoDeviceInfoDOList = null;
-        if (deviceType == REMOTE_DEVICE_TYPE|| deviceType == REMOTE_AUDIO_DEVICE_TYPE){
+        if (deviceType == REMOTE_DEVICE_TYPE|| deviceType == REMOTE_AUDIO_DEVICE_TYPE||deviceType==DeviceType.REMOTE_PERF_DEVICE_TYPE){
             clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByType(deviceType) ;
-        } else if ((deviceType == LOCAL_DEVICE_TYPE||deviceType == DeviceType.AUDIO_DEVICE_TYPE) && StringUtils.isNotBlank(userInfo)) {
+        } else if ((deviceType == LOCAL_DEVICE_TYPE||deviceType == DeviceType.AUDIO_DEVICE_TYPE||deviceType==DeviceType.PERF_DEVICE_TYPE) && StringUtils.isNotBlank(userInfo)) {
             clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getClientAutoDeviceByOwner(userInfo) ;
         }else {
             clientAutoDeviceInfoDOList = clientAutoDeviceInfoDAO.getAllClientAutoDevice() ;

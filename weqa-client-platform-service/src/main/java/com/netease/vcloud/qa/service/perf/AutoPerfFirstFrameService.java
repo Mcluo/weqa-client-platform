@@ -419,7 +419,7 @@ public class AutoPerfFirstFrameService  implements AutoPerfBaseReportInterface {
     }
 
     @Override
-    public AutoPerfBaseReportResultDataInterface buildResultVO(String resultDataStr) {
+    public AutoPerfBaseReportResultDataInterface buildResultVO(Long  baseLine ,List<Long> taskIdList,String resultDataStr) {
         FirstFrameReportResultData firstFrameReportResultData = JSONObject.parseObject(resultDataStr,FirstFrameReportResultData.class);
         return firstFrameReportResultData ;
     }

@@ -27,4 +27,7 @@ public interface VcloudClientAutoIosPrefMemoryInfoDAO {
     int updateByPrimaryKey(VcloudClientAutoIosPrefMemoryInfoDO record);
 
     List<VcloudClientAutoIosPrefMemoryInfoDO> queryIOSPrefMemoryInfoDOByTaskId(@Param("taskId") int taskId) ;
+
+    int patchInsert(@Param("list") List<VcloudClientAutoIosPrefMemoryInfoDO> record);
+
 }

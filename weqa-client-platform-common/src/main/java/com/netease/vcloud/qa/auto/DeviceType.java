@@ -22,4 +22,14 @@ public class DeviceType {
      * 远程音频设备
      */
     public static final byte REMOTE_AUDIO_DEVICE_TYPE = 3 ;
+
+    /**
+     * 本地性能任务/设备
+     */
+    public static final byte PERF_DEVICE_TYPE = 4 ;
+
+    /**
+     * 独立部署的性能任务/设备
+     */
+    public static final byte REMOTE_PERF_DEVICE_TYPE = 5 ;
 }

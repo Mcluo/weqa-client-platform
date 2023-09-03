@@ -12,6 +12,9 @@
     <result column="times" jdbcType="BIGINT" property="times" />
     <result column="taskId" jdbcType="INTEGER" property="taskid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="app_cpu" jdbcType="FLOAT" property="appCpu" />
+    <result column="cpu" jdbcType="FLOAT" property="cpu" />
+    <result column="gpu" jdbcType="FLOAT" property="gpu" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,7 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, memory, voltage, temperature, instantAmperage, power, level, times, taskId, create_time
+    id, memory, voltage, temperature, instantAmperage, power, level, times, taskId, create_time,app_cpu,cpu,gpu
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -270,4 +273,13 @@
     where taskId = #{taskId,jdbcType=INTEGER}
     ORDER BY times ASC
   </select>
+
+
+  <insert id="patchInsert" parameterType="com.netease.vcloud.qa.model.VcloudClientAutoAndroidPrefInfoDO">
+    insert into vcloud_client_auto_android_pref_info(memory, voltage, temperature, instantAmperage, power, level, times, taskId, create_time,app_cpu,cpu,gpu)
+    VALUES
+    <foreach collection="list" item="report" separator=",">
+      (#{report.memory},#{report.voltage},#{report.temperature},#{report.instantAmperage},#{report.power},#{report.level},#{report.times},#{report.taskId},now(),#{report.app_cpu},#{report.cpu},#{report.gpu})
+    </foreach>
+  </insert>
 </mapper>

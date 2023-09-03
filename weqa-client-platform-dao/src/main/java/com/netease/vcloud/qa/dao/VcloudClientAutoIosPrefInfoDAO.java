@@ -27,4 +27,7 @@ public interface VcloudClientAutoIosPrefInfoDAO {
 
     List<VcloudClientAutoIosPrefInfoDO> queryIOSPrefInfoDOByTaskId(@Param("taskId") int taskId) ;
 
+    int patchInsert(@Param("list") List<VcloudClientAutoIosPrefInfoDO> recordList);
+
+
 }

@@ -69,6 +69,13 @@ public class VcloudClientAutoAndroidPrefInfoDO implements Serializable {
 
     private Date createTime;
 
+
+    private Float appCpu;
+
+    private Float cpu;
+
+    private Float gpu ;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -149,6 +156,30 @@ public class VcloudClientAutoAndroidPrefInfoDO implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Float getAppCpu() {
+        return appCpu;
+    }
+
+    public void setAppCpu(Float appCpu) {
+        this.appCpu = appCpu;
+    }
+
+    public Float getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(Float cpu) {
+        this.cpu = cpu;
+    }
+
+    public Float getGpu() {
+        return gpu;
+    }
+
+    public void setGpu(Float gpu) {
+        this.gpu = gpu;
     }
 
     @Override
