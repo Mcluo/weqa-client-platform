@@ -986,7 +986,7 @@ public class AutoPerfResultService implements AutoPerfBaseReportInterface {
             perfReportEchartsVOList.add(renderGpuPerfReportEchartsVO);
         }
         PerfReportEchartsVO powerPerfReportEchartsVO = this.buildPerfReportEchartsVO(" 功耗信息", xAxisList, perfBaseLineData, legendList, powerListList) ;
-        if (renderGpuPerfReportEchartsVO!= null) {
+        if (powerPerfReportEchartsVO!= null) {
             perfReportEchartsVOList.add(powerPerfReportEchartsVO);
         }
         return perfReportEchartsVOList;
