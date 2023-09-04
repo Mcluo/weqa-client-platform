@@ -279,7 +279,7 @@
     insert into vcloud_client_auto_android_pref_info(memory, voltage, temperature, instantAmperage, power, level, times, taskId, create_time,app_cpu,cpu,gpu)
     VALUES
     <foreach collection="list" item="report" separator=",">
-      (#{report.memory},#{report.voltage},#{report.temperature},#{report.instantAmperage},#{report.power},#{report.level},#{report.times},#{report.taskId},now(),#{report.app_cpu},#{report.cpu},#{report.gpu})
+      (#{report.memory},#{report.voltage},#{report.temperature},#{report.instantAmperage},#{report.power},#{report.level},#{report.times},#{report.taskId},now(),#{report.appCpu},#{report.cpu},#{report.gpu})
     </foreach>
   </insert>
 </mapper>

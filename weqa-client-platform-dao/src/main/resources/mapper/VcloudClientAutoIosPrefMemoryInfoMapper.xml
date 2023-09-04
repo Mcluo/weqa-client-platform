@@ -231,7 +231,7 @@
     insert into vcloud_client_auto_ios_pref_memory_info(memory, app_cpu, sys_cpu, times, taskId, create_time,device_gpu,tiler_gpu,render_gpu)
     VALUES
     <foreach collection="list" item="report" separator=",">
-      (#{report.memory},#{report.app_cpu},#{report.sys_cpu},#{report.times},#{report.taskId},now(),#{report.device_gpu},#{report.tiler_gpu},#{report.render_gpu})
+      (#{report.memory},#{report.appCpu},#{report.sysCpu},#{report.times},#{report.taskId},now(),#{report.deviceGpu},#{report.tilerGpu},#{report.renderGpu})
     </foreach>
   </insert>
 </mapper>
