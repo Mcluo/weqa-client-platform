@@ -44,7 +44,9 @@ public class AutoReportController {
 //            clientAutoIosPrefMemoryInfoDO.setTaskid(taskId);
 //            autoPerfReportService.insertIosMemoryInfo(clientAutoIosPrefMemoryInfoDO);
 //        }
-
+        if (taskId == null){
+            ResultUtils.buildFail("task is not exist") ;
+        }
         boolean flag = autoPerfReportService.patchInsertIosMemoryInfo(taskId,list);
         return ResultUtils.build(flag);
     }
@@ -58,6 +60,9 @@ public class AutoReportController {
 //            clientAutoIosPrefInfoDO.setTaskid(taskId);
 //            autoPerfReportService.insertIosInfo(clientAutoIosPrefInfoDO);
 //        }
+        if (taskId == null){
+            ResultUtils.buildFail("task is not exist") ;
+        }
         boolean flag = autoPerfReportService.patchInsertIosInfo(taskId,list);
         return ResultUtils.build(flag);
     }
@@ -71,6 +76,9 @@ public class AutoReportController {
 //            clientAutoAndroidPrefInfoDO.setTaskid(taskId);
 //            autoPerfReportService.insertAndroidInfo(clientAutoAndroidPrefInfoDO);
 //        }
+        if (taskId == null){
+            ResultUtils.buildFail("task is not exist") ;
+        }
         boolean flag = autoPerfReportService.patchInsertAndroidInfo(taskId,perfAndroidDataUploadDTOList);
         return ResultUtils.build(flag);
     }

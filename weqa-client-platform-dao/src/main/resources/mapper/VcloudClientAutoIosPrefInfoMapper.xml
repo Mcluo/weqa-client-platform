@@ -258,7 +258,7 @@
     insert into vcloud_client_auto_ios_pref_info(voltage, temperature, instantAmperage, power, level, times, taskId, create_time)
     VALUES
     <foreach collection="list" item="report" separator=",">
-      (#{report.voltage},#{report.temperature},#{report.instantAmperage},#{report.power},#{report.level},#{report.times},#{report.taskId},now())
+      (#{report.voltage},#{report.temperature},#{report.instantamperage},#{report.power},#{report.level},#{report.times},#{report.taskid},now())
     </foreach>
   </insert>
 </mapper>
