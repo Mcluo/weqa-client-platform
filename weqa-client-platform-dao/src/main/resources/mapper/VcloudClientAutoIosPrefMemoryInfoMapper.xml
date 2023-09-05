@@ -9,9 +9,9 @@
     <result column="times" jdbcType="BIGINT" property="times" />
     <result column="taskId" jdbcType="INTEGER" property="taskid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="device_gpu" jdbcType="FLOAT" property="deviceGpu" />
-    <result column="tiler_gpu" jdbcType="FLOAT" property="tilerGpu" />
-    <result column="render_gpu" jdbcType="FLOAT" property="renderGpu" />
+    <result column="device_gpu" jdbcType="FLOAT" property="deviceGPU" />
+    <result column="tiler_gpu" jdbcType="FLOAT" property="tilerGPU" />
+    <result column="render_gpu" jdbcType="FLOAT" property="renderGPU" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
